@@ -1,0 +1,8 @@
+prefix=GTK
+modules=GTK::Raw::Types
+backups=backup,bitbucket,google-backup,azure-backupm,hut
+excluded_namespaces=
+build_exclude=
+lib=gtk4
+include_directory=/usr/src/gtk4-4.8.1+ds/gtk
+exec=p6gtk4exec
