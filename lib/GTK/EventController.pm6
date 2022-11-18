@@ -211,10 +211,17 @@ class GTK::EventController:ver<4> {
     unstable_get_type( self.^name, &gtk_event_controller_get_type, $n, $t );
   }
 
-  method get_widget ( :$raw = False ) is also<get-widget> {
-    returnWidget(
+  method get_widget (
+    :quick(:$fast)  = False,
+    :$raw           = False,
+    :slow(:$proper) = $fast.not
+  )
+    is also<get-widget>
+  {
+    returnProperWidget(
       gtk_event_controller_get_widget($!gtk-ec),
-      $raw
+      $raw.
+      $proper
     );
   }
 
