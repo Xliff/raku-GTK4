@@ -1,28 +1,607 @@
-  method action_set_enabled (
-    GtkWidget $widget,
-    Str       $action_name,
-    gboolean  $enabled
-  ) {
-    gtk_widget_action_set_enabled($!gtk-w, $action_name, $enabled);
+use v6.c;
+
+use GTK::Raw::Types:ver<4>;
+use GTK::Raw::Widget:ver<4>;
+
+use GLib::Roles::Implementor;
+use GLib::Roles::Object;
+
+
+class GTK::Widget:ver<4> {
+  also does GLib::Roles::Object;
+
+  has GtkWidget $!gtk-w is implementor;
+
+  # Type: string
+  method name is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('name', $gv);
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv.string = $val;
+        self.prop_set('name', $gv);
+      }
+    );
+  }
+
+  # Type: GTKWidget
+  method parent ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new( self.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('parent', $gv);
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |self.getTypePair
+        );
+      },
+      STORE => -> $,  $val is copy {
+        warn 'parent does not allow writing'
+      }
+    );
+  }
+
+  # Type: GTKRoot
+  method root is rw  is g-property {
+    my $gv = GLib::Value.new( GTKRoot );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('root', $gv);
+        $gv.GTKRoot;
+      },
+      STORE => -> $,  $val is copy {
+        warn 'root does not allow writing'
+      }
+    );
+  }
+
+  # Type: int
+  method width-request is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_INT );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('width-request', $gv);
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.int = $val;
+        self.prop_set('width-request', $gv);
+      }
+    );
+  }
+
+  # Type: int
+  method height-request is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_INT );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('height-request', $gv);
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.int = $val;
+        self.prop_set('height-request', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method visible is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('visible', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('visible', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method sensitive is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('sensitive', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('sensitive', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method can-focus is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('can-focus', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('can-focus', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method focusable is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('focusable', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('focusable', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method has-focus is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('has-focus', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'has-focus does not allow writing'
+      }
+    );
+  }
+
+  # Type: boolean
+  method can-target is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('can-target', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('can-target', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method focus-on-click is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('focus-on-click', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('focus-on-click', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method has-default is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('has-default', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'has-default does not allow writing'
+      }
+    );
+  }
+
+  # Type: boolean
+  method receives-default is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('receives-default', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('receives-default', $gv);
+      }
+    );
+  }
+
+  # Type: GTKCursor
+  method cursor is rw  is g-property {
+    my $gv = GLib::Value.new( GDK::Cursor.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('cursor', $gv);
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GDK::Cursor.getTypePair
+        );
+      },
+      STORE => -> $, GdkCursor() $val is copy {
+        $gv.object = $val;
+        self.prop_set('cursor', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method has-tooltip is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('has-tooltip', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('has-tooltip', $gv);
+      }
+    );
+  }
+
+  # Type: string
+  method tooltip-text is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('tooltip-text', $gv);
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv.string = $val;
+        self.prop_set('tooltip-text', $gv);
+      }
+    );
+  }
+
+  # Type: string
+  method tooltip-markup is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('tooltip-markup', $gv);
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv.string = $val;
+        self.prop_set('tooltip-markup', $gv);
+      }
+    );
+  }
+
+  # Type: GTKAlign
+  method halign ( :$enum = True ) is rw  is g-property {
+    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkAlign) );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('halign', $gv);
+        my $a = $gv.valueFromEnum(GtkAlign);
+        return $a unless $enum;
+        GtkAlignEnum($a);
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.valueFromEnum(GtkAlign) = $val;
+        self.prop_set('halign', $gv);
+      }
+    );
+  }
+
+  # Type: GTKAlign
+  method valign is rw  is g-property {
+    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkAlign) );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('valign', $gv);
+        my $a = $gv.valueFromEnum(GtkAlign);
+        return $a unless $enum;
+        GtkAlignEnum($a);
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.valueFromEnum(GtkAlign) = $val;
+        self.prop_set('valign', $gv);
+      }
+    );
+  }
+
+  # Type: int
+  method margin-start is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_INT );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('margin-start', $gv);
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.int = $val;
+        self.prop_set('margin-start', $gv);
+      }
+    );
+  }
+
+  # Type: int
+  method margin-end is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_INT );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('margin-end', $gv);
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.int = $val;
+        self.prop_set('margin-end', $gv);
+      }
+    );
+  }
+
+  # Type: int
+  method margin-top is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_INT );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('margin-top', $gv);
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.int = $val;
+        self.prop_set('margin-top', $gv);
+      }
+    );
+  }
+
+  # Type: int
+  method margin-bottom is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_INT );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('margin-bottom', $gv);
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.int = $val;
+        self.prop_set('margin-bottom', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method hexpand is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('hexpand', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('hexpand', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method hexpand-set is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('hexpand-set', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('hexpand-set', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method vexpand is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('vexpand', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('vexpand', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method vexpand-set is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('vexpand-set', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('vexpand-set', $gv);
+      }
+    );
+  }
+
+  # Type: double
+  method opacity is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('opacity', $gv);
+        $gv.double;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv.double = $val;
+        self.prop_set('opacity', $gv);
+      }
+    );
+  }
+
+  # Type: GTKOverflow
+  method overflow ( :$enum = False ) is rw  is g-property {
+    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkOverflow) );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('overflow', $gv);
+        my $o = $gv.valueFromEnum(GtkOverflow);
+        return $o unless $enum;
+        GtkOverflowEnum($o);
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.$gv.valueFromEnum(GtkOverflow) = $val;
+        self.prop_set('overflow', $gv);
+      }
+    );
+  }
+
+  # Type: int
+  method scale-factor is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_INT );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('scale-factor', $gv);
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'scale-factor does not allow writing'
+      }
+    );
+  }
+
+  # Type: string
+  method css-name is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('css-name', $gv);
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv.string = $val;
+        self.prop_set('css-name', $gv);
+      }
+    );
+  }
+
+  # Type: GTKStrv
+  method css-classes is rw  is g-property {
+    my $gv = GLib::Value.new( GTKStrv );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('css-classes', $gv);
+        $gv.GTKStrv;
+      },
+      STORE => -> $,  $val is copy {
+        $gv.GTKStrv = $val;
+        self.prop_set('css-classes', $gv);
+      }
+    );
+  }
+
+  # Type: GTKLayoutManager
+  method layout-manager ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new( GTK::LayoutManager.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('layout-manager', $gv);
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GTK::LayoutManager.getTypePair
+        );
+      },
+      STORE => -> $, GTK::LayoutManager() $val is copy {
+        $gv.object = $val;
+        self.prop_set('layout-manager', $gv);
+      }
+    );
+  }
+
+  method Destroy {
+    self.connect($!gtk-w, 'destroy');
+  }
+
+  method Direction-Changed {
+    self.connect-uint($!gtk-w, 'direction-changed');
+  }
+
+  method Hide {
+    self.connect($!gtk-w, 'hide');
+  }
+
+  method Keynav-Failed {
+    self.connect-uint($!gtk-w, 'keynav-failed');
+  }
+
+  method Map {
+    self.connect($!gtk-w, 'map');
+  }
+
+  method Mnemonic-Activate {
+    self.connect-uint-ruint($!gtk-w, 'mnemonic-activate');
+  }
+
+  method Move-Focus {
+    self.connect-uint($!gtk-w, 'move-focus');
+  }
+
+  method Query-Tooltip {
+    self.connect-query-tooltip($!gtk-w);
+  }
+
+  method Realize {
+    self.connect($!gtk-w, 'realize');
+  }
+
+  method Show {
+    self.connect($!gtk-w, 'show');
+  }
+
+  method State-Flags-Changed {
+    self.connect-uint($!gtk-w, 'state-flags-changed');
+  }
+
+  method Unmap {
+    self.connect($!gtk-w, 'unmap');
+  }
+
+  method Unrealize {
+    self.connect($!gtk-w, 'unrealize');
+  }
+
+  method action_set_enabled (Str() $action_name, Int() $enabled) {
+    my gboolean $e = $enabled.so.Int;
+
+    gtk_widget_action_set_enabled($!gtk-w, $action_name, $e);
   }
 
   method activate {
     gtk_widget_activate($!gtk-w);
   }
 
-  method activate_action (
-    GtkWidget $widget,
-    Str       $name,
-    Str       $format_string
-  ) {
+  method activate_action (Str() $name, Str() $format_string) {
     gtk_widget_activate_action($!gtk-w, $name, $format_string);
   }
 
-  method activate_action_variant (
-    GtkWidget $widget,
-    Str       $name,
-    GVariant  $args
-  ) {
+  method activate_action_variant (Str() $name, GVariant() $args) {
     gtk_widget_activate_action_variant($!gtk-w, $name, $args);
   }
 
@@ -30,224 +609,57 @@
     gtk_widget_activate_default($!gtk-w);
   }
 
-  method add_controller (
-    GtkWidget          $widget,
-    GtkEventController $controller
-  ) {
+  method add_controller (GtkEventController() $controller) {
     gtk_widget_add_controller($!gtk-w, $controller);
   }
 
-  method add_css_class (
-    GtkWidget $widget,
-    Str       $css_class
-  ) {
+  method add_css_class (Str() $css_class) {
     gtk_widget_add_css_class($!gtk-w, $css_class);
   }
 
-  method add_mnemonic_label (
-    GtkWidget $widget,
-    GtkWidget $label
-  ) {
+  method add_mnemonic_label (GtkWidget() $label) {
     gtk_widget_add_mnemonic_label($!gtk-w, $label);
   }
 
   method add_tick_callback (
-    GtkWidget       $widget,
-    GtkTickCallback $callback,
-    gpointer        $user_data,
-    GDestroyNotify  $notify
+                    &callback,
+    gpointer        $user_data = gpointer,
+                    &notify    = %DEFAULT-CALLBACKS<GDestroyNotify>
   ) {
-    gtk_widget_add_tick_callback($!gtk-w, $callback, $user_data, $notify);
+    gtk_widget_add_tick_callback($!gtk-w, &callback, $user_data, &notify);
   }
 
   method allocate (
-    GtkWidget    $widget,
-    gint         $width,
-    gint         $height,
-    gint         $baseline,
-    GskTransform $transform
+    Int()          $width,
+    Int()          $height,
+    Int()          $baseline,
+    GskTransform() $transform
   ) {
-    gtk_widget_allocate($!gtk-w, $width, $height, $baseline, $transform);
+    my gint ($w, $h, $b) = ($width, $height, $baseline);
+
+    gtk_widget_allocate($!gtk-w, $w, $h, $b, $transform);
   }
 
-  method child_focus (
-    GtkWidget        $widget,
-    GtkDirectionType $direction
-  ) {
-    gtk_widget_child_focus($!gtk-w, $direction);
-  }
+  method child_focus (Int() $direction) {
+    my GtkDirectionType $d = $direction;
 
-  method class_add_binding (
-    GtkWidgetClass  $widget_class,
-    guint           $keyval,
-    GdkModifierType $mods,
-    GtkShortcutFunc $callback,
-    Str             $format_string
-  ) {
-    gtk_widget_class_add_binding($!gtk-w, $keyval, $mods, $callback, $format_string);
-  }
-
-  method class_add_binding_action (
-    GtkWidgetClass  $widget_class,
-    guint           $keyval,
-    GdkModifierType $mods,
-    Str             $action_name,
-    Str             $format_string
-  ) {
-    gtk_widget_class_add_binding_action($!gtk-w, $keyval, $mods, $action_name, $format_string);
-  }
-
-  method class_add_binding_signal (
-    GtkWidgetClass  $widget_class,
-    guint           $keyval,
-    GdkModifierType $mods,
-    Str             $signal,
-    Str             $format_string
-  ) {
-    gtk_widget_class_add_binding_signal($!gtk-w, $keyval, $mods, $signal, $format_string);
-  }
-
-  method class_add_shortcut (
-    GtkWidgetClass $widget_class,
-    GtkShortcut    $shortcut
-  ) {
-    gtk_widget_class_add_shortcut($!gtk-w, $shortcut);
-  }
-
-  method class_bind_template_callback_full (
-    GtkWidgetClass $widget_class,
-    Str            $callback_name,
-    GCallback      $callback_symbol
-  ) {
-    gtk_widget_class_bind_template_callback_full($!gtk-w, $callback_name, $callback_symbol);
-  }
-
-  method class_bind_template_child_full (
-    GtkWidgetClass $widget_class,
-    Str            $name,
-    gboolean       $internal_child,
-    gssize         $struct_offset
-  ) {
-    gtk_widget_class_bind_template_child_full($!gtk-w, $name, $internal_child, $struct_offset);
-  }
-
-  method class_get_accessible_role {
-    gtk_widget_class_get_accessible_role($!gtk-w);
-  }
-
-  method class_get_activate_signal {
-    gtk_widget_class_get_activate_signal($!gtk-w);
-  }
-
-  method class_get_css_name {
-    gtk_widget_class_get_css_name($!gtk-w);
-  }
-
-  method class_get_layout_manager_type {
-    gtk_widget_class_get_layout_manager_type($!gtk-w);
-  }
-
-  method class_install_action (
-    GtkWidgetClass              $widget_class,
-    Str                         $action_name,
-    Str                         $parameter_type,
-    GtkWidgetActionActivateFunc $activate
-  ) {
-    gtk_widget_class_install_action($!gtk-w, $action_name, $parameter_type, $activate);
-  }
-
-  method class_install_property_action (
-    GtkWidgetClass $widget_class,
-    Str            $action_name,
-    Str            $property_name
-  ) {
-    gtk_widget_class_install_property_action($!gtk-w, $action_name, $property_name);
-  }
-
-  method class_query_action (
-    GtkWidgetClass       $widget_class,
-    guint                $index_,
-    GType                $owner,
-    CArray[Str]          $action_name,
-    CArray[GVariantType] $parameter_type,
-    CArray[Str]          $property_name
-  ) {
-    gtk_widget_class_query_action($!gtk-w, $index_, $owner, $action_name, $parameter_type, $property_name);
-  }
-
-  method class_set_accessible_role (
-    GtkWidgetClass    $widget_class,
-    GtkAccessibleRole $accessible_role
-  ) {
-    gtk_widget_class_set_accessible_role($!gtk-w, $accessible_role);
-  }
-
-  method class_set_activate_signal (
-    GtkWidgetClass $widget_class,
-    guint          $signal_id
-  ) {
-    gtk_widget_class_set_activate_signal($!gtk-w, $signal_id);
-  }
-
-  method class_set_activate_signal_from_name (
-    GtkWidgetClass $widget_class,
-    Str            $signal_name
-  ) {
-    gtk_widget_class_set_activate_signal_from_name($!gtk-w, $signal_name);
-  }
-
-  method class_set_css_name (
-    GtkWidgetClass $widget_class,
-    Str            $name
-  ) {
-    gtk_widget_class_set_css_name($!gtk-w, $name);
-  }
-
-  method class_set_layout_manager_type (
-    GtkWidgetClass $widget_class,
-    GType          $type
-  ) {
-    gtk_widget_class_set_layout_manager_type($!gtk-w, $type);
-  }
-
-  method class_set_template (
-    GtkWidgetClass $widget_class,
-    GBytes         $template_bytes
-  ) {
-    gtk_widget_class_set_template($!gtk-w, $template_bytes);
-  }
-
-  method class_set_template_from_resource (
-    GtkWidgetClass $widget_class,
-    Str            $resource_name
-  ) {
-    gtk_widget_class_set_template_from_resource($!gtk-w, $resource_name);
-  }
-
-  method class_set_template_scope (
-    GtkWidgetClass  $widget_class,
-    GtkBuilderScope $scope
-  ) {
-    gtk_widget_class_set_template_scope($!gtk-w, $scope);
+    gtk_widget_child_focus($!gtk-w, $d);
   }
 
   method compute_bounds (
-    GtkWidget       $widget,
     GtkWidget       $target,
     graphene_rect_t $out_bounds
   ) {
     gtk_widget_compute_bounds($!gtk-w, $target, $out_bounds);
   }
 
-  method compute_expand (
-    GtkWidget      $widget,
-    GtkOrientation $orientation
-  ) {
-    gtk_widget_compute_expand($!gtk-w, $orientation);
+  method compute_expand (Int() $orientation) {
+    my GtkOrientation $o = $orientation;
+
+    gtk_widget_compute_expand($!gtk-w, $o);
   }
 
   method compute_point (
-    GtkWidget        $widget,
     GtkWidget        $target,
     graphene_point_t $point,
     graphene_point_t $out_point
@@ -256,7 +668,6 @@
   }
 
   method compute_transform (
-    GtkWidget         $widget,
     GtkWidget         $target,
     graphene_matrix_t $out_transform
   ) {
@@ -264,29 +675,32 @@
   }
 
   method contains (
-    GtkWidget $widget,
     gdouble   $x,
     gdouble   $y
   ) {
     gtk_widget_contains($!gtk-w, $x, $y);
   }
 
-  method create_pango_context {
-    gtk_widget_create_pango_context($!gtk-w);
+  method create_pango_context ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_create_pango_context($!gtk-w),
+      $raw,
+      |Pango::Context.getTypePair
+    );
   }
 
-  method create_pango_layout (
-    GtkWidget $widget,
-    Str       $text
-  ) {
-    gtk_widget_create_pango_layout($!gtk-w, $text);
+  method create_pango_layout (Str() $text, :$raw = False) {
+    propReturnObject(
+      gtk_widget_create_pango_layout($!gtk-w, $text),
+      $rawm
+      |Pango::Layout.getTypePair
+    );
   }
 
-  method dispose_template (
-    GtkWidget $widget,
-    GType     $widget_type
-  ) {
-    gtk_widget_dispose_template($!gtk-w, $widget_type);
+  method dispose_template (Int() $widget_type) {
+    my GType $w = $widget_type;
+
+    gtk_widget_dispose_template($!gtk-w, $w);
   }
 
   method error_bell {
@@ -305,94 +719,139 @@
     gtk_widget_get_allocated_width($!gtk-w);
   }
 
-  method get_allocation (
-    GtkWidget     $widget,
-    GtkAllocation $allocation
-  ) {
+  method get_allocation (GtkAllocation() $allocation) {
     gtk_widget_get_allocation($!gtk-w, $allocation);
   }
 
-  method get_ancestor (
-    GtkWidget $widget,
-    GType     $widget_type
-  ) {
-    gtk_widget_get_ancestor($!gtk-w, $widget_type);
+  method get_ancestor (Int() $widget_type) {
+    my GType $w = $widget_type;
+
+    gtk_widget_get_ancestor($!gtk-w, $w);
   }
 
   method get_can_focus {
-    gtk_widget_get_can_focus($!gtk-w);
+    so gtk_widget_get_can_focus($!gtk-w);
   }
 
   method get_can_target {
-    gtk_widget_get_can_target($!gtk-w);
+    so gtk_widget_get_can_target($!gtk-w);
   }
 
   method get_child_visible {
-    gtk_widget_get_child_visible($!gtk-w);
+    so gtk_widget_get_child_visible($!gtk-w);
   }
 
-  method get_clipboard {
-    gtk_widget_get_clipboard($!gtk-w);
+  method get_clipboard ( :$raw = False ){
+    propReturnObject(
+      gtk_widget_get_clipboard($!gtk-w),
+      $raw,
+      |GDK::Clipboard.getTypePair
+    );
   }
 
   method get_css_classes {
     gtk_widget_get_css_classes($!gtk-w);
   }
 
-  method get_css_name {
-    gtk_widget_get_css_name($!gtk-w);
+  method get_css_name ( :$carray = False ) {
+    my $c = gtk_widget_get_css_name($!gtk-w);
+    return $c if $carray;
+    CArrayToArray($c);
   }
 
-  method get_cursor {
-    gtk_widget_get_cursor($!gtk-w);
+  method get_cursor ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_cursor($!gtk-w),
+      $raw,
+      |GDK::Cursor.getTypePair
+    );
   }
 
-  method get_default_direction {
-    gtk_widget_get_default_direction($!gtk-w);
+  method get_default_direction ( :$enum = True ) {
+    my $d = gtk_widget_get_default_direction($!gtk-w);
+    return $d unless $enum;
+    $d;
   }
 
-  method get_direction {
-    gtk_widget_get_direction($!gtk-w);
+  method get_direction ( $enum = True ) {
+    my $d = gtk_widget_get_direction($!gtk-w);
+    return $d unless $enum;
+    GtkTextDirectionEnum($d);
   }
 
-  method get_display {
-    gtk_widget_get_display($!gtk-w);
+  method get_display ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_display($!gtk-w),
+      $raw,
+      |GDK::Display.getTypePair
+    );
   }
 
-  method get_first_child {
-    gtk_widget_get_first_child($!gtk-w);
+  method get_first_child (
+    :quick(:$fast)  = False,
+    :$raw           = False,
+    :slow(:$proper) = $fast.not
+  ) {
+    returnProperWidget(
+      gtk_widget_get_first_child($!gtk-w),
+      $raw,
+      $proper
+    );
   }
 
-  method get_focus_child {
-    gtk_widget_get_focus_child($!gtk-w);
+  method get_focus_child (
+    :quick(:$fast)  = False,
+    :$raw           = False,
+    :slow(:$proper) = $fast.not
+  ) {
+    returnProperWidget(
+      gtk_widget_get_focus_child($!gtk-w),
+      $raw,
+      $proper
+    );
   }
 
   method get_focus_on_click {
-    gtk_widget_get_focus_on_click($!gtk-w);
+    so gtk_widget_get_focus_on_click($!gtk-w);
   }
 
   method get_focusable {
-    gtk_widget_get_focusable($!gtk-w);
+    so gtk_widget_get_focusable($!gtk-w);
   }
 
-  method get_font_map {
-    gtk_widget_get_font_map($!gtk-w);
+  method get_font_map ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_font_map($!gtk-w),
+      $raw,
+      |Pango::FontMap.getTypePair
+    );
   }
 
-  method get_font_options {
-    gtk_widget_get_font_options($!gtk-w);
+  method get_font_options ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_font_options($!gtk-w),
+      $raw,
+      cairo_font_options_t,
+      Cairo::FontOptions
+    );
   }
 
-  method get_frame_clock {
-    gtk_widget_get_frame_clock($!gtk-w);
+  method get_frame_clock ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_frame_clock($!gtk-w),
+      $raw,
+      |GDK::FrameClock.getTypePair
+    );
   }
 
-  method get_halign {
-    gtk_widget_get_halign($!gtk-w);
+  method get_halign ( :$enum = True ) {
+    my $h = gtk_widget_get_halign($!gtk-w);
+    return $h unless $enum;
+    GtkAlignEnum($h);
   }
 
   method get_has_tooltip {
-    gtk_widget_get_has_tooltip($!gtk-w);
+    so gtk_widget_get_has_tooltip($!gtk-w);
   }
 
   method get_height {
@@ -400,23 +859,35 @@
   }
 
   method get_hexpand {
-    gtk_widget_get_hexpand($!gtk-w);
+    so gtk_widget_get_hexpand($!gtk-w);
   }
 
   method get_hexpand_set {
-    gtk_widget_get_hexpand_set($!gtk-w);
+    so gtk_widget_get_hexpand_set($!gtk-w);
   }
 
-  method get_last_child {
-    gtk_widget_get_last_child($!gtk-w);
+  method get_last_child (
+    :quick(:$fast)  = False,
+    :$raw           = False,
+    :slow(:$proper) = $fast.not
+  ) {
+    returnProperObject(
+      gtk_widget_get_last_child($!gtk-w),
+      $raw,
+      $proper
+    );
   }
 
-  method get_layout_manager {
-    gtk_widget_get_layout_manager($!gtk-w);
+  method get_layout_manager ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_layout_manager($!gtk-w),
+      $raw,
+      |GTK::LayoutManager.getTypePair
+    );
   }
 
   method get_mapped {
-    gtk_widget_get_mapped($!gtk-w);
+    so gtk_widget_get_mapped($!gtk-w);
   }
 
   method get_margin_bottom {
@@ -439,60 +910,106 @@
     gtk_widget_get_name($!gtk-w);
   }
 
-  method get_native {
-    gtk_widget_get_native($!gtk-w);
+  method get_native ( :raw = False ) {
+    propReturnObject(
+      gtk_widget_get_native($!gtk-w),
+      $raw,
+      |GTK::Native.getTypePair
+    );
   }
 
-  method get_next_sibling {
-    gtk_widget_get_next_sibling($!gtk-w);
+  method get_next_sibling (
+    :quick(:$fast)  = False,
+    :$raw           = False,
+    :slow(:$proper) = $fast.not
+  ) {
+    returnProperWidget(
+      gtk_widget_get_next_sibling($!gtk-w),
+      $raw,
+      $proper
+    )
   }
 
   method get_opacity {
     gtk_widget_get_opacity($!gtk-w);
   }
 
-  method get_overflow {
-    gtk_widget_get_overflow($!gtk-w);
+  method get_overflow ( :$enum = True ) {
+    my $o =  gtk_widget_get_overflow($!gtk-w);
+    return $o unless $enum;
+    GtkOverflowEnum($o);
   }
 
-  method get_pango_context {
-    gtk_widget_get_pango_context($!gtk-w);
+  method get_pango_context ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_pango_context($!gtk-w),
+      $raw,
+      |Pango::Context.getTypePair
+    );
   }
 
-  method get_parent {
-    gtk_widget_get_parent($!gtk-w);
+  method get_parent (
+    :quick(:$fast)  = False,
+    :$raw           = False,
+    :slow(:$proper) = $fast.not
+  ) {
+    returnProperWidget(
+      gtk_widget_get_parent($!gtk-w),
+      $raw,
+      $proper
+    )
   }
 
   method get_preferred_size (
-    GtkWidget      $widget,
-    GtkRequisition $minimum_size,
-    GtkRequisition $natural_size
+    GtkRequisition() $minimum_size,
+    GtkRequisition() $natural_size
   ) {
     gtk_widget_get_preferred_size($!gtk-w, $minimum_size, $natural_size);
   }
 
-  method get_prev_sibling {
-    gtk_widget_get_prev_sibling($!gtk-w);
+  method get_prev_sibling (
+    :quick(:$fast)  = False,
+    :$raw           = False,
+    :slow(:$proper) = $fast.not
+  ) {
+    propReturnObject(
+      gtk_widget_get_prev_sibling($!gtk-w),
+      $raw,
+      $proper
+    );
   }
 
-  method get_primary_clipboard {
-    gtk_widget_get_primary_clipboard($!gtk-w);
+  method get_primary_clipboard ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_primary_clipboard($!gtk-w),
+      $raw,
+      |GDK::Clipboard.getTypePair
+    )
   }
 
   method get_realized {
-    gtk_widget_get_realized($!gtk-w);
+    so gtk_widget_get_realized($!gtk-w);
   }
 
   method get_receives_default {
-    gtk_widget_get_receives_default($!gtk-w);
+    so gtk_widget_get_receives_default($!gtk-w);
   }
 
-  method get_request_mode {
-    gtk_widget_get_request_mode($!gtk-w);
+  method get_request_mode ( :$enum = False ) {
+    my $rm = gtk_widget_get_request_mode($!gtk-w);
+    return $rm unless $enum;
+    GtkSizeRequestModeEnum($rm);
   }
 
-  method get_root {
-    gtk_widget_get_root($!gtk-w);
+  method get_root (
+    :$root          = False
+    :quick(:$fast)  = False,
+    :$raw           = False,
+    :slow(:$proper) = $fast.not
+  ) {
+    my $r = gtk_widget_get_root($!gtk-w);
+    return propReturnObject($r, $raw, |GTK::Root.getTypePair) if $root;
+    returnProperWidget($r, $raw, $proper);
   }
 
   method get_scale_factor {
@@ -500,42 +1017,53 @@
   }
 
   method get_sensitive {
-    gtk_widget_get_sensitive($!gtk-w);
+    so gtk_widget_get_sensitive($!gtk-w);
   }
 
-  method get_settings {
-    gtk_widget_get_settings($!gtk-w);
+  method get_settings ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_settings($!gtk-w),
+      $raw,
+      |GTK::Settings.getTypePair
+    );
   }
 
-  method get_size (
-    GtkWidget      $widget,
-    GtkOrientation $orientation
-  ) {
-    gtk_widget_get_size($!gtk-w, $orientation);
+  method get_size (Int() $orientation) {
+    my GtkOrientation $o = $orientation;
+
+    gtk_widget_get_size($!gtk-w, $o);
   }
 
-  method get_size_request (
-    GtkWidget $widget,
-    gint      $width is rw,
-    gint      $height is rw
-  ) {
-    gtk_widget_get_size_request($!gtk-w, $width, $height);
+  proto method get_size_request (|)
+
+  multi method get_size_request {
+    samewith($, $)
+  }
+  multi method get_size_request ($width is rw, $height is rw) {
+    my gint ($w, $h) = 0 xx 2;
+
+    gtk_widget_get_size_request($!gtk-w, $w, $h);
+    ($width, $height) = ($w, $h);
   }
 
-  method get_state_flags {
-    gtk_widget_get_state_flags($!gtk-w);
+  method get_state_flags ( :set(:$flags) = True ) {
+    my $s = gtk_widget_get_state_flags($!gtk-w);
+    return $s unless $flags
+    getFlags(GtkStateFlags, $s);
   }
 
-  method get_style_context {
-    gtk_widget_get_style_context($!gtk-w);
+  method get_style_context ( :$raw = False ) {
+    propReturnObject(
+      gtk_widget_get_style_context($!gtk-w),
+      $raw,
+      |GTK::StyleContext.getTypePair
+    );
   }
 
-  method get_template_child (
-    GtkWidget $widget,
-    GType     $widget_type,
-    Str       $name
-  ) {
-    gtk_widget_get_template_child($!gtk-w, $widget_type, $name);
+  method get_template_child (Int() $widget_type, Str() $name) {
+    my GType $w = $widget_type;
+
+    gtk_widget_get_template_child($!gtk-w, $w, $name);
   }
 
   method get_tooltip_markup {
@@ -547,23 +1075,27 @@
   }
 
   method get_type {
-    gtk_widget_get_type();
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_widget_get_type, $n, $t );
   }
 
-  method get_valign {
-    gtk_widget_get_valign($!gtk-w);
+  method get_valign ( :$enum = True ) {
+    my $v = gtk_widget_get_valign($!gtk-w);
+    return $v unless $enum;
+    GtkAlignEnum($v);
   }
 
   method get_vexpand {
-    gtk_widget_get_vexpand($!gtk-w);
+    so gtk_widget_get_vexpand($!gtk-w);
   }
 
   method get_vexpand_set {
-    gtk_widget_get_vexpand_set($!gtk-w);
+    so gtk_widget_get_vexpand_set($!gtk-w);
   }
 
   method get_visible {
-    gtk_widget_get_visible($!gtk-w);
+    so gtk_widget_get_visible($!gtk-w);
   }
 
   method get_width {
@@ -571,42 +1103,23 @@
   }
 
   method grab_focus {
-    gtk_widget_grab_focus($!gtk-w);
+    so gtk_widget_grab_focus($!gtk-w);
   }
 
-  method gtk_requisition_copy {
-    gtk_requisition_copy($!gtk-w);
-  }
-
-  method gtk_requisition_free {
-    gtk_requisition_free($!gtk-w);
-  }
-
-  method gtk_requisition_get_type {
-    gtk_requisition_get_type();
-  }
-
-  method gtk_requisition_new {
-    gtk_requisition_new();
-  }
-
-  method has_css_class (
-    GtkWidget $widget,
-    Str       $css_class
-  ) {
-    gtk_widget_has_css_class($!gtk-w, $css_class);
+  method has_css_class (Str() $css_class) {
+    so gtk_widget_has_css_class($!gtk-w, $css_class);
   }
 
   method has_default {
-    gtk_widget_has_default($!gtk-w);
+    so gtk_widget_has_default($!gtk-w);
   }
 
   method has_focus {
-    gtk_widget_has_focus($!gtk-w);
+    so gtk_widget_has_focus($!gtk-w);
   }
 
   method has_visible_focus {
-    gtk_widget_has_visible_focus($!gtk-w);
+    so gtk_widget_has_visible_focus($!gtk-w);
   }
 
   method hide {
@@ -614,61 +1127,45 @@
   }
 
   method in_destruction {
-    gtk_widget_in_destruction($!gtk-w);
+    so gtk_widget_in_destruction($!gtk-w);
   }
 
-  method insert_action_group (
-    GtkWidget    $widget,
-    Str          $name,
-    GActionGroup $group
-  ) {
+  method insert_action_group (Str() $name, GActionGroup() $group) {
     gtk_widget_insert_action_group($!gtk-w, $name, $group);
   }
 
-  method insert_after (
-    GtkWidget $widget,
-    GtkWidget $parent,
-    GtkWidget $previous_sibling
-  ) {
+  method insert_after (GtkWidget() $parent, GtkWidget() $previous_sibling) {
     gtk_widget_insert_after($!gtk-w, $parent, $previous_sibling);
   }
 
-  method insert_before (
-    GtkWidget $widget,
-    GtkWidget $parent,
-    GtkWidget $next_sibling
-  ) {
+  method insert_before (GtkWidget() $parent, GtkWidget() $next_sibling) {
     gtk_widget_insert_before($!gtk-w, $parent, $next_sibling);
   }
 
-  method is_ancestor (
-    GtkWidget $widget,
-    GtkWidget $ancestor
-  ) {
-    gtk_widget_is_ancestor($!gtk-w, $ancestor);
+  method is_ancestor (GtkWidget() $ancestor) {
+    so gtk_widget_is_ancestor($!gtk-w, $ancestor);
   }
 
   method is_drawable {
-    gtk_widget_is_drawable($!gtk-w);
+    so gtk_widget_is_drawable($!gtk-w);
   }
 
   method is_focus {
-    gtk_widget_is_focus($!gtk-w);
+    so gtk_widget_is_focus($!gtk-w);
   }
 
   method is_sensitive {
-    gtk_widget_is_sensitive($!gtk-w);
+    so gtk_widget_is_sensitive($!gtk-w);
   }
 
   method is_visible {
-    gtk_widget_is_visible($!gtk-w);
+    so gtk_widget_is_visible($!gtk-w);
   }
 
-  method keynav_failed (
-    GtkWidget        $widget,
-    GtkDirectionType $direction
-  ) {
-    gtk_widget_keynav_failed($!gtk-w, $direction);
+  method keynav_failed (Int() $direction) {
+    my GtkDirectionType $d = $direction;
+
+    so gtk_widget_keynav_failed($!gtk-w, $d);
   }
 
   method list_mnemonic_labels {
@@ -679,40 +1176,91 @@
     gtk_widget_map($!gtk-w);
   }
 
-  method measure (
-    GtkWidget      $widget,
-    GtkOrientation $orientation,
-    gint           $for_size,
-    gint           $minimum is rw,
-    gint           $natural is rw,
-    gint           $minimum_baseline is rw,
-    gint           $natural_baseline is rw
+  multi method measure (Int() $orientation, Int() $for_size) {
+    samewith($orientation, $for_size, $, $, $, $);
+  }
+  multi method measure (
+    Int() $orientation,
+    Int() $for_size,
+          $minimum          is rw,
+          $natural          is rw,
+          $minimum_baseline is rw,
+          $natural_baseline is rw
   ) {
-    gtk_widget_measure($!gtk-w, $orientation, $for_size, $minimum, $natural, $minimum_baseline, $natural_baseline);
+    my GtkOrientation $o = $orientation;
+    my gint           $f = $for_size;
+
+    my gint ($m, $n, $mb, $nb) = 0 xx 4;
+    gtk_widget_measure($!gtk-w, $orientation, $f, $m, $n, $mb, $nb);
+    ($minimum, $natural, $minimum_baseline, $natural_baseline) =
+      ($m, $n, $mb, $nb)
   }
 
-  method mnemonic_activate (
-    GtkWidget $widget,
-    gboolean  $group_cycling
+  method mnemonic_activate (Int() $group_cycling) {
+    my gboolean $g = $group_cycling;
+
+    gtk_widget_mnemonic_activate($!gtk-w, $g);
+  }
+
+  method observe_children (
+    :$raw                   = False,
+    :raw_model(:$raw-model) = False
+    :$model                 = False
+    :quick(:$fast)          = False,
+    :slow(:$proper)         = $fast.not
+   ) {
+    my $lm = propReturnObject(
+      gtk_widget_observe_children($!gtk-w),
+      $raw,
+      |GIO::ListModel.getTypePair
+    );
+    return $lm if $raw-model;
+    $lm does GLib::Roles::TypedArray[
+      GtkWidget,
+      $model ?? $raw !! True,
+      GTK::Widget
+    ];
+    return $lm if $model;
+    $lm.Array.map({ returnProperWidget($_, $raw, $proper) });
+  }
+
+  method observe_controllers (
+    :$raw                   = False,
+    :raw_model(:$raw-model) = False
+    :$model                 = False
   ) {
-    gtk_widget_mnemonic_activate($!gtk-w, $group_cycling);
-  }
-
-  method observe_children {
-    gtk_widget_observe_children($!gtk-w);
-  }
-
-  method observe_controllers {
-    gtk_widget_observe_controllers($!gtk-w);
+    my $om = propReturnObject(
+      gtk_widget_observe_controllers($!gtk-w);
+      $raw,
+      |GIO::ListModel.getTypePair
+    );
+    return $lm if $raw-model;
+    $lm does GLib::Roles::TypedArray[
+      GtkEventController,
+      $raw,
+      GTK::EventController
+    ];
+    return $lm if $model;
+    $lm.Array;
   }
 
   method pick (
-    GtkWidget    $widget,
-    gdouble      $x,
-    gdouble      $y,
-    GtkPickFlags $flags
+    Num()  $x,
+    Num()  $y,
+    Int()  $flags,
+
+           :quick(:$fast)  = False,
+           :$raw           = False,
+           :slow(:$proper) = $fast.not
   ) {
-    gtk_widget_pick($!gtk-w, $x, $y, $flags);
+    my gdouble      ($xx, $yy) = ($x, $y)
+    my GtkPickFlags  $f        =  $flags;
+
+    returnProperWidget(
+      gtk_widget_pick($!gtk-w, $xx, $yy, $f),
+      $raw,
+      $proper
+    );
   }
 
   method queue_allocate {
@@ -731,318 +1279,270 @@
     gtk_widget_realize($!gtk-w);
   }
 
-  method remove_controller (
-    GtkWidget          $widget,
-    GtkEventController $controller
-  ) {
+  method remove_controller (GtkEventController() $controller) {
     gtk_widget_remove_controller($!gtk-w, $controller);
   }
 
-  method remove_css_class (
-    GtkWidget $widget,
-    Str       $css_class
-  ) {
+  method remove_css_class (Str() $css_class) {
     gtk_widget_remove_css_class($!gtk-w, $css_class);
   }
 
-  method remove_mnemonic_label (
-    GtkWidget $widget,
-    GtkWidget $label
-  ) {
+  method remove_mnemonic_label (GtkWidget() $label) {
     gtk_widget_remove_mnemonic_label($!gtk-w, $label);
   }
 
-  method remove_tick_callback (
-    GtkWidget $widget,
-    guint     $id
-  ) {
+  method remove_tick_callback (Int() $id) {
+    my guint $i = $id;
     gtk_widget_remove_tick_callback($!gtk-w, $id);
   }
 
-  method set_can_focus (
-    GtkWidget $widget,
-    gboolean  $can_focus
-  ) {
-    gtk_widget_set_can_focus($!gtk-w, $can_focus);
+  method set_can_focus (Int()  $can_focus) {
+    my gboolean $c = $can_focus.so.Int;
+
+    gtk_widget_set_can_focus($!gtk-w, $c);
   }
 
-  method set_can_target (
-    GtkWidget $widget,
-    gboolean  $can_target
-  ) {
-    gtk_widget_set_can_target($!gtk-w, $can_target);
+  method set_can_target (Int() $can_target) {
+    my gboolean $c = $can_target.so.Int;
+
+    gtk_widget_set_can_target($!gtk-w, $c);
   }
 
-  method set_child_visible (
-    GtkWidget $widget,
-    gboolean  $child_visible
-  ) {
-    gtk_widget_set_child_visible($!gtk-w, $child_visible);
+  multi method set_child_visible (Int() $child_visible) {
+    my gboolean $c = $child_visible.so.Int;
+
+    gtk_widget_set_child_visible($!gtk-w, $c);
   }
 
-  method set_css_classes (
-    GtkWidget   $widget,
-    CArray[Str] $classes
-  ) {
+  proto method set_css_classes (|)
+  { * }
+
+  method set_css_classes (@classes) {
+    samewith( ArrayToCArray(Str, @classes, :null);
+  }
+  method set_css_classes (CArray[Str] $classes) {
     gtk_widget_set_css_classes($!gtk-w, $classes);
   }
 
-  method set_cursor (
-    GtkWidget $widget,
-    GdkCursor $cursor
-  ) {
+  method set_cursor (GdkCursor() $cursor) {
     gtk_widget_set_cursor($!gtk-w, $cursor);
   }
 
-  method set_cursor_from_name (
-    GtkWidget $widget,
-    Str       $name
-  ) {
+  method set_cursor_from_name (Str() $name) {
     gtk_widget_set_cursor_from_name($!gtk-w, $name);
   }
 
-  method set_default_direction {
-    gtk_widget_set_default_direction($!gtk-w);
+  method set_default_direction (Int() $direction) is static {
+    my GtkTextDirection $d = $direction;
+
+    gtk_widget_set_default_direction($d);
   }
 
-  method set_direction (
-    GtkWidget        $widget,
-    GtkTextDirection $dir
-  ) {
-    gtk_widget_set_direction($!gtk-w, $dir);
+  method set_direction (Int() $dir) {
+    my GtkTextDirection $d = $dir;
+
+    gtk_widget_set_direction($!gtk-w, $d);
   }
 
-  method set_focus_child (
-    GtkWidget $widget,
-    GtkWidget $child
-  ) {
+  method set_focus_child (GtkWidget() $child) {
     gtk_widget_set_focus_child($!gtk-w, $child);
   }
 
-  method set_focus_on_click (
-    GtkWidget $widget,
-    gboolean  $focus_on_click
-  ) {
-    gtk_widget_set_focus_on_click($!gtk-w, $focus_on_click);
+  method set_focus_on_click (Int() $focus_on_click) {
+    my gboolean $f = $focus_on_click.so.Int;
+
+    gtk_widget_set_focus_on_click($!gtk-w, $f);
   }
 
-  method set_focusable (
-    GtkWidget $widget,
-    gboolean  $focusable
-  ) {
-    gtk_widget_set_focusable($!gtk-w, $focusable);
+  method set_focusable (Int() $focusable) {
+    my gboolean $f = $focusable.so.Int;
+
+    gtk_widget_set_focusable($!gtk-w, $f);
   }
 
-  method set_font_map (
-    GtkWidget    $widget,
-    PangoFontMap $font_map
-  ) {
+  method set_font_map (PangoFontMap() $font_map) {
     gtk_widget_set_font_map($!gtk-w, $font_map);
   }
 
-  method set_font_options (
-    GtkWidget            $widget,
-    cairo_font_options_t $options
-  ) {
+  method set_font_options (cairo_font_options_t() $options) {
     gtk_widget_set_font_options($!gtk-w, $options);
   }
 
-  method set_halign (
-    GtkWidget $widget,
-    GtkAlign  $align
-  ) {
-    gtk_widget_set_halign($!gtk-w, $align);
+  method set_halign (Int() $align) {
+    my GtkAlign $a = $align;
+
+    gtk_widget_set_halign($!gtk-w, $a);
   }
 
-  method set_has_tooltip (
-    GtkWidget $widget,
-    gboolean  $has_tooltip
-  ) {
-    gtk_widget_set_has_tooltip($!gtk-w, $has_tooltip);
+  method set_has_tooltip (Int() $has_tooltip) {
+    my gboolean $h = $has_tooltip.so.Int;
+
+    gtk_widget_set_has_tooltip($!gtk-w, $h);
   }
 
-  method set_hexpand (
-    GtkWidget $widget,
-    gboolean  $expand
-  ) {
-    gtk_widget_set_hexpand($!gtk-w, $expand);
+  method set_hexpand (Int() $expand) {
+    my gboolean $e = $expand.so.Int;
+
+    gtk_widget_set_hexpand($!gtk-w, $e);
   }
 
-  method set_hexpand_set (
-    GtkWidget $widget,
-    gboolean  $set
-  ) {
-    gtk_widget_set_hexpand_set($!gtk-w, $set);
+  method set_hexpand_set (Int() $set) {
+    my gboolean $s = $set.so.Int;
+
+    gtk_widget_set_hexpand_set($!gtk-w, $s);
   }
 
-  method set_layout_manager (
-    GtkWidget        $widget,
-    GtkLayoutManager $layout_manager
-  ) {
+  method set_layout_manager (GtkLayoutManager() $layout_manager) {
     gtk_widget_set_layout_manager($!gtk-w, $layout_manager);
   }
 
-  method set_margin_bottom (
-    GtkWidget $widget,
-    gint      $margin
-  ) {
-    gtk_widget_set_margin_bottom($!gtk-w, $margin);
+  method set_margin_bottom (Int() $margin) {
+    my gint $m = $margin;
+
+    gtk_widget_set_margin_bottom($!gtk-w, $m);
   }
 
-  method set_margin_end (
-    GtkWidget $widget,
-    gint      $margin
-  ) {
-    gtk_widget_set_margin_end($!gtk-w, $margin);
+  method set_margin_end (Int() $margin) {
+    my gint $m = $margin;
+
+    gtk_widget_set_margin_end($!gtk-w, $m);
   }
 
-  method set_margin_start (
-    GtkWidget $widget,
-    gint      $margin
-  ) {
-    gtk_widget_set_margin_start($!gtk-w, $margin);
+  method set_margin_start (Int() $margin) {
+    my gint $m = $margin;
+
+    gtk_widget_set_margin_start($!gtk-w, $m);
   }
 
-  method set_margin_top (
-    GtkWidget $widget,
-    gint      $margin
-  ) {
-    gtk_widget_set_margin_top($!gtk-w, $margin);
+  method set_margin_top (Int() $margin) {
+    my gint $m = $margin;
+
+    gtk_widget_set_margin_top($!gtk-w, $m);
   }
 
-  method set_name (
-    GtkWidget $widget,
-    Str       $name
-  ) {
+  method set_name (Str() $name) {
     gtk_widget_set_name($!gtk-w, $name);
   }
 
-  method set_opacity (
-    GtkWidget $widget,
-    gdouble   $opacity
-  ) {
-    gtk_widget_set_opacity($!gtk-w, $opacity);
+  method set_opacity (Num() $opacity) {
+    my gdouble $o = $opacity;
+
+    gtk_widget_set_opacity($!gtk-w, $o);
   }
 
-  method set_overflow (
-    GtkWidget   $widget,
-    GtkOverflow $overflow
-  ) {
-    gtk_widget_set_overflow($!gtk-w, $overflow);
+  method set_overflow (Int() $overflow) {
+    my GtkOverflow $o = $overflow;
+
+    gtk_widget_set_overflow($!gtk-w, $o);
   }
 
-  method set_parent (
-    GtkWidget $widget,
-    GtkWidget $parent
-  ) {
+  method set_parent (GtkWidget() $parent) {
     gtk_widget_set_parent($!gtk-w, $parent);
   }
 
-  method set_receives_default (
-    GtkWidget $widget,
-    gboolean  $receives_default
-  ) {
-    gtk_widget_set_receives_default($!gtk-w, $receives_default);
+  method set_receives_default (Int() $receives_default) {
+    my gboolean $r = $receives_default.so.Int;
+
+    gtk_widget_set_receives_default($!gtk-w, $r);
   }
 
-  method set_sensitive (
-    GtkWidget $widget,
-    gboolean  $sensitive
-  ) {
-    gtk_widget_set_sensitive($!gtk-w, $sensitive);
+  method set_sensitive (Int() $sensitive) {
+    my gboolean $s = $sensitive.so.Int;
+
+    gtk_widget_set_sensitive($!gtk-w, $s);
   }
 
-  method set_size_request (
-    GtkWidget $widget,
-    gint      $width,
-    gint      $height
-  ) {
-    gtk_widget_set_size_request($!gtk-w, $width, $height);
+  method set_size_request (Int() $width, Int() $height) {
+    my gint ($w, $h) = ($width, $height);
+
+    gtk_widget_set_size_request($!gtk-w, $w, $h);
   }
 
-  method set_state_flags (
-    GtkWidget     $widget,
-    GtkStateFlags $flags,
-    gboolean      $clear
-  ) {
-    gtk_widget_set_state_flags($!gtk-w, $flags, $clear);
+  method set_state_flags (Int() $flags, Int() $clear) {
+    my GtkStateFlags $f = $flags;
+    my gboolean      $c = $clear;
+
+    gtk_widget_set_state_flags($!gtk-w, $f, $c);
   }
 
-  method set_tooltip_markup (
-    GtkWidget $widget,
-    Str       $markup
-  ) {
+  method set_tooltip_markup (Str() $markup) {
     gtk_widget_set_tooltip_markup($!gtk-w, $markup);
   }
 
-  method set_tooltip_text (
-    GtkWidget $widget,
-    Str       $text
-  ) {
+  method set_tooltip_text (Str() $text) {
     gtk_widget_set_tooltip_text($!gtk-w, $text);
   }
 
-  method set_valign (
-    GtkWidget $widget,
-    GtkAlign  $align
-  ) {
+  method set_valign (Int() $align) {
+    my GtkAlign $a = $align;
+
     gtk_widget_set_valign($!gtk-w, $align);
   }
 
-  method set_vexpand (
-    GtkWidget $widget,
-    gboolean  $expand
-  ) {
-    gtk_widget_set_vexpand($!gtk-w, $expand);
+  method set_vexpand (Int() $expand) {
+    my gboolean $e = $expand.so.Int;
+
+    gtk_widget_set_vexpand($!gtk-w, $e);
   }
 
-  method set_vexpand_set (
-    GtkWidget $widget,
-    gboolean  $set
-  ) {
-    gtk_widget_set_vexpand_set($!gtk-w, $set);
+  method set_vexpand_set (Int() $set) {
+    my gboolean $s = $set.so.Int;
+
+    gtk_widget_set_vexpand_set($!gtk-w, $s);
   }
 
-  method set_visible (
-    GtkWidget $widget,
-    gboolean  $visible
-  ) {
-    gtk_widget_set_visible($!gtk-w, $visible);
+  method set_visible (Int() $visible) {
+    my gboolean $v = $visible.so.Int;
+
+    gtk_widget_set_visible($!gtk-w, $v);
   }
 
   method should_layout {
-    gtk_widget_should_layout($!gtk-w);
+    so gtk_widget_should_layout($!gtk-w);
   }
 
   method show {
     gtk_widget_show($!gtk-w);
   }
 
-  method size_allocate (
-    GtkWidget     $widget,
-    GtkAllocation $allocation,
-    gint          $baseline
-  ) {
-    gtk_widget_size_allocate($!gtk-w, $allocation, $baseline);
+  method size_allocate (GtkAllocation() $allocation, Int() $baseline) {
+    my gint $b = $baseline;
+
+    gtk_widget_size_allocate($!gtk-w, $allocation, $b);
   }
 
-  method snapshot_child (
-    GtkWidget   $widget,
-    GtkWidget   $child,
-    GtkSnapshot $snapshot
-  ) {
+  method snapshot_child (GtkWidget() $child, GtkSnapshot() $snapshot) {
     gtk_widget_snapshot_child($!gtk-w, $child, $snapshot);
   }
 
-  method translate_coordinates (
-    GtkWidget $src_widget,
-    GtkWidget $dest_widget,
-    gdouble   $src_x,
-    gdouble   $src_y,
-    gdouble   $dest_x is rw,
-    gdouble   $dest_y is rw
+  proto method translate_coordinates (|)
+  { *}
+
+  multi method translate_coordinates (
+    GtkWidget() $dest_widget,
+    Num()       $src_x,
+    Num()       $src_y
   ) {
-    gtk_widget_translate_coordinates($!gtk-w, $dest_widget, $src_x, $src_y, $dest_x, $dest_y);
+    samewith($dest_widget, $src_x, $src_y, $, $);
+  }
+  multi method translate_coordinates (
+    GtkWidget() $dest_widget,
+    Num()       $src_x,
+    Num()       $src_y,
+                $dest_x is rw,
+                $dest_y is rw
+  ) {
+    my gdouble ($sx, $sy, $dx, $dy) = ($src_x, $src_y, 0e0, 0e0);
+
+    gtk_widget_translate_coordinates(
+      $!gtk-w,
+      $dest_widget,
+      $sx,
+      $sy,
+      $dx,
+      $dy
+     );
+     ($dest_x, $dest_y) = ($dx, $dy);
   }
 
   method trigger_tooltip_query {
@@ -1061,10 +1561,43 @@
     gtk_widget_unrealize($!gtk-w);
   }
 
-  method unset_state_flags (
-    GtkWidget     $widget,
-    GtkStateFlags $flags
-  ) {
-    gtk_widget_unset_state_flags($!gtk-w, $flags);
+  method unset_state_flags (Int() $flags) {
+    my GtkStateFlags $f = $flags;
+
+    gtk_widget_unset_state_flags($!gtk-w, $f\);
   }
 
+}
+
+INIT {
+  my \O = GTK::Widget;
+  %widget-types{O.get_type} = {
+    name        => 'Widget',
+    object      => O,
+    pair        => O.getTypePair
+  }
+}
+
+class GTK::Requisition {
+  has GtkRequisition $!gtk-r is implementor;
+
+  method new {
+    my $gtk-requisition = gtk_requisition_new();
+
+    $gtk-requisition ?? self.bless( :$gtk-requisition ) !! Nil;
+  }
+
+  method copy {
+    gtk_requisition_copy($!gtk-r);
+  }
+
+  method free {
+    gtk_requisition_free($!gtk-r);
+  }
+
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_requisition_get_type, $n, $t );
+  }
+}
