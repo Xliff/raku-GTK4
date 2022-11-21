@@ -31,3 +31,9 @@ sub returnProperWidget (
     |GTK::Widget.getTypePair
   );
 }
+
+sub invoke-vfunc ($pointer, &ROUTINE, *@args) is export {
+  # cw: This routine takes the function pointer $pointer,
+  #     casts it to a callable matching &ROUTINE.signature
+  #     and invokes said callable with the arguments in @args
+}
