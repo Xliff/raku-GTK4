@@ -1,5 +1,8 @@
 use GTK::Raw::Types:ver<4>;
 
+use GLib::Roles::Implementor;
+use GLib::Roles::Object;
+
 role GTK::Roles::Constraint::Target:ver<4> {
   has GtkConstraintTarget $!gtk-ct is implementor;
 
@@ -7,7 +10,7 @@ role GTK::Roles::Constraint::Target:ver<4> {
     return if $!gtk-ct;
 
     my \i = findProperImplementor(self.^attributes);
-    $!gtk-ctg = cast( GtkConstraintTarget, i.get_value(self) );
+    $!gtk-ct = cast( GtkConstraintTarget, i.get_value(self) );
   }
 
   method GTK::Raw::Definitions::GtkConstraintTarget
