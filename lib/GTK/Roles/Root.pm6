@@ -12,6 +12,13 @@ use GLib::Roles::Object;
 role GTK::Roles::Root {
   has GtkRoot $!gtk-r is implementor;
 
+  method roleInit-GtkRoot {
+    return if $!gtk-r;
+
+    my \i   = findProperImplementor(self.^attributes);
+    $!gtk-r = cast( GtkRoot, i.get_value(self) );
+  }
+    
   method GTK::Raw::Definitions::GtkRoot
   { $!gtk-r }
   method GtkRoot
@@ -78,7 +85,7 @@ class GTK::Root {
     $o.ref if $ref;
     $o;
   }
-  
+
 }
 
 
