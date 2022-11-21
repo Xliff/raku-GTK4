@@ -505,21 +505,35 @@ class GTK::Widget:ver<4> {
   }
 
   # Type: GTKStrv
-  method css-classes is rw  is g-property {
-    my $gv = GLib::Value.new( GTKStrv );
+  method css-classes ( :$raw = False, :$carray = False )
+    is rw
+    is g-property
+  {
+    my $gv = GLib::Value.new( G_TYPE_POINTER );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('css-classes', $gv);
-        $gv.GTKStrv;
+        return $gv.pointer if $raw;
+        my $r = cast(CArray[Str], $gv.pointer);
+        return $r if $carray;
+        CArrayToArray($r);
       },
-      STORE => -> $,  $val is copy {
-        $gv.GTKStrv = $val;
+      STORE => -> $, $val is copy {
+        my $i = $val;
+        $i = $i.Array                       if $i.^can('Array');
+        $i = ArrayToCArray(Str, $i, :null)  if $i ~~ Array;
+        $i = cast(gpointer, $i)             if $i ~~ CArray[Str];
+        X::GLib::UnkownType.new(
+          message => "Value passed to css-class property is not{
+                      '' } Array-compatible!";
+        ).throw unless $i ~~ gpointer;
+        $gv.pointer = $i;
         self.prop_set('css-classes', $gv);
       }
     );
   }
 
-  # Type: GTKLayoutManager
+  # Type: GtkLayoutManager
   method layout-manager ( :$raw = False ) is rw  is g-property {
     my $gv = GLib::Value.new( GTK::LayoutManager.get_type );
     Proxy.new(
