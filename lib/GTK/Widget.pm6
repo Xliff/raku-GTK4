@@ -5,10 +5,13 @@ use GTK::Raw::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
-
+use GTK::Roles::Accessible:ver<4>;
+use GTK::Roles::Buildable:ver<4>;
 
 class GTK::Widget:ver<4> {
   also does GLib::Roles::Object;
+  also does GTK::Roles::Accessible;
+  also does GTK::Roles::Buildable;
 
   has GtkWidget $!gtk-w is implementor;
 
@@ -871,7 +874,7 @@ class GTK::Widget:ver<4> {
     :$raw           = False,
     :slow(:$proper) = $fast.not
   ) {
-    returnProperObject(
+    returnProperWidget(
       gtk_widget_get_last_child($!gtk-w),
       $raw,
       $proper
@@ -972,7 +975,7 @@ class GTK::Widget:ver<4> {
     :$raw           = False,
     :slow(:$proper) = $fast.not
   ) {
-    propReturnObject(
+    returnProperWidget(
       gtk_widget_get_prev_sibling($!gtk-w),
       $raw,
       $proper
