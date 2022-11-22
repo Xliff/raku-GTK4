@@ -5,14 +5,24 @@ use Method::Also;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Window:ver<4>;
 
+use GDK::Display:ver<4>;
 use GTK::Widget:ver<4>;
+use GTK::Window::Group:ver<4>;
 
 use GLib::Roles::Object;
+use GTK::Roles::Native:ver<4>;
+use GTK::Roles::Root:ver<4>;
+use GTK::Roles::ShortcutsManager:ver<4>;
 
 our subset GtkWindowAncestry is export of Mu
-  where GtkWindow | GtkWidgetAncestry;
+  where GtkWindow          | GtkNative | GtkRoot | GtkShortcutsManager |
+        GtkWidgetAncestry;
 
 class GTK::Window:ver<4> {
+  also does GTK::Roles::Native;
+  also does GTK::Roles::Root;
+  also does GTK::Roles::ShortcutsManager;
+
   has GtkWindow $!gtk-win is implementor;
 
   submethod BUILD ( :$gtk-window ) {
@@ -35,12 +45,33 @@ class GTK::Window:ver<4> {
         $_;
       }
 
+      when GtkNative {
+        $!gtk-n    = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkWindow, $_);
+      }
+
+      when GtkRoot {
+        $!gtk-r    = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkWindow, $_);
+      }
+
+      when GtkShortcutsManager {
+        $!gtk-scm  = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkWindow, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkWindow, $_);
       }
     }
     self.setGtkWidget($to-parent);
+    self.roleInit-GtkNative;
+    self.roleInit-GtkRoot;
+    self.roleInit-GtkShortcutsManager;
   }
 
   method GTK::Raw::Definitions::GtkWindow
