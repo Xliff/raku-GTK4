@@ -5,18 +5,32 @@ use Method::Also;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Widget:ver<4>;
 
+use Pango::Context;
+use Pango::FontMap;
+use Pango::Layout;
+use GDK::Clipboard:ver<4>;
+use GDK::Cursor:ver<4>;
+use GDK::Display:ver<4>;
+use GDK::FrameClock:ver<4>;
+use GTK::LayoutManager:ver<4>;
+#use GTK::Settings:ver<4>;
+#use GTK::StyleContext:ver<4>;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GIO::Roles::ListModel;
 use GTK::Roles::Accessible:ver<4>;
 use GTK::Roles::Buildable:ver<4>;
 
 our subset GtkWidgetAncestry is export of Mu
-  where GtkWidget | GObject;
+  where GtkWidget | GtkAccessible | GtkBuildable | GtkConstraintTarget |
+        GObject;
 
 class GTK::Widget:ver<4> {
   also does GLib::Roles::Object;
   also does GTK::Roles::Accessible;
   also does GTK::Roles::Buildable;
+  also does GTK::Roles::Constraint::Target;
 
   has GtkWidget $!gtk-w is implementor;
 
@@ -33,12 +47,33 @@ class GTK::Widget:ver<4> {
         $_;
       }
 
+      when GtkAccessible {
+        $!gtk-a    = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GtkWidget, $_);
+      }
+
+      when GtkBuildable {
+        $!gtk-b    = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GtkWidget, $_);
+      }
+
+      when GtkBuildable {
+        $!gtk-ct   = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GtkWidget, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkWidget, $_);
       }
     }
     self!setObject($to-parent);
+    self.roleInit-GtkAccessible;
+    self.roleInit-GtkBuildable;
+    self.roleInit-GtkConstrantTarget;
   }
 
   method GTK::Raw::Definitions::GtkWidget
