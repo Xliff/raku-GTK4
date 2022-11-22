@@ -70,7 +70,7 @@ class GTK::Window::Group {
       gtk_window_group_list_windows($!gtk-win-g),
       $raw,
       $glist,
-      |GTK::Window.getTypePair
+      |::('GTK::Window').getTypePair
     );
   }
 
