@@ -4,7 +4,7 @@ use NativeCall;
 
 use GTK::Raw::Types:ver<4>;
 
-use GTK::Display:ver<4>;
+use GDK::Display:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
@@ -18,7 +18,7 @@ role GTK::Roles::Root {
     my \i   = findProperImplementor(self.^attributes);
     $!gtk-r = cast( GtkRoot, i.get_value(self) );
   }
-    
+
   method GTK::Raw::Definitions::GtkRoot
   { $!gtk-r }
   method GtkRoot
@@ -28,7 +28,7 @@ role GTK::Roles::Root {
     propReturnObject(
       gtk_root_get_display($!gtk-r).
       $raw.
-      |GTK::Display.getTypePair
+      |GDK::Display.getTypePair
     );
   }
 
