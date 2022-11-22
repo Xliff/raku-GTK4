@@ -5,19 +5,25 @@ use NativeCall;
 use GLib::Raw::Definitions;
 use GLib::Raw::Enums;
 use GLib::Raw::Structs;
+use GLib::Raw::Object;
 use GIO::Raw::Definitions;
 use GIO::Raw::Structs;
+use GIO::DBus::Raw::Types;
 use Pango::Raw::Definitions;
 use Pango::Raw::Enums;
+use Pango::Raw::Structs;
+use Graphene::Raw::Definitions;
 use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Enums:ver<4>;
+use GDK::Raw::Structs:ver<4>;
+use GSK::Raw::Definitions:ver<4>;
 use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
 
 unit package GTK::Raw::Structs:ver<4>;
 
 class GtkWidget is repr<CStruct> is export {
-	HAS GInitiallyUnowned $!parent_instance;
+	HAS GObject $!parent_instance;
 	has gpointer          $!priv           ;
 }
 
@@ -26,7 +32,7 @@ class BindingExpressionInfo is repr<CStruct> is export {
 	has GObject        $!target      ;
 	has GParamSpec     $!target_pspec;
 	has Str           $!object_name ;
-	has ExpressionInfo $!expr        ;
+	has gpointer $!expr        ; #= ExpressionInfo
 	has int            $!line        ;
 	has int            $!col         ;
 }
@@ -61,6 +67,10 @@ class CachedSizeY is repr<CStruct> is export {
 	has int $!natural_baseline;
 }
 
+class CommonInfo is repr<CStruct> is export {
+	has guint $!tag_type;
+}
+
 class ChildInfo is repr<CStruct> is export {
 	has guint      $!tag_type          ;
 	has GSList     $!packing_properties;
@@ -71,21 +81,17 @@ class ChildInfo is repr<CStruct> is export {
 	has gboolean   $!added             ;
 }
 
-class CommonInfo is repr<CStruct> is export {
-	has guint $!tag_type;
-}
+# class GskPangoRendererClass is repr<CStruct> is export {
+# 	HAS PangoRendererClass $!parent_class;
+# }
 
-class GskPangoRendererClass is repr<CStruct> is export {
-	HAS PangoRendererClass $!parent_class;
-}
-
-class GtkAccessibleValue is repr<CStruct> is export {
-	has GtkAccessibleValueClass $!value_class;
-	has int                     $!ref_count  ;
-}
+# class GtkAccessibleValue is repr<CStruct> is export {
+# 	has GtkAccessibleValueClass $!value_class;
+# 	has int                     $!ref_count  ;
+# }
 
 class GtkAdjustment is repr<CStruct> is export {
-	HAS GInitiallyUnowned $!parent_instance;
+	HAS GObject $!parent_instance;
 }
 
 class GtkApplication is repr<CStruct> is export {
@@ -99,7 +105,7 @@ class GtkApplicationImpl is repr<CStruct> is export {
 }
 
 class GtkApplicationImplDBus is repr<CStruct> is export {
-	has GtkApplicationImpl $!impl                 ;
+	HAS GtkApplicationImpl $!impl                 ;
 	has GDBusConnection    $!session              ;
 	has Str               $!application_id       ;
 	has Str               $!unique_name          ;
@@ -119,14 +125,18 @@ class GtkApplicationImplDBus is repr<CStruct> is export {
 	has guint              $!session_state        ;
 }
 
+class GtkWindow is repr<CStruct> is export {
+	HAS GtkWidget $!parent_instance;
+}
+
 class GtkApplicationWindow is repr<CStruct> is export {
 	HAS GtkWindow $!parent_instance;
 }
 
-class GtkApplicationWindowClass is repr<CStruct> is export {
-	HAS GtkWindowClass $!parent_class;
-	has gpointer       $!padding     ;
-}
+# class GtkApplicationWindowClass is repr<CStruct> is export {
+# 	HAS GtkWindowClass $!parent_class;
+# 	has gpointer       $!padding     ;
+# }
 
 class GtkBookmark is repr<CStruct> is export {
 	has GFile $!file ;
@@ -138,7 +148,7 @@ class GtkBookmarksManager is repr<CStruct> is export {
 	has GFileMonitor            $!bookmarks_monitor           ;
 	has gulong                  $!bookmarks_monitor_changed_id;
 	has gpointer                $!changed_func_data           ;
-	has GtkBookmarksChangedFunc $!changed_func                ;
+	has gpointer $!changed_func                ; #= GtkBookmarksChangedFunc
 	has GCancellable            $!cancellable                 ;
 }
 
@@ -153,10 +163,10 @@ class GtkBox is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkBoxClass is repr<CStruct> is export {
-	HAS GtkWidgetClass $!parent_class;
-	has gpointer       $!padding     ;
-}
+# class GtkBoxClass is repr<CStruct> is export {
+# 	HAS GtkWidgetClass $!parent_class;
+# 	has gpointer       $!padding     ;
+# }
 
 class GtkBuildableParseContext is repr<CStruct> is export {
 	has GMarkupParser       $!internal_callbacks;
@@ -169,16 +179,16 @@ class GtkBuildableParseContext is repr<CStruct> is export {
 	has gboolean            $!awaiting_pop      ;
 }
 
-class GtkBuilderCScopeClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-}
+# class GtkBuilderCScopeClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# }
 
 class GtkButton is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
 }
 
 class GtkCellArea is repr<CStruct> is export {
-	HAS GInitiallyUnowned $!parent_instance;
+	HAS GObject $!parent_instance;
 }
 
 class GtkCellAreaBoxAllocation is repr<CStruct> is export {
@@ -187,21 +197,21 @@ class GtkCellAreaBoxAllocation is repr<CStruct> is export {
 	has int $!size     ;
 }
 
+class GtkCellAreaContext is repr<CStruct> is export {
+	HAS GObject $!parent_instance;
+}
+
 class GtkCellAreaBoxContext is repr<CStruct> is export {
 	HAS GtkCellAreaContext           $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class GtkCellAreaBoxContextClass is repr<CStruct> is export {
-	HAS GtkCellAreaContextClass $!parent_class;
-}
-
-class GtkCellAreaContext is repr<CStruct> is export {
-	HAS GObject $!parent_instance;
-}
+# class GtkCellAreaBoxContextClass is repr<CStruct> is export {
+# 	HAS GtkCellAreaContextClass $!parent_class;
+# }
 
 class GtkCellRenderer is repr<CStruct> is export {
-	HAS GInitiallyUnowned      $!parent_instance;
+	HAS GObject      $!parent_instance;
 	has gpointer $!priv           ;
 }
 
@@ -278,16 +288,194 @@ class GtkCrossingData is repr<CStruct> is export {
 	has GdkDrop              $!drop          ;
 }
 
-class GtkCssAnimatedStyle is repr<CStruct> is export {
-	HAS GtkCssStyle $!parent      ;
-	has GtkCssStyle $!style       ;
-	has gint64      $!current_time;
-	has gpointer    $!animations  ;
-	has guint       $!n_animations;
+class GtkCssValues is repr<CStruct> is export {
+	has int              $.ref_count;
+	has GtkCssValuesType $.type     ;
 }
 
-class GtkCssAnimatedStyleClass is repr<CStruct> is export {
-	HAS GtkCssStyleClass $!parent_class;
+class GtkCssAnimationValues is repr<CStruct> is export {
+	HAS GtkCssValues $.base                     ;
+	has GtkCssValue  $.animation_name           ;
+	has GtkCssValue  $.animation_duration       ;
+	has GtkCssValue  $.animation_timing_function;
+	has GtkCssValue  $.animation_iteration_count;
+	has GtkCssValue  $.animation_direction      ;
+	has GtkCssValue  $.animation_play_state     ;
+	has GtkCssValue  $.animation_delay          ;
+	has GtkCssValue  $.animation_fill_mode      ;
+}
+
+class GtkCssBackgroundValues is repr<CStruct> is export {
+	HAS GtkCssValues $.base                 ;
+	has GtkCssValue  $.background_color     ;
+	has GtkCssValue  $.box_shadow           ;
+	has GtkCssValue  $.background_clip      ;
+	has GtkCssValue  $.background_origin    ;
+	has GtkCssValue  $.background_size      ;
+	has GtkCssValue  $.background_position  ;
+	has GtkCssValue  $.background_repeat    ;
+	has GtkCssValue  $.background_image     ;
+	has GtkCssValue  $.background_blend_mode;
+}
+
+class GtkCssBorderValues is repr<CStruct> is export {
+  HAS GtkCssValues $.base;
+  has GtkCssValue  $.border_top_style;
+  has GtkCssValue  $.border_top_width;
+  has GtkCssValue  $.border_left_style;
+  has GtkCssValue  $.border_left_width;
+  has GtkCssValue  $.border_bottom_style;
+  has GtkCssValue  $.border_bottom_width;
+  has GtkCssValue  $.border_right_style;
+  has GtkCssValue  $.border_right_width;
+  has GtkCssValue  $.border_top_left_radius;
+  has GtkCssValue  $.border_top_right_radius;
+  has GtkCssValue  $.border_bottom_right_radius;
+  has GtkCssValue  $.border_bottom_left_radius;
+  has GtkCssValue  $.border_top_color;
+  has GtkCssValue  $.border_right_color;
+  has GtkCssValue  $.border_bottom_color;
+  has GtkCssValue  $.border_left_color;
+  has GtkCssValue  $.border_image_source;
+  has GtkCssValue  $.border_image_repeat;
+  has GtkCssValue  $.border_image_slice;
+  has GtkCssValue  $.border_image_width;
+};
+
+class GtkCssCoreValues is repr<CStruct> is export {
+	HAS GtkCssValues $.base        ;
+	has GtkCssValue  $.color       ;
+	has GtkCssValue  $.dpi         ;
+	has GtkCssValue  $.font_size   ;
+	has GtkCssValue  $.icon_palette;
+}
+
+class GtkCssOtherValues is repr<CStruct> is export {
+	HAS GtkCssValues $.base            ;
+	has GtkCssValue  $.icon_source     ;
+	has GtkCssValue  $.icon_transform  ;
+	has GtkCssValue  $.icon_filter     ;
+	has GtkCssValue  $.transform       ;
+	has GtkCssValue  $.transform_origin;
+	has GtkCssValue  $.opacity         ;
+	has GtkCssValue  $.filter          ;
+}
+
+class GtkCssSizeValues is repr<CStruct> is export {
+	HAS GtkCssValues $.base          ;
+	has GtkCssValue  $.margin_top    ;
+	has GtkCssValue  $.margin_left   ;
+	has GtkCssValue  $.margin_bottom ;
+	has GtkCssValue  $.margin_right  ;
+	has GtkCssValue  $.padding_top   ;
+	has GtkCssValue  $.padding_left  ;
+	has GtkCssValue  $.padding_bottom;
+	has GtkCssValue  $.padding_right ;
+	has GtkCssValue  $.border_spacing;
+	has GtkCssValue  $.min_width     ;
+	has GtkCssValue  $.min_height    ;
+}
+
+class GtkCssTransitionValues is repr<CStruct> is export {
+	HAS GtkCssValues $.base                      ;
+	has GtkCssValue  $.transition_property       ;
+	has GtkCssValue  $.transition_duration       ;
+	has GtkCssValue  $.transition_timing_function;
+	has GtkCssValue  $.transition_delay          ;
+}
+
+class GtkCssIconValues is repr<CStruct> is export {
+	HAS GtkCssValues $.base       ;
+	has GtkCssValue  $.icon_size  ;
+	has GtkCssValue  $.icon_shadow;
+	has GtkCssValue  $.icon_style ;
+}
+
+class GtkCssOutlineValues is repr<CStruct> is export {
+  HAS GtkCssValues $.base;
+  has GtkCssValue  $.outline_style;
+  has GtkCssValue  $.outline_width;
+  has GtkCssValue  $.outline_offset;
+  has GtkCssValue  $.outline_color;
+}
+
+class GtkCssFontValues is repr<CStruct> is export {
+  HAS GtkCssValues $.base;
+  has GtkCssValue  $.font_family;
+  has GtkCssValue  $.font_style;
+  has GtkCssValue  $.font_weight;
+  has GtkCssValue  $.font_stretch;
+  has GtkCssValue  $.letter_spacing;
+  has GtkCssValue  $.text_shadow;
+  has GtkCssValue  $.caret_color;
+  has GtkCssValue  $.secondary_caret_color;
+  has GtkCssValue  $.font_feature_settings;
+  has GtkCssValue  $.font_variation_settings;
+  has GtkCssValue  $.line_height;
+}
+
+class GtkCssFontVariantValues is repr<CStruct> is export {
+  HAS GtkCssValues $.base;
+  has GtkCssValue  $.text_decoration_line;
+  has GtkCssValue  $.text_decoration_color;
+  has GtkCssValue  $.text_decoration_style;
+  has GtkCssValue  $.text_transform;
+  has GtkCssValue  $.font_kerning;
+  has GtkCssValue  $.font_variant_ligatures;
+  has GtkCssValue  $.font_variant_position;
+  has GtkCssValue  $.font_variant_caps;
+  has GtkCssValue  $.font_variant_numeric;
+  has GtkCssValue  $.font_variant_alternates;
+  has GtkCssValue  $.font_variant_east_asian;
+}
+
+class GtkCssStyle is repr<CStruct> is export {
+	HAS GObject                 $.parent      ;
+	has GtkCssCoreValues        $.core        ;
+	has GtkCssBackgroundValues  $.background  ;
+	has GtkCssBorderValues      $.border      ;
+	has GtkCssIconValues        $.icon        ;
+	has GtkCssOutlineValues     $.outline     ;
+	has GtkCssFontValues        $.font        ;
+	has GtkCssFontVariantValues $.font_variant;
+	has GtkCssAnimationValues   $.animation   ;
+	has GtkCssTransitionValues  $.transition  ;
+	has GtkCssSizeValues        $.size        ;
+	has GtkCssOtherValues       $.other       ;
+}
+
+class GtkCssAnimatedStyle is repr<CStruct> is export {
+	HAS GtkCssStyle $.parent      ;
+	has GtkCssStyle $.style       ;
+	has gint64      $.current_time;
+	has gpointer    $.animations  ;
+	has guint       $.n_animations;
+}
+
+# class GtkCssAnimatedStyleClass is repr<CStruct> is export {
+# 	HAS GtkCssStyleClass $!parent_class;
+# }
+
+class GtkStyleAnimation is repr<CStruct> is export {
+	has gpointer  $!class    ; #= GtkStyleAnimationClass
+	has guint                  $!ref_count;
+}
+
+class GtkCssKeyframes is repr<CStruct> is export {
+  has gint                         $.ref_count;
+  has gint                         $.n_keyframes;
+  has CArray[gdouble]              $.keyframe_progress;
+  has gint                         $.n_properties;
+  has CArray[guint]                $.property_ids;
+  has CArray[Pointer[GtkCssValue]] $.values;
+};
+
+class GtkProgressTracker is repr<CStruct> is export {
+	has guint64  $!last_frame_time;
+	has guint64  $!duration       ;
+	has gdouble   $!iteration      ;
+	has gdouble   $!iteration_count;
+	has gboolean $!is_running     ;
 }
 
 class GtkCssAnimation is repr<CStruct> is export {
@@ -301,42 +489,10 @@ class GtkCssAnimation is repr<CStruct> is export {
 	has GtkProgressTracker $!tracker   ;
 }
 
-class GtkCssAnimationClass is repr<CStruct> is export {
-	HAS GtkStyleAnimationClass $!parent_class;
-}
+# class GtkCssAnimationClass is repr<CStruct> is export {
+# 	HAS GtkStyleAnimationClass $!parent_class;
+# }
 
-class GtkCssAnimationValues is repr<CStruct> is export {
-	has GtkCssValues $!base                     ;
-	has GtkCssValue  $!animation_name           ;
-	has GtkCssValue  $!animation_duration       ;
-	has GtkCssValue  $!animation_timing_function;
-	has GtkCssValue  $!animation_iteration_count;
-	has GtkCssValue  $!animation_direction      ;
-	has GtkCssValue  $!animation_play_state     ;
-	has GtkCssValue  $!animation_delay          ;
-	has GtkCssValue  $!animation_fill_mode      ;
-}
-
-class GtkCssBackgroundValues is repr<CStruct> is export {
-	has GtkCssValues $!base                 ;
-	has GtkCssValue  $!background_color     ;
-	has GtkCssValue  $!box_shadow           ;
-	has GtkCssValue  $!background_clip      ;
-	has GtkCssValue  $!background_origin    ;
-	has GtkCssValue  $!background_size      ;
-	has GtkCssValue  $!background_position  ;
-	has GtkCssValue  $!background_repeat    ;
-	has GtkCssValue  $!background_image     ;
-	has GtkCssValue  $!background_blend_mode;
-}
-
-class GtkCssCoreValues is repr<CStruct> is export {
-	has GtkCssValues $!base        ;
-	has GtkCssValue  $!color       ;
-	has GtkCssValue  $!dpi         ;
-	has GtkCssValue  $!font_size   ;
-	has GtkCssValue  $!icon_palette;
-}
 
 class GtkCssDelimToken is repr<CStruct> is export {
 	has GtkCssTokenType $!type ;
@@ -349,15 +505,13 @@ class GtkCssDimensionToken is repr<CStruct> is export {
 	has Str            $!dimension;
 }
 
-class GtkCssIconValues is repr<CStruct> is export {
-	has GtkCssValues $!base       ;
-	has GtkCssValue  $!icon_size  ;
-	has GtkCssValue  $!icon_shadow;
-	has GtkCssValue  $!icon_style ;
-}
-
 class GtkCssImage is repr<CStruct> is export {
 	HAS GObject $!parent;
+}
+
+class GtkCssImageConicColorStop is repr<CStruct> is export {
+	has GtkCssValue $!offset;
+	has GtkCssValue $!color ;
 }
 
 class GtkCssImageConic is repr<CStruct> is export {
@@ -368,14 +522,9 @@ class GtkCssImageConic is repr<CStruct> is export {
 	has GtkCssImageConicColorStop $!color_stops;
 }
 
-class GtkCssImageConicClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
-
-class GtkCssImageConicColorStop is repr<CStruct> is export {
-	has GtkCssValue $!offset;
-	has GtkCssValue $!color ;
-}
+# class GtkCssImageConicClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
 class GtkCssImageCrossFade is repr<CStruct> is export {
 	HAS GtkCssImage $!parent        ;
@@ -383,9 +532,9 @@ class GtkCssImageCrossFade is repr<CStruct> is export {
 	has gdouble      $!total_progress;
 }
 
-class GtkCssImageCrossFadeClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
+# class GtkCssImageCrossFadeClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
 class GtkCssImageFallback is repr<CStruct> is export {
 	HAS GtkCssImage $!parent  ;
@@ -395,9 +544,9 @@ class GtkCssImageFallback is repr<CStruct> is export {
 	has GtkCssValue $!color   ;
 }
 
-class GtkCssImageFallbackClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
+# class GtkCssImageFallbackClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
 class GtkCssImageIconTheme is repr<CStruct> is export {
 	has GtkCssImage      $!parent         ;
@@ -411,9 +560,9 @@ class GtkCssImageIconTheme is repr<CStruct> is export {
 	has GtkIconPaintable $!cached_icon    ;
 }
 
-class GtkCssImageIconThemeClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
+# class GtkCssImageIconThemeClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
 class GtkCssImageInvalid is repr<CStruct> is export {
 	HAS GtkCssImage $!parent      ;
@@ -421,13 +570,13 @@ class GtkCssImageInvalid is repr<CStruct> is export {
 	has GtkCssImage $!loaded_image;
 }
 
-class GtkCssImageInvalidClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
+# class GtkCssImageInvalidClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
-class GtkCssImageLinearClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
+# class GtkCssImageLinearClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
 class GtkCssImageLinearColorStop is repr<CStruct> is export {
 	has GtkCssValue $!offset;
@@ -440,13 +589,13 @@ class GtkCssImagePaintable is repr<CStruct> is export {
 	has GdkPaintable $!static_paintable;
 }
 
-class GtkCssImagePaintableClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
-
-class GtkCssImageRadialClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
+# class GtkCssImagePaintableClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
+#
+# class GtkCssImageRadialClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
 class GtkCssImageRadialColorStop is repr<CStruct> is export {
 	has GtkCssValue $!offset;
@@ -464,9 +613,9 @@ class GtkCssImageRecolor is repr<CStruct> is export {
 	has GdkRGBA     $!error  ;
 }
 
-class GtkCssImageRecolorClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
+# class GtkCssImageRecolorClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
 class GtkCssImageScaled is repr<CStruct> is export {
 	HAS GtkCssImage $!parent  ;
@@ -475,9 +624,9 @@ class GtkCssImageScaled is repr<CStruct> is export {
 	has int         $!scales  ;
 }
 
-class GtkCssImageScaledClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
+# class GtkCssImageScaledClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
 class GtkCssImageUrl is repr<CStruct> is export {
 	HAS GtkCssImage $!parent      ;
@@ -485,9 +634,9 @@ class GtkCssImageUrl is repr<CStruct> is export {
 	has GtkCssImage $!loaded_image;
 }
 
-class GtkCssImageUrlClass is repr<CStruct> is export {
-	HAS GtkCssImageClass $!parent_class;
-}
+# class GtkCssImageUrlClass is repr<CStruct> is export {
+# 	HAS GtkCssImageClass $!parent_class;
+# }
 
 class GtkCssLocation is repr<CStruct> is export {
 	has gsize $!bytes     ;
@@ -507,45 +656,24 @@ class GtkCssNumberToken is repr<CStruct> is export {
 	has gdouble          $!number;
 }
 
-class GtkCssOtherValues is repr<CStruct> is export {
-	has GtkCssValues $!base            ;
-	has GtkCssValue  $!icon_source     ;
-	has GtkCssValue  $!icon_transform  ;
-	has GtkCssValue  $!icon_filter     ;
-	has GtkCssValue  $!transform       ;
-	has GtkCssValue  $!transform_origin;
-	has GtkCssValue  $!opacity         ;
-	has GtkCssValue  $!filter          ;
-}
-
 class GtkCssProvider is repr<CStruct> is export {
 	HAS GObject $!parent_instance;
 }
 
+class GtkStyleProperty is repr<CStruct> is export {
+	HAS GObject $!parent;
+	has Str    $!name  ;
+}
+
 class GtkCssShorthandProperty is repr<CStruct> is export {
-	has GtkStyleProperty                 $!parent       ;
+	HAS GtkStyleProperty                 $!parent       ;
 	has GPtrArray                        $!subproperties;
-	has GtkCssShorthandPropertyParseFunc $!parse        ;
+	has gpointer $!parse        ; #= GtkCssShorthandPropertyParseFunc
 }
 
-class GtkCssShorthandPropertyClass is repr<CStruct> is export {
-	HAS GtkStylePropertyClass $!parent_class;
-}
-
-class GtkCssSizeValues is repr<CStruct> is export {
-	has GtkCssValues $!base          ;
-	has GtkCssValue  $!margin_top    ;
-	has GtkCssValue  $!margin_left   ;
-	has GtkCssValue  $!margin_bottom ;
-	has GtkCssValue  $!margin_right  ;
-	has GtkCssValue  $!padding_top   ;
-	has GtkCssValue  $!padding_left  ;
-	has GtkCssValue  $!padding_bottom;
-	has GtkCssValue  $!padding_right ;
-	has GtkCssValue  $!border_spacing;
-	has GtkCssValue  $!min_width     ;
-	has GtkCssValue  $!min_height    ;
-}
+# class GtkCssShorthandPropertyClass is repr<CStruct> is export {
+# 	HAS GtkStylePropertyClass $!parent_class;
+# }
 
 class GtkCssStaticStyle is repr<CStruct> is export {
 	has GtkCssStyle  $!parent  ;
@@ -553,28 +681,19 @@ class GtkCssStaticStyle is repr<CStruct> is export {
 	has GtkCssChange $!change  ;
 }
 
-class GtkCssStaticStyleClass is repr<CStruct> is export {
-	HAS GtkCssStyleClass $!parent_class;
+class GtkBitmask is repr<CStruct> is export {
+  has gsize $.len;
+  HAS gsize @.data[1] is CArray;
 }
+
+
+# class GtkCssStaticStyleClass is repr<CStruct> is export {
+# 	HAS GtkCssStyleClass $!parent_class;
+# }
 
 class GtkCssStringToken is repr<CStruct> is export {
 	has GtkCssTokenType $!type  ;
 	has Str            $!string;
-}
-
-class GtkCssStyle is repr<CStruct> is export {
-	has GObject                 $!parent      ;
-	has GtkCssCoreValues        $!core        ;
-	has GtkCssBackgroundValues  $!background  ;
-	has GtkCssBorderValues      $!border      ;
-	has GtkCssIconValues        $!icon        ;
-	has GtkCssOutlineValues     $!outline     ;
-	has GtkCssFontValues        $!font        ;
-	has GtkCssFontVariantValues $!font_variant;
-	has GtkCssAnimationValues   $!animation   ;
-	has GtkCssTransitionValues  $!transition  ;
-	has GtkCssSizeValues        $!size        ;
-	has GtkCssOtherValues       $!other       ;
 }
 
 class GtkCssStyleChange is repr<CStruct> is export {
@@ -584,35 +703,22 @@ class GtkCssStyleChange is repr<CStruct> is export {
 	has GtkBitmask    $!changes  ;
 }
 
-class GtkCssStylePropertyClass is repr<CStruct> is export {
-	HAS GtkStylePropertyClass $!parent_class    ;
-	has GPtrArray             $!style_properties;
-}
+# class GtkCssStylePropertyClass is repr<CStruct> is export {
+# 	HAS GtkStylePropertyClass $!parent_class    ;
+# 	has GPtrArray             $!style_properties;
+# }
 
 class GtkCssTransientNode is repr<CStruct> is export {
 	has GtkCssNode $!node;
 }
 
-class GtkCssTransientNodeClass is repr<CStruct> is export {
-	has GtkCssNodeClass $!node_class;
-}
-
-class GtkCssTransitionClass is repr<CStruct> is export {
-	HAS GtkStyleAnimationClass $!parent_class;
-}
-
-class GtkCssTransitionValues is repr<CStruct> is export {
-	has GtkCssValues $!base                      ;
-	has GtkCssValue  $!transition_property       ;
-	has GtkCssValue  $!transition_duration       ;
-	has GtkCssValue  $!transition_timing_function;
-	has GtkCssValue  $!transition_delay          ;
-}
-
-class GtkCssValues is repr<CStruct> is export {
-	has int              $!ref_count;
-	has GtkCssValuesType $!type     ;
-}
+# class GtkCssTransientNodeClass is repr<CStruct> is export {
+# 	has GtkCssNodeClass $!node_class;
+# }
+#
+# class GtkCssTransitionClass is repr<CStruct> is export {
+# 	HAS GtkStyleAnimationClass $!parent_class;
+# }
 
 class GtkCssWidgetNode is repr<CStruct> is export {
 	has GtkCssNode  $!node              ;
@@ -621,9 +727,9 @@ class GtkCssWidgetNode is repr<CStruct> is export {
 	has GtkCssStyle $!last_updated_style;
 }
 
-class GtkCssWidgetNodeClass is repr<CStruct> is export {
-	has GtkCssNodeClass $!node_class;
-}
+# class GtkCssWidgetNodeClass is repr<CStruct> is export {
+# 	has GtkCssNodeClass $!node_class;
+# }
 
 class GtkDialog is repr<CStruct> is export {
 	HAS GtkWindow $!parent_instance;
@@ -650,9 +756,9 @@ class GtkFileChooserErrorStack is repr<CStruct> is export {
 	has GtkWidget $!stack          ;
 }
 
-class GtkFileChooserErrorStackClass is repr<CStruct> is export {
-	HAS GtkWidgetClass $!parent_class;
-}
+# class GtkFileChooserErrorStackClass is repr<CStruct> is export {
+# 	HAS GtkWidgetClass $!parent_class;
+# }
 
 class GtkFileChooserNative is repr<CStruct> is export {
 	HAS GtkNativeDialog $!parent_instance;
@@ -683,10 +789,10 @@ class GtkFixed is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkFixedClass is repr<CStruct> is export {
-	HAS GtkWidgetClass $!parent_class;
-	has gpointer       $!padding     ;
-}
+# class GtkFixedClass is repr<CStruct> is export {
+# 	HAS GtkWidgetClass $!parent_class;
+# 	has gpointer       $!padding     ;
+# }
 
 class GtkFlowBoxChild is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
@@ -702,6 +808,10 @@ class GtkGLArea is repr<CStruct> is export {
 
 class GtkGesture is repr<CStruct> is export {
 	HAS GtkEventController $!parent_instance;
+}
+
+class GtkGestureSingle is repr<CStruct> is export {
+	HAS GtkGesture $!parent_instance;
 }
 
 class GtkGestureClick is repr<CStruct> is export {
@@ -724,10 +834,6 @@ class GtkGestureRotate is repr<CStruct> is export {
 	HAS GtkGesture $!parent_instance;
 }
 
-class GtkGestureSingle is repr<CStruct> is export {
-	HAS GtkGesture $!parent_instance;
-}
-
 class GtkGestureStylus is repr<CStruct> is export {
 	HAS GtkGestureSingle $!parent_instance;
 }
@@ -741,18 +847,18 @@ class GtkGestureZoom is repr<CStruct> is export {
 }
 
 class GtkGizmo is repr<CStruct> is export {
-	HAS GtkWidget             $!parent_instance;
-	has GtkGizmoMeasureFunc   $!measure_func   ;
-	has GtkGizmoAllocateFunc  $!allocate_func  ;
-	has GtkGizmoSnapshotFunc  $!snapshot_func  ;
-	has GtkGizmoContainsFunc  $!contains_func  ;
-	has GtkGizmoFocusFunc     $!focus_func     ;
-	has GtkGizmoGrabFocusFunc $!grab_focus_func;
+	HAS GtkWidget  $!parent_instance;
+	has gpointer   $!measure_func   ; #= GtkGizmoMeasureFunc
+	has gpointer   $!allocate_func  ; #= GtkGizmoAllocateFunc
+	has gpointer   $!snapshot_func  ; #= GtkGizmoSnapshotFunc
+	has gpointer   $!contains_func  ; #= GtkGizmoContainsFunc
+	has gpointer   $!focus_func     ; #= GtkGizmoFocusFunc
+	has gpointer   $!grab_focus_func; #= GtkGizmoGrabFocusFunc
 }
 
-class GtkGizmoClass is repr<CStruct> is export {
-	HAS GtkWidgetClass $!parent_class;
-}
+# class GtkGizmoClass is repr<CStruct> is export {
+# 	HAS GtkWidgetClass $!parent_class;
+# }
 
 class GtkGraphData is repr<CStruct> is export {
 	has GObject             $!object;
@@ -763,27 +869,27 @@ class GtkGrid is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkGridClass is repr<CStruct> is export {
-	HAS GtkWidgetClass $!parent_class;
-	has gpointer       $!padding     ;
-}
+# class GtkGridClass is repr<CStruct> is export {
+# 	HAS GtkWidgetClass $!parent_class;
+# 	has gpointer       $!padding     ;
+# }
 
 class GtkIMContext is repr<CStruct> is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkIMContextIMEClass is repr<CStruct> is export {
-	HAS GtkIMContextClass $!parent_class;
-}
+# class GtkIMContextIMEClass is repr<CStruct> is export {
+# 	HAS GtkIMContextClass $!parent_class;
+# }
 
 class GtkIMContextSimple is repr<CStruct> is export {
 	has GtkIMContext              $!object;
 	has gpointer $!priv  ;
 }
 
-class GtkIMContextSimpleClass is repr<CStruct> is export {
-	HAS GtkIMContextClass $!parent_class;
-}
+# class GtkIMContextSimpleClass is repr<CStruct> is export {
+# 	HAS GtkIMContextClass $!parent_class;
+# }
 
 class GtkIMMulticontext is repr<CStruct> is export {
 	has GtkIMContext             $!object;
@@ -800,45 +906,51 @@ class GtkInspectorCssEditor is repr<CStruct> is export {
 	has gpointer $!priv  ;
 }
 
-class GtkInspectorCssEditorClass is repr<CStruct> is export {
-	HAS GtkBoxClass $!parent;
-}
+# class GtkInspectorCssEditorClass is repr<CStruct> is export {
+# 	HAS GtkBoxClass $!parent;
+# }
 
 class GtkInspectorCssNodeTree is repr<CStruct> is export {
 	has GtkBox                         $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkInspectorCssNodeTreeClass is repr<CStruct> is export {
-	HAS GtkBoxClass $!parent;
+# class GtkInspectorCssNodeTreeClass is repr<CStruct> is export {
+# 	HAS GtkBoxClass $!parent;
+# }
+
+class GtkInspectorRecording is repr<CStruct> is export {
+	HAS GObject $!parent   ;
+	has gint64  $!timestamp;
 }
+
 
 class GtkInspectorEventRecording is repr<CStruct> is export {
 	HAS GtkInspectorRecording $!parent;
 	has GdkEvent              $!event ;
 }
 
-class GtkInspectorEventRecordingClass is repr<CStruct> is export {
-	HAS GtkInspectorRecordingClass $!parent;
-}
+# class GtkInspectorEventRecordingClass is repr<CStruct> is export {
+# 	HAS GtkInspectorRecordingClass $!parent;
+# }
 
 class GtkInspectorMagnifier is repr<CStruct> is export {
 	has GtkBox                       $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkInspectorMagnifierClass is repr<CStruct> is export {
-	HAS GtkBoxClass $!parent;
-}
+# class GtkInspectorMagnifierClass is repr<CStruct> is export {
+# 	HAS GtkBoxClass $!parent;
+# }
 
 class GtkInspectorMenu is repr<CStruct> is export {
 	has GtkBox                  $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkInspectorMenuClass is repr<CStruct> is export {
-	HAS GtkBoxClass $!parent;
-}
+# class GtkInspectorMenuClass is repr<CStruct> is export {
+# 	HAS GtkBoxClass $!parent;
+# }
 
 class GtkInspectorObjectTree is repr<CStruct> is export {
 	has GtkBox                        $!parent;
@@ -850,18 +962,13 @@ class GtkInspectorPropList is repr<CStruct> is export {
 	has gpointer $!priv  ;
 }
 
-class GtkInspectorPropListClass is repr<CStruct> is export {
-	HAS GtkBoxClass $!parent;
-}
+# class GtkInspectorPropListClass is repr<CStruct> is export {
+# 	HAS GtkBoxClass $!parent;
+# }
 
-class GtkInspectorRecording is repr<CStruct> is export {
-	HAS GObject $!parent   ;
-	has gint64  $!timestamp;
-}
-
-class GtkInspectorRecordingClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent;
-}
+# class GtkInspectorRecordingClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent;
+# }
 
 class GtkInspectorRenderRecording is repr<CStruct> is export {
 	HAS GtkInspectorRecording $!parent       ;
@@ -871,34 +978,34 @@ class GtkInspectorRenderRecording is repr<CStruct> is export {
 	has Str                  $!profiler_info;
 }
 
-class GtkInspectorRenderRecordingClass is repr<CStruct> is export {
-	HAS GtkInspectorRecordingClass $!parent;
-}
+# class GtkInspectorRenderRecordingClass is repr<CStruct> is export {
+# 	HAS GtkInspectorRecordingClass $!parent;
+# }
 
 class GtkInspectorSizeGroups is repr<CStruct> is export {
 	HAS GtkBox $!parent;
 }
 
-class GtkInspectorSizeGroupsClass is repr<CStruct> is export {
-	HAS GtkBoxClass $!parent;
-}
+# class GtkInspectorSizeGroupsClass is repr<CStruct> is export {
+# 	HAS GtkBoxClass $!parent;
+# }
 
 class GtkInspectorStartRecording is repr<CStruct> is export {
 	HAS GtkInspectorRecording $!parent;
 }
 
-class GtkInspectorStartRecordingClass is repr<CStruct> is export {
-	HAS GtkInspectorRecordingClass $!parent;
-}
+# class GtkInspectorStartRecordingClass is repr<CStruct> is export {
+# 	HAS GtkInspectorRecordingClass $!parent;
+# }
 
 class GtkInspectorStatistics is repr<CStruct> is export {
 	has GtkBox                        $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkInspectorStatisticsClass is repr<CStruct> is export {
-	HAS GtkBoxClass $!parent;
-}
+# class GtkInspectorStatisticsClass is repr<CStruct> is export {
+# 	HAS GtkBoxClass $!parent;
+# }
 
 class GtkInspectorStrvEditor is repr<CStruct> is export {
 	has GtkBox    $!parent ;
@@ -960,13 +1067,13 @@ class GtkInspectorWindow is repr<CStruct> is export {
 	has GdkDisplay          $!inspected_display    ;
 }
 
-class GtkInspectorWindowClass is repr<CStruct> is export {
-	HAS GtkWindowClass $!parent;
-}
-
-class GtkLayoutChildClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-}
+# class GtkInspectorWindowClass is repr<CStruct> is export {
+# 	HAS GtkWindowClass $!parent;
+# }
+#
+# class GtkLayoutChildClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# }
 
 class GtkListBase is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
@@ -998,10 +1105,10 @@ class GtkListStore is repr<CStruct> is export {
 	has gpointer $!priv  ;
 }
 
-class GtkListStoreClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-	has gpointer     $!padding     ;
-}
+# class GtkListStoreClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# 	has gpointer     $!padding     ;
+# }
 
 class GtkListView is repr<CStruct> is export {
 	HAS GtkListBase        $!parent_instance;
@@ -1010,9 +1117,9 @@ class GtkListView is repr<CStruct> is export {
 	has int                $!list_width     ;
 }
 
-class GtkListViewClass is repr<CStruct> is export {
-	HAS GtkListBaseClass $!parent_class;
-}
+# class GtkListViewClass is repr<CStruct> is export {
+# 	HAS GtkListBaseClass $!parent_class;
+# }
 
 class GtkMessageDialog is repr<CStruct> is export {
 	HAS GtkDialog $!parent_instance;
@@ -1044,9 +1151,9 @@ class GtkPanedHandle is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkPanedHandleClass is repr<CStruct> is export {
-	HAS GtkWidgetClass $!parent_class;
-}
+# class GtkPanedHandleClass is repr<CStruct> is export {
+# 	HAS GtkWidgetClass $!parent_class;
+# }
 
 class GtkPangoAttributeParserData is repr<CStruct> is export {
 	has GtkBuilder    $!builder;
@@ -1077,9 +1184,9 @@ class GtkPopoverContent is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkPopoverContentClass is repr<CStruct> is export {
-	HAS GtkWidgetClass $!parent_class;
-}
+# class GtkPopoverContentClass is repr<CStruct> is export {
+# 	HAS GtkWidgetClass $!parent_class;
+# }
 
 class GtkPrintBackend is repr<CStruct> is export {
 	HAS GObject                $!parent_instance;
@@ -1120,21 +1227,13 @@ class GtkPrinterOptionWidget is repr<CStruct> is export {
 	has gpointer $!priv           ;
 }
 
-class GtkProgressTracker is repr<CStruct> is export {
-	has guint64  $!last_frame_time;
-	has guint64  $!duration       ;
-	has gdouble   $!iteration      ;
-	has gdouble   $!iteration_count;
-	has gboolean $!is_running     ;
-}
-
 class GtkQuery is repr<CStruct> is export {
 	HAS GObject $!parent;
 }
 
-class GtkQueryClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-}
+# class GtkQueryClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# }
 
 class GtkRange is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
@@ -1183,59 +1282,98 @@ class GtkSearchEngineQuartz is repr<CStruct> is export {
 	has GtkSearchEngine              $!parent;
 	has gpointer $!priv  ;
 }
-
-class GtkSearchEngineQuartzClass is repr<CStruct> is export {
-	HAS GtkSearchEngineClass $!parent_class;
-}
+#
+# class GtkSearchEngineQuartzClass is repr<CStruct> is export {
+# 	HAS GtkSearchEngineClass $!parent_class;
+# }
 
 class GtkSearchHit is repr<CStruct> is export {
 	has GFile     $!file;
 	has GFileInfo $!info;
 }
 
-class GtkSidebarRowClass is repr<CStruct> is export {
-	HAS GtkListBoxRowClass $!parent;
-}
+# class GtkSidebarRowClass is repr<CStruct> is export {
+# 	HAS GtkListBoxRowClass $!parent;
+# }
 
 class GtkSizeGroup is repr<CStruct> is export {
 	HAS GObject $!parent_instance;
 }
 
 class GtkSortKeys is repr<CStruct> is export {
-	has GtkSortKeysClass $!klass    ;
+	has gpointer $!klass    ; #= GtkSortKeysClass
 	has int              $!ref_count;
 	has gsize            $!key_size ;
 	has gsize            $!key_align;
 }
 
-class GtkStyleAnimation is repr<CStruct> is export {
-	has GtkStyleAnimationClass $!class    ;
-	has guint                  $!ref_count;
-}
+class GtkStyleCascade is repr<CStruct> is export { ... }
 
-class GtkStyleCascade is repr<CStruct> is export {
-	has GObject         $!object   ;
-	HAS GtkStyleCascade $!parent   ;
+class GtkStyleCascade {
+	HAS GObject         $!object   ;
+	has GtkStyleCascade $!parent   ;
 	has GArray          $!providers;
 	has int             $!scale    ;
 }
 
-class GtkStyleCascadeClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-}
+# class GtkStyleCascadeClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# }
 
 class GtkStyleContext is repr<CStruct> is export {
 	HAS GObject $!parent_object;
 }
 
-class GtkStyleProperty is repr<CStruct> is export {
-	HAS GObject $!parent;
-	has Str    $!name  ;
-}
-
 class GtkText is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
 }
+
+class GtkTextAppearance is repr<CStruct> is export {
+  has GdkRGBA $.bg_rgba;
+  has GdkRGBA $.fg_rgba;
+  has GdkRGBA $.underline_rgba;
+  has GdkRGBA $.overline_rgba;
+  has GdkRGBA $.strikethrough_rgba;
+  has gint    $.rise;
+
+	has guint16 $.bit-fields;
+
+	# guint underline : 4;          /* PangoUnderline */
+	# guint overline  : 2;          /* PangoOverline */
+	# guint strikethrough : 1;
+	# guint draw_bg : 1;
+	# guint inside_selection : 1;
+	# guint is_text : 1;
+
+	method underline ( :$enum = True ) {
+		my $u = $!bit-fields +> 10 && 0b00001111;
+		return $u unless $enum;
+		PangoUnderlineEnum($u);
+	}
+
+	method overline ( :$enum = True ) {
+		my $o = $!bit-fields +> 8 & 0b00000011;
+		return $o unless $enum;
+		PangoOverlineEnum($o);
+  }
+
+	method strikethrough {
+		so $!bit-fields +& 0b1000;
+	}
+
+	method draw-bg {
+		so $!bit-fields +& 0b0100;
+	}
+
+	method inside-selection {
+		so $!bit-fields +& 0b10;
+	}
+
+	method is_text {
+		so $!bit-fields +& 0b1;
+	}
+};
+
 
 class GtkTextAttrAppearance is repr<CStruct> is export {
 	has PangoAttribute    $!attr      ;
@@ -1252,67 +1390,68 @@ class GtkTextChildAnchor is repr<CStruct> is export {
 	has gpointer $!segment        ;
 }
 
+class GtkTextLine is repr<CStruct> is export {
+	has gpointer $!parent                ; #= GtkTextBTreeNode
+	has gpointer $!next                  ; #= GtkTextLine
+	has gpointer $!segments              ; #= GtkTextLineSegment
+	has gpointer $!views                 ; #= GtkTextLineData
+	has guchar   $!dir_strong            ;
+	has guchar   $!dir_propagated_back   ;
+	has guchar   $!dir_propagated_forward;
+}
+
 class GtkTextChildBody is repr<CStruct> is export {
 	has GtkTextChildAnchor $!obj    ;
 	has GSList             $!widgets;
-	has GtkTextBTree       $!tree   ;
+	has gpointer        $!tree   ; #= GtkTextBTree
 	has GtkTextLine        $!line   ;
 }
 
 class GtkTextIter is repr<CStruct> is export {
 	has gpointer $!dummy1 ;
 	has gpointer $!dummy2 ;
-	has int      $!dummy3 ;
-	has int      $!dummy4 ;
-	has int      $!dummy5 ;
-	has int      $!dummy6 ;
-	has int      $!dummy7 ;
-	has int      $!dummy8 ;
+	has gint      $!dummy3 ;
+	has gint      $!dummy4 ;
+	has gint      $!dummy5 ;
+	has gint      $!dummy6 ;
+	has gint      $!dummy7 ;
+	has gint      $!dummy8 ;
 	has gpointer $!dummy9 ;
 	has gpointer $!dummy10;
-	has int      $!dummy11;
-	has int      $!dummy12;
-	has int      $!dummy13;
+	has gint      $!dummy11;
+	has gint      $!dummy12;
+	has gint      $!dummy13;
 	has gpointer $!dummy14;
 }
 
-class GtkTextLayoutClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-}
+# class GtkTextLayoutClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# }
 
-class GtkTextLine is repr<CStruct> is export {
-	has GtkTextBTreeNode   $!parent                ;
-	has GtkTextLine        $!next                  ;
-	has GtkTextLineSegment $!segments              ;
-	has GtkTextLineData    $!views                 ;
-	has guchar             $!dir_strong            ;
-	has guchar             $!dir_propagated_back   ;
-	has guchar             $!dir_propagated_forward;
-}
 
-class GtkTextLineSegmentClass is repr<CStruct> is export {
-	has Str                     $!name          ;
-	has gboolean                 $!leftGravity   ;
-	has GtkTextSegSplitFunc      $!splitFunc     ;
-	has GtkTextSegDeleteFunc     $!deleteFunc    ;
-	has GtkTextSegCleanupFunc    $!cleanupFunc   ;
-	has GtkTextSegLineChangeFunc $!lineChangeFunc;
-	has GtkTextSegCheckFunc      $!checkFunc     ;
-}
+# class GtkTextLineSegmentClass is repr<CStruct> is export {
+# 	has Str                     $!name          ;
+# 	has gboolean                 $!leftGravity   ;
+# 	has GtkTextSegSplitFunc      $!splitFunc     ;
+# 	has GtkTextSegDeleteFunc     $!deleteFunc    ;
+# 	has GtkTextSegCleanupFunc    $!cleanupFunc   ;
+# 	has GtkTextSegLineChangeFunc $!lineChangeFunc;
+# 	has GtkTextSegCheckFunc      $!checkFunc     ;
+# }
 
 class GtkTextMark is repr<CStruct> is export {
 	HAS GObject  $!parent_instance;
 	has gpointer $!segment        ;
 }
 
-class GtkTextMarkClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-	has gpointer     $!padding     ;
-}
+# class GtkTextMarkClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# 	has gpointer     $!padding     ;
+# }
 
 class GtkTextPaintable is repr<CStruct> is export {
 	has GdkPaintable $!paintable;
-	has GtkTextBTree $!tree     ;
+	has gpointer $!tree     ; #= GtkTextBTree
 	has GtkTextLine  $!line     ;
 }
 
@@ -1321,15 +1460,15 @@ class GtkTextTag is repr<CStruct> is export {
 	has gpointer $!priv           ;
 }
 
-class GtkTextTagClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-	has gpointer     $!padding     ;
-}
+# class GtkTextTagClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# 	has gpointer     $!padding     ;
+# }
 
 class GtkTextTagInfo is repr<CStruct> is export {
-	has GtkTextTag       $!tag         ;
-	has GtkTextBTreeNode $!tag_root    ;
-	has int              $!toggle_count;
+	has GtkTextTag $!tag         ;
+	has gpointer   $!tag_root    ; #= GtkTextBTreeNode
+	has int        $!toggle_count;
 }
 
 class GtkTextToggleBody is repr<CStruct> is export {
@@ -1343,8 +1482,8 @@ class GtkTextView is repr<CStruct> is export {
 }
 
 class GtkTimSortRun is repr<CStruct> is export {
-	has void  $!base;
-	has gsize $!len ;
+	has gpointer $!base;
+	has gsize    $!len ;
 }
 
 class GtkToggleButton is repr<CStruct> is export {
@@ -1352,14 +1491,14 @@ class GtkToggleButton is repr<CStruct> is export {
 }
 
 class GtkTreeDataSortHeader is repr<CStruct> is export {
-	has int                    $!sort_column_id;
-	has GtkTreeIterCompareFunc $!func          ;
+	has gint                    $!sort_column_id;
+	has gpointer  $!func          ; #= GtkTreeIterCompareFunc
 	has gpointer               $!data          ;
 	has GDestroyNotify         $!destroy       ;
 }
 
 class GtkTreeIter is repr<CStruct> is export {
-	has int      $!stamp     ;
+	has gint      $!stamp     ;
 	has gpointer $!user_data ;
 	has gpointer $!user_data2;
 	has gpointer $!user_data3;
@@ -1370,9 +1509,9 @@ class GtkTreeModelCssNode is repr<CStruct> is export {
 	has gpointer $!priv  ;
 }
 
-class GtkTreeModelCssNodeClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-}
+# class GtkTreeModelCssNodeClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# }
 
 class GtkTreeModelFilter is repr<CStruct> is export {
 	has GObject                   $!parent;
@@ -1384,26 +1523,26 @@ class GtkTreeModelSort is repr<CStruct> is export {
 	has gpointer $!priv  ;
 }
 
-class GtkTreeModelSortClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-	has gpointer     $!padding     ;
-}
+# class GtkTreeModelSortClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# 	has gpointer     $!padding     ;
+# }
 
 class GtkTreeRBTree is repr<CStruct> is export {
-	has GtkTreeRBNode $!root       ;
-	HAS GtkTreeRBTree $!parent_tree;
-	HAS GtkTreeRBNode $!parent_node;
+	has gpointer $!root       ; #= tkTreeRBNode
+	has gpointer $!parent_tree; #= tkTreeRBTree
+	has gpointer $!parent_node; #= tkTreeRBNode
 }
 
 class GtkTreeStore is repr<CStruct> is export {
-	has GObject             $!parent;
+	HAS GObject             $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkTreeStoreClass is repr<CStruct> is export {
-	HAS GObjectClass $!parent_class;
-	has gpointer     $!padding     ;
-}
+# class GtkTreeStoreClass is repr<CStruct> is export {
+# 	HAS GObjectClass $!parent_class;
+# 	has gpointer     $!padding     ;
+# }
 
 class GtkTreeView is repr<CStruct> is export {
 	HAS GtkWidget $!parent_instance;
@@ -1418,24 +1557,25 @@ class GtkWidgetAction is repr<CStruct> is export {
 	has Str                        $!name          ;
 	has GType                       $!owner         ;
 	has GVariantType                $!parameter_type;
-	has GtkWidgetActionActivateFunc $!activate      ;
+	has gpointer $!activate      ; #= GtkWidgetActionActivateFunc
 	has GVariantType                $!state_type    ;
 	has GParamSpec                  $!pspec         ;
 }
 
-class gpointer is repr<CStruct> is export {
-	has GtkWidgetTemplate $!template           ;
-	has GListStore        $!shortcuts          ;
-	has GType             $!layout_manager_type;
-	has GtkWidgetAction   $!actions            ;
-	has GtkAccessibleRole $!accessible_role    ;
-	has guint             $!activate_signal    ;
-	has GQuark            $!css_name           ;
-}
+# cw: WTF?
+# class gpointer is repr<CStruct> is export {
+# 	has GtkWidgetTemplate $!template           ;
+# 	has GListStore        $!shortcuts          ;
+# 	has GType             $!layout_manager_type;
+# 	has GtkWidgetAction   $!actions            ;
+# 	has GtkAccessibleRole $!accessible_role    ;
+# 	has guint             $!activate_signal    ;
+# 	has GQuark            $!css_name           ;
+# }
 
 class GtkWidgetSurfaceTransformData is repr<CStruct> is export {
-	has GtkWidget         $!tracked_parent                     ;
-	HAS guint             $!parent_surface_transform_changed_id;
+	HAS GtkWidget         $!tracked_parent                     ;
+	has guint             $!parent_surface_transform_changed_id;
 	has gboolean          $!cached_surface_transform_valid     ;
 	has graphene_matrix_t $!cached_surface_transform           ;
 	has GList             $!callbacks                          ;
@@ -1447,10 +1587,6 @@ class GtkWidgetTemplate is repr<CStruct> is export {
 	has GtkBuilderScope $!scope   ;
 }
 
-class GtkWindow is repr<CStruct> is export {
-	HAS GtkWidget $!parent_instance;
-}
-
 class GtkWindowGroup is repr<CStruct> is export {
 	HAS GObject               $!parent_instance;
 	has gpointer $!priv           ;
@@ -1459,6 +1595,15 @@ class GtkWindowGroup is repr<CStruct> is export {
 class NamedTag is repr<CStruct> is export {
 	has int  $!tag ;
 	has Str $!name;
+}
+
+class SubParser is repr<CStruct> is export {
+	has GtkBuildableParser $!parser ;
+	has Str               $!tagname;
+	has Str               $!start  ;
+	has gpointer           $!data   ;
+	has GObject            $!object ;
+	has GObject            $!child  ;
 }
 
 class ParserData is repr<CStruct> is export {
@@ -1508,15 +1653,6 @@ class SizeRequestY is repr<CStruct> is export {
 	has CachedSizeY $!cached_size   ;
 }
 
-class SubParser is repr<CStruct> is export {
-	has GtkBuildableParser $!parser ;
-	has Str               $!tagname;
-	has Str               $!start  ;
-	has gpointer           $!data   ;
-	has GObject            $!object ;
-	has GObject            $!child  ;
-}
-
 class array_container_s is repr<CStruct> is export {
 	has int32_t  $!cardinality;
 	has int32_t  $!capacity   ;
@@ -1550,16 +1686,16 @@ class gtk_secure_rec is repr<CStruct> is export {
 class property is repr<CStruct> is export {
 	has GType          $!this_type    ;
 	has Str           $!property_name;
-	has ExpressionInfo $!expression   ;
+	has gpointer $!expression   ; #= ExpressionInfo
 }
 
 class roaring_array_t is repr<CStruct> is export {
-	has int32_t  $!size           ;
-	has int32_t  $!allocation_size;
-	has void     $!containers     ;
-	has uint16_t $!keys           ;
-	has uint8_t  $!typecodes      ;
-	has uint8_t  $!flags          ;
+	has int32  $!size           ;
+	has int32  $!allocation_size;
+	has gpointer     $!containers     ;
+	has uint16 $!keys           ;
+	has uint8 $!typecodes      ;
+	has uint8 $!flags          ;
 }
 
 class roaring_bitmap_t is repr<CStruct> is export {
@@ -1567,7 +1703,7 @@ class roaring_bitmap_t is repr<CStruct> is export {
 }
 
 class run_container_s is repr<CStruct> is export {
-	has int32_t $!n_runs  ;
-	has int32_t $!capacity;
-	has rle16_t $!runs    ;
+	has int32 $!n_runs  ;
+	has int32 $!capacity;
+	has uint16 $!runs    ; #= rle16_t
 }
