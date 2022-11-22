@@ -8,7 +8,7 @@ role GTK::Roles::Signals::Widget {
   has %!signals-gtk-w;
 
  # GtkWidget, gint, gint, gboolean, GtkTooltip, gpointer --> gboolean
- method connect-query-tooltip(
+ method connect-query-tooltip (
    $obj,
    $signal = 'query-tooltip',
    &handler?
