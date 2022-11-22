@@ -19,6 +19,13 @@ class GTK::Window:ver<4> {
     self.setGtkWindow($gtk-window) if $gtk-window
   }
 
+  submethod TWEAK ( :$title, :$size ) {
+    if self {
+       self.title        = $title if $title;
+       self.size-request = $size  if $size;
+    }
+  }
+
   method setGtkWindow (GtkWindowAncestry $_) {
     my $to-parent;
 
@@ -47,7 +54,12 @@ class GTK::Window:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new (
+    :$title  = 'GtkApplicationWindow',
+    :$width  = 100,
+    :$height = $width,
+    :$size   = ($width, $height)
+  ) {
     my $gtk-window = gtk_window_new();
 
     $gtk-window ?? self.bless( :$gtk-window ) !! Nil;
