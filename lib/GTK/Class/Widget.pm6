@@ -1,11 +1,11 @@
 use v6.c;
 
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::Widgget:ver<4>;
+use GTK::Raw::Widget:ver<4>;
 
 use GLib::Class::Object;
 
-class GTK::Class::Widger:ver<$> is GLib::Class::Object {
+class GTK::Class::Widget:ver<$> is GLib::Class::Object {
   has GtkWidgetClass $!gtk-c-w is implementor;
 
   method class_add_binding (
