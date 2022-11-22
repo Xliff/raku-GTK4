@@ -41,6 +41,9 @@ class GTK::ApplicationWindow:ver<4> is GTK::Window {
     is also<GtkApplicationWindow>
   { $!gtk-aw }
 
+  proto method new (|)
+  { * }
+
   multi method new (
     GtkApplicationWindowAncestry  $gtk-app-window,
                                  :$ref             = True
@@ -51,11 +54,20 @@ class GTK::ApplicationWindow:ver<4> is GTK::Window {
     $o.ref if $ref;
     $o;
   }
-
-  method new {
+  multi method new (
+    :$title  = 'GtkApplicationWindow',
+    :$width  = 100,
+    :$height = $width,
+    :$size   = ($width, $height)
+  ) {
     my $gtk-app-window = gtk_application_window_new();
 
-    $gtk-app-window ?? self.bless( :$gtk-app-window ) !! Nil;
+    $gtk-app-window ?? self.bless(
+                         :$gtk-app-window,
+                         :$title,
+                         :$size
+                       )
+                    !! Nil;
   }
 
   method show-menubar is rw  is g-property {
