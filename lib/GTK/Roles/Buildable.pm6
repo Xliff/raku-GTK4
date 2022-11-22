@@ -7,8 +7,8 @@ use GTK::Raw::Buildable:ver<4>;
 
 use GLib::Array;
 
-use GTK::Roles::Implementor;
-use GTK::Roles::Object;
+use GLib::Roles::Implementor;
+use GLib::Roles::Object;
 
 role GTK::Roles::Buildable:ver<4> {
   has GtkBuildable $!gtk-b is implementor;
