@@ -165,6 +165,14 @@ class GTK::CheckButton:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
+  method Activate {
+    self.connect($!gtk-cb, 'activate');
+  }
+
+  method Toggled {
+    self.connect($!gtk-cb, 'toggled');
+  }
+
   method get_active is also<get-active> {
     so gtk_check_button_get_active($!gtk-cb);
   }
