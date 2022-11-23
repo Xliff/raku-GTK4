@@ -17,8 +17,10 @@ class GTK::ApplicationWindow:ver<4> is GTK::Window {
   has GtkApplicationWindow $!gtk-aw is implementor;
 
   submethod BUILD ( :$gtk-app-window ) {
+    say "App Win: { $gtk-app-window }";
     self.setGtkApplicationWindow($gtk-app-window) if $gtk-app-window;
   }
+
 
   method setGtkApplicationWindow (GtkApplicationWindowAncestry $_) {
     my $to-parent;
@@ -55,19 +57,23 @@ class GTK::ApplicationWindow:ver<4> is GTK::Window {
     $o;
   }
   multi method new (
-    :$title  = 'GtkApplicationWindow',
-    :$width  = 100,
-    :$height = $width,
-    :$size   = ($width, $height)
+    GtkApplication()  $application,
+                     :$title        = 'GtkApplicationWindow',
+                     :$width        = 100,
+                     :$height       = $width,
+                     :$size         = ($width, $height)
   ) {
-    my $gtk-app-window = gtk_application_window_new();
+    my $gtk-app-window = gtk_application_window_new($application);
 
-    $gtk-app-window ?? self.bless(
-                         :$gtk-app-window,
-                         :$title,
-                         :$size
-                       )
-                    !! Nil;
+    my $o = $gtk-app-window ?? self.bless(
+                                 :$gtk-app-window,
+                                 :$title,
+                                 :$size
+                               )
+                            !! Nil;
+    #$o.title        = $title if $title;
+    $o.size-request = $size  if $size;
+    $o;
   }
 
   method show-menubar is rw  is g-property {
