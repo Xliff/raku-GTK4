@@ -1,11 +1,13 @@
 use v6.c;
 
+use NativeCall;
+
 use GLib::Raw::Definitions;
 use GDK::Raw::Definitions:ver<4>;
 use GSK::Raw::Definitions:ver<4>;
 use GTK::Raw::Definitions:ver<4>;
 
-uint package GTK::Raw::Native:ver<4>;
+unit package GTK::Raw::Native:ver<4>;
 
 ### /usr/src/gtk4-4.8.1+ds/gtk/gtknative.h
 
@@ -42,6 +44,12 @@ sub gtk_native_realize (GtkNative $self)
 { * }
 
 sub gtk_native_unrealize (GtkNative $self)
+  is      native(gtk4)
+  is      export
+{ * }
+
+sub gtk_native_get_type
+  returns GType
   is      native(gtk4)
   is      export
 { * }
