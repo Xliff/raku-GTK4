@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use GLib::Raw::Traits;
 use GDK::Pixbuf::Raw::Definitions;
 use GTK::Raw::Types:ver<4>;
@@ -11,47 +13,85 @@ use GLib::Roles::Implementor;
 use GIO::Roles::Icon;
 use GDK::Roles::Paintable:ver<4>;
 
+
+our subset GtkImageAncestry is export of Mu
+  where GtkImage | GtkWidgetAncestry;
+
 class GTK::Image:ver<4> is GTK::Widget:ver<4> {
   has GtkImage $!gtk-i is implementor;
 
-  method new {
+  submethod BUILD ( :$gtk-image ) {
+    self.setGtkImage($gtk-image) if $gtk-image
+  }
+
+  method setGtkImage (GtkImageAncestry $_) {
+    my $to-parent;
+
+    $!gtk-i = do {
+      when GtkImage {
+        $to-parent = cast(GtkWidget, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GtkImage, $_);
+      }
+    }
+    self.setGtkWidget($to-parent);
+  }
+
+  method GTK::Raw::Definitions::GtkImage
+    is also<GtkImage>
+  { $!gtk-i }
+
+  multi method new (GtkImageAncestry $gtk-image, :$ref = True) {
+    return unless $gtk-image;
+
+    my $o = self.bless( :$gtk-image );
+    $o.ref if $ref;
+    $o;
+  }
+  multi method new {
     my $gtk-image = gtk_image_new();
 
     $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
   }
 
-  method new_from_file (Str() $filename) {
-    my $gtk-image = gtk_image_new_from_file($!gtk-i, $filename);
+  method new_from_file (Str() $filename) is also<new-from-file> {
+    my $gtk-image = gtk_image_new_from_file($filename);
 
     $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
   }
 
-  method new_from_gicon (GIcon() $icon) {
-    my $gtk-image = gtk_image_new_from_gicon($!gtk-i, $icon);
+  method new_from_gicon (GIcon() $icon) is also<new-from-gicon> {
+    my $gtk-image = gtk_image_new_from_gicon($icon);
 
     $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
   }
 
-  method new_from_icon_name (Str() $icon_name) {
-    my $gtk-image = gtk_image_new_from_icon_name($!gtk-i, $icon_name);
+  method new_from_icon_name (Str() $icon_name) is also<new-from-icon-name> {
+    my $gtk-image = gtk_image_new_from_icon_name($icon_name);
 
     $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
   }
 
-  method new_from_paintable (GdkPaintable() $paintable) {
-    my $gtk-image = gtk_image_new_from_paintable($!gtk-i, $paintable);
+  method new_from_paintable (GdkPaintable() $paintable)
+    is also<new-from-paintable>
+  {
+    my $gtk-image = gtk_image_new_from_paintable($paintable);
 
     $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
   }
 
-  method new_from_pixbuf (GdkPixbuf() $pixbuf) {
-    my $gtk-image = gtk_image_new_from_pixbuf($!gtk-i, $pixbuf);
+  method new_from_pixbuf (GdkPixbuf() $pixbuf) is also<new-from-pixbuf> {
+    my $gtk-image = gtk_image_new_from_pixbuf($pixbuf);
 
     $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
   }
 
-  method new_from_resource (Str() $resource_path) {
-    my $gtk-image = gtk_image_new_from_resource($!gtk-i, $resource_path);
+  method new_from_resource (Str() $resource_path) is also<new-from-resource> {
+    my $gtk-image = gtk_image_new_from_resource($resource_path);
 
     $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
   }
@@ -91,7 +131,7 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GTKIconSize
-  method icon-size ( :$enum = True ) is rw  is g-property {
+  method icon-size ( :$enum = True ) is rw  is g-property is also<icon_size> {
     my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkIconSize) );
     Proxy.new(
       FETCH => sub ($) {
@@ -108,7 +148,7 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: int
-  method pixel-size is rw  is g-property {
+  method pixel-size is rw  is g-property is also<pixel_size> {
     my $gv = GLib::Value.new( G_TYPE_INT );
     Proxy.new(
       FETCH => sub ($) {
@@ -123,7 +163,7 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: string
-  method icon-name is rw  is g-property {
+  method icon-name is rw  is g-property is also<icon_name> {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -172,7 +212,11 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GtkImageType
-  method storage-type ( :$enum = True ) is rw  is g-property {
+  method storage-type ( :$enum = True )
+    is rw
+    is g-property
+    is also<storage_type>
+  {
     my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkImageType) );
     Proxy.new(
       FETCH => sub ($) {
@@ -188,7 +232,7 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method use-fallback is rw  is g-property {
+  method use-fallback is rw  is g-property is also<use_fallback> {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -206,7 +250,7 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
     gtk_image_clear($!gtk-i);
   }
 
-  method get_gicon ( :$raw = False ) {
+  method get_gicon ( :$raw = False ) is also<get-gicon> {
     propReturnObject(
       gtk_image_get_gicon($!gtk-i),
       $raw,
@@ -214,15 +258,15 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
-  method get_icon_name {
+  method get_icon_name is also<get-icon-name> {
     gtk_image_get_icon_name($!gtk-i);
   }
 
-  method get_icon_size {
+  method get_icon_size is also<get-icon-size> {
     gtk_image_get_icon_size($!gtk-i);
   }
 
-  method get_paintable ( :$raw = False ) {
+  method get_paintable ( :$raw = False ) is also<get-paintable> {
     propReturnObject(
       gtk_image_get_paintable($!gtk-i),
       $raw,
@@ -230,53 +274,55 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
-  method get_pixel_size {
+  method get_pixel_size is also<get-pixel-size> {
     gtk_image_get_pixel_size($!gtk-i);
   }
 
-  method get_storage_type (:$enum = True) {
+  method get_storage_type (:$enum = True) is also<get-storage-type> {
     my $t = gtk_image_get_storage_type($!gtk-i);
     return $t unless $enum;
     GtkImageTypeEnum($t);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_image_get_type, $n, $t );
   }
 
-  method set_from_file (Str() $filename) {
+  method set_from_file (Str() $filename) is also<set-from-file> {
     gtk_image_set_from_file($!gtk-i, $filename);
   }
 
-  method set_from_gicon (GIcon() $icon) {
+  method set_from_gicon (GIcon() $icon) is also<set-from-gicon> {
     gtk_image_set_from_gicon($!gtk-i, $icon);
   }
 
-  method set_from_icon_name (Str() $icon_name) {
+  method set_from_icon_name (Str() $icon_name) is also<set-from-icon-name> {
     gtk_image_set_from_icon_name($!gtk-i, $icon_name);
   }
 
-  method set_from_paintable (GdkPaintable() $paintable) {
+  method set_from_paintable (GdkPaintable() $paintable)
+    is also<set-from-paintable>
+  {
     gtk_image_set_from_paintable($!gtk-i, $paintable);
   }
 
-  method set_from_pixbuf (GdkPixbuf() $pixbuf) {
+  method set_from_pixbuf (GdkPixbuf() $pixbuf) is also<set-from-pixbuf> {
     gtk_image_set_from_pixbuf($!gtk-i, $pixbuf);
   }
 
-  method set_from_resource (Str() $resource_path) {
+  method set_from_resource (Str() $resource_path) is also<set-from-resource> {
     gtk_image_set_from_resource($!gtk-i, $resource_path);
   }
 
-  method set_icon_size (Int() $icon_size) {
+  method set_icon_size (Int() $icon_size) is also<set-icon-size> {
     my GtkIconSize $i = $icon_size;
 
     gtk_image_set_icon_size($!gtk-i, $i);
   }
 
-  method set_pixel_size (Int() $pixel_size) {
+  method set_pixel_size (Int() $pixel_size) is also<set-pixel-size> {
     my gint $p = $pixel_size;
 
     gtk_image_set_pixel_size($!gtk-i, $p);
