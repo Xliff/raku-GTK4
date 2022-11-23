@@ -3,9 +3,15 @@ use v6.c;
 use NativeCall;
 
 use GLib::Raw::Definitions;
+use GLib::Raw::Object;
 use GLib::Raw::Structs;
+use GIO::Raw::Definitions;
+use Pango::Raw::Definitions;
+use Graphene::Raw::Definitions;
 use GDK::Raw::Definitions:ver<4>;
+use GSK::Raw::Definitions:ver<4>;
 use GTK::Raw::Definitions:ver<4>;
+use GTK::Raw::Enums:ver<4>;
 use GTK::Raw::Structs:ver<4>;
 
 unit package GTK::Raw::Widget:ver<4>;
@@ -78,9 +84,9 @@ sub gtk_widget_add_mnemonic_label (
 
 sub gtk_widget_add_tick_callback (
   GtkWidget       $widget,
-  GtkTickCallback $callback,
+                  &callback (GtkWidget, GdkFrameClock, gpointer --> gboolean),
   gpointer        $user_data,
-  GDestroyNotify  $notify
+                  &notify (gpointer)
 )
   returns guint
   is      native(gtk4)
@@ -103,186 +109,6 @@ sub gtk_widget_child_focus (
   GtkDirectionType $direction
 )
   returns uint32
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_add_binding (
-  GtkWidgetClass  $widget_class,
-  guint           $keyval,
-  GdkModifierType $mods,
-  GtkShortcutFunc $callback,
-  Str             $format_string
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_add_binding_action (
-  GtkWidgetClass  $widget_class,
-  guint           $keyval,
-  GdkModifierType $mods,
-  Str             $action_name,
-  Str             $format_string
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_add_binding_signal (
-  GtkWidgetClass  $widget_class,
-  guint           $keyval,
-  GdkModifierType $mods,
-  Str             $signal,
-  Str             $format_string
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_add_shortcut (
-  GtkWidgetClass $widget_class,
-  GtkShortcut    $shortcut
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_bind_template_callback_full (
-  GtkWidgetClass $widget_class,
-  Str            $callback_name,
-  GCallback      $callback_symbol
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_bind_template_child_full (
-  GtkWidgetClass $widget_class,
-  Str            $name,
-  gboolean       $internal_child,
-  gssize         $struct_offset
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_get_accessible_role (GtkWidgetClass $widget_class)
-  returns GtkAccessibleRole
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_get_activate_signal (GtkWidgetClass $widget_class)
-  returns guint
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_get_css_name (GtkWidgetClass $widget_class)
-  returns Str
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_get_layout_manager_type (GtkWidgetClass $widget_class)
-  returns GType
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_install_action (
-  GtkWidgetClass              $widget_class,
-  Str                         $action_name,
-  Str                         $parameter_type,
-  GtkWidgetActionActivateFunc $activate
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_install_property_action (
-  GtkWidgetClass $widget_class,
-  Str            $action_name,
-  Str            $property_name
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_query_action (
-  GtkWidgetClass       $widget_class,
-  guint                $index_,
-  GType                $owner,
-  CArray[Str]          $action_name,
-  CArray[GVariantType] $parameter_type,
-  CArray[Str]          $property_name
-)
-  returns uint32
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_set_accessible_role (
-  GtkWidgetClass    $widget_class,
-  GtkAccessibleRole $accessible_role
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_set_activate_signal (
-  GtkWidgetClass $widget_class,
-  guint          $signal_id
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_set_activate_signal_from_name (
-  GtkWidgetClass $widget_class,
-  Str            $signal_name
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_set_css_name (
-  GtkWidgetClass $widget_class,
-  Str            $name
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_set_layout_manager_type (
-  GtkWidgetClass $widget_class,
-  GType          $type
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_set_template (
-  GtkWidgetClass $widget_class,
-  GBytes         $template_bytes
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_set_template_from_resource (
-  GtkWidgetClass $widget_class,
-  Str            $resource_name
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_widget_class_set_template_scope (
-  GtkWidgetClass  $widget_class,
-  GtkBuilderScope $scope
-)
   is      native(gtk4)
   is      export
 { * }
@@ -593,7 +419,7 @@ sub gtk_widget_get_next_sibling (GtkWidget $widget)
 { * }
 
 sub gtk_widget_get_opacity (GtkWidget $widget)
-  returns double
+  returns gdouble
   is      native(gtk4)
   is      export
 { * }
@@ -690,8 +516,8 @@ sub gtk_widget_get_size (
 
 sub gtk_widget_get_size_request (
   GtkWidget $widget,
-  gint      $width is rw,
-  gint      $height is rw
+  gint      $width   is rw,
+  gint      $height  is rw
 )
   is      native(gtk4)
   is      export
@@ -918,8 +744,8 @@ sub gtk_widget_measure (
   GtkWidget      $widget,
   GtkOrientation $orientation,
   gint           $for_size,
-  gint           $minimum is rw,
-  gint           $natural is rw,
+  gint           $minimum          is rw,
+  gint           $natural          is rw,
   gint           $minimum_baseline is rw,
   gint           $natural_baseline is rw
 )

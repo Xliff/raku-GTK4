@@ -1,7 +1,9 @@
 use v6.c;
 
 use Method::Also;
+use NativeCall;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Widget:ver<4>;
 
@@ -21,6 +23,9 @@ use GLib::Roles::Object;
 use GIO::Roles::ListModel;
 use GTK::Roles::Accessible:ver<4>;
 use GTK::Roles::Buildable:ver<4>;
+use GTK::Roles::Constraint::Target:ver<4>;
+use GTK::Roles::Root:ver<4>;
+use GTK::Roles::Native:ver<4>;
 
 our subset GtkWidgetAncestry is export of Mu
   where GtkWidget | GtkAccessible | GtkBuildable | GtkConstraintTarget |
@@ -73,10 +78,10 @@ class GTK::Widget:ver<4> {
     self!setObject($to-parent);
     self.roleInit-GtkAccessible;
     self.roleInit-GtkBuildable;
-    self.roleInit-GtkConstrantTarget;
+    self.roleInit-GtkConstraintTarget;
   }
 
-  method GTK::Raw::Definitions::GtkWidget
+  method GTK::Raw::Structs::GtkWidget
     is also<GtkWidget>
   { $!gtk-w }
 
@@ -122,12 +127,16 @@ class GTK::Widget:ver<4> {
   }
 
   # Type: GTKRoot
-  method root is rw  is g-property {
-    my $gv = GLib::Value.new( GTKRoot );
+  method root ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new( Gtk::Root.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('root', $gv);
-        $gv.GTKRoot;
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GTK::Root.getTypePair
+        )
       },
       STORE => -> $,  $val is copy {
         warn 'root does not allow writing'
@@ -226,7 +235,7 @@ class GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method has-focus is rw  is g-property is also<has_focus> {
+  method has-focus is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -270,7 +279,7 @@ class GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method has-default is rw  is g-property is also<has_default> {
+  method has-default is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -299,7 +308,7 @@ class GTK::Widget:ver<4> {
   }
 
   # Type: GTKCursor
-  method cursor is rw  is g-property {
+  method cursor ( :$raw = False ) is rw  is g-property {
     my $gv = GLib::Value.new( GDK::Cursor.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -380,7 +389,7 @@ class GTK::Widget:ver<4> {
   }
 
   # Type: GTKAlign
-  method valign is rw  is g-property {
+  method valign ( :$enum = True ) is rw  is g-property {
     my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkAlign) );
     Proxy.new(
       FETCH => sub ($) {
@@ -633,8 +642,8 @@ class GTK::Widget:ver<4> {
 
   method size-request is also<size_request> is rw {
     Proxy.new:
-      FETCH => $                           { self.get_size_request },
-      STORE => $, @size where *.elems == 2 { self.set_size_request( |@size ) };
+      FETCH => -> $                           { self.get_size_request },
+      STORE => -> $, @size where *.elems == 2 { self.set_size_request( |@size ) };
   }
 
   method Destroy {
@@ -814,7 +823,7 @@ class GTK::Widget:ver<4> {
   {
     propReturnObject(
       gtk_widget_create_pango_layout($!gtk-w, $text),
-      $rawm
+      $raw,
       |Pango::Layout.getTypePair
     );
   }
@@ -892,9 +901,10 @@ class GTK::Widget:ver<4> {
   }
 
   method get_default_direction ( :$enum = True )
+    is static
     is also<get-default-direction>
   {
-    my $d = gtk_widget_get_default_direction($!gtk-w);
+    my $d = gtk_widget_get_default_direction();
     return $d unless $enum;
     $d;
   }
@@ -1042,7 +1052,7 @@ class GTK::Widget:ver<4> {
     gtk_widget_get_name($!gtk-w);
   }
 
-  method get_native ( :raw = False ) is also<get-native> {
+  method get_native ( :$raw = False ) is also<get-native> {
     propReturnObject(
       gtk_widget_get_native($!gtk-w),
       $raw,
@@ -1142,7 +1152,7 @@ class GTK::Widget:ver<4> {
   }
 
   method get_root (
-    :$root          = False
+    :$root          = False,
     :quick(:$fast)  = False,
     :$raw           = False,
     :slow(:$proper) = $fast.not
@@ -1178,6 +1188,7 @@ class GTK::Widget:ver<4> {
 
   proto method get_size_request (|)
     is also<get-size-request>
+  { * }
 
   multi method get_size_request {
     samewith($, $)
@@ -1191,7 +1202,7 @@ class GTK::Widget:ver<4> {
 
   method get_state_flags ( :set(:$flags) = True ) is also<get-state-flags> {
     my $s = gtk_widget_get_state_flags($!gtk-w);
-    return $s unless $flags
+    return $s unless $flags;
     getFlags(GtkStateFlags, $s);
   }
 
@@ -1255,11 +1266,11 @@ class GTK::Widget:ver<4> {
     so gtk_widget_has_css_class($!gtk-w, $css_class);
   }
 
-  method has_default is also<has-default> {
+  method has_default {
     so gtk_widget_has_default($!gtk-w);
   }
 
-  method has_focus is also<has-focus> {
+  method has_focus {
     so gtk_widget_has_focus($!gtk-w);
   }
 
@@ -1355,8 +1366,8 @@ class GTK::Widget:ver<4> {
 
   method observe_children (
     :$raw                   = False,
-    :raw_model(:$raw-model) = False
-    :$model                 = False
+    :raw_model(:$raw-model) = False,
+    :$model                 = False,
     :quick(:$fast)          = False,
     :slow(:$proper)         = $fast.not
    )
@@ -1379,7 +1390,7 @@ class GTK::Widget:ver<4> {
 
   method observe_controllers (
     :$raw                   = False,
-    :raw_model(:$raw-model) = False
+    :raw_model(:$raw-model) = False,
     :$model                 = False
   )
     is also<observe-controllers>
@@ -1389,14 +1400,14 @@ class GTK::Widget:ver<4> {
       $raw,
       |GIO::ListModel.getTypePair
     );
-    return $lm if $raw-model;
-    $lm does GLib::Roles::TypedArray[
+    return $om if $raw-model;
+    $om does GLib::Roles::TypedArray[
       GtkEventController,
       $raw,
       GTK::EventController
     ];
-    return $lm if $model;
-    $lm.Array;
+    return $om if $model;
+    $om.Array;
   }
 
   method pick (
@@ -1408,7 +1419,7 @@ class GTK::Widget:ver<4> {
            :$raw           = False,
            :slow(:$proper) = $fast.not
   ) {
-    my gdouble      ($xx, $yy) = ($x, $y)
+    my gdouble      ($xx, $yy) = ($x, $y);
     my GtkPickFlags  $f        =  $flags;
 
     returnProperWidget(
@@ -1479,10 +1490,10 @@ class GTK::Widget:ver<4> {
     is also<set-css-classes>
   { * }
 
-  method set_css_classes (@classes) {
-    samewith( ArrayToCArray(Str, @classes, :null);
+  multi method set_css_classes (@classes) {
+    samewith( ArrayToCArray(Str, @classes, :null) );
   }
-  method set_css_classes (CArray[Str] $classes) {
+  multi method set_css_classes (CArray[Str] $classes) {
     gtk_widget_set_css_classes($!gtk-w, $classes);
   }
 
@@ -1630,6 +1641,8 @@ class GTK::Widget:ver<4> {
   {
     my gint ($w, $h) = ($width, $height);
 
+    say "I: { $!gtk-w } / W: $w / H: $h ";
+
     gtk_widget_set_size_request($!gtk-w, $w, $h);
   }
 
@@ -1678,7 +1691,12 @@ class GTK::Widget:ver<4> {
     so gtk_widget_should_layout($!gtk-w);
   }
 
-  method show {
+  method show
+    is also<
+      show_all
+      show-all
+    >
+  {
     gtk_widget_show($!gtk-w);
   }
 
@@ -1746,7 +1764,7 @@ class GTK::Widget:ver<4> {
   method unset_state_flags (Int() $flags) is also<unset-state-flags> {
     my GtkStateFlags $f = $flags;
 
-    gtk_widget_unset_state_flags($!gtk-w, $f\);
+    gtk_widget_unset_state_flags($!gtk-w, $f);
   }
 
 }
@@ -1765,6 +1783,8 @@ our subset GtkRequisitionAncestry is export of Mu
   where GtkRequisition | GObject;
 
 class GTK::Requisition {
+  also does GLib::Roles::Object;
+
   has GtkRequisition $!gtk-r is implementor;
 
   submethod BUILD ( :$gtk-widget ) {
@@ -1800,8 +1820,7 @@ class GTK::Requisition {
     $o.ref if $ref;
     $o;
   }
-
-  method new {
+  multi method new {
     my $gtk-requisition = gtk_requisition_new();
 
     $gtk-requisition ?? self.bless( :$gtk-requisition ) !! Nil;
