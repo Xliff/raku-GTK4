@@ -43,6 +43,7 @@ class GtkListItemManager    is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkLayoutChild        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOrientable         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPicture            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkProgressBar        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNativeDialog       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSettings           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutController is repr<CPointer> does GLib::Roles::Pointers is export { }
