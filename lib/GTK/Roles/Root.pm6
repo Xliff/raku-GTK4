@@ -26,8 +26,8 @@ role GTK::Roles::Root {
 
   method get_display ( :$raw = False ) {
     propReturnObject(
-      gtk_root_get_display($!gtk-r).
-      $raw.
+      gtk_root_get_display($!gtk-r),
+      $raw,
       |GDK::Display.getTypePair
     );
   }
