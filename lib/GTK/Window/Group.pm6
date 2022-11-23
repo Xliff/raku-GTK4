@@ -8,6 +8,8 @@ use GTK::Raw::Types:ver<4>;
 
 use GLib::GList;
 
+use GLib::Roles::Object;
+
 our subset GtkWindowGroupAncestry is export of Mu
   where GtkWindowGroup | GObject;
 
@@ -48,8 +50,7 @@ class GTK::Window::Group {
     $o.ref if $ref;
     $o;
   }
-
-  method new {
+  multi method new {
     my $gtk-window-group = gtk_window_group_new();
 
     $gtk-window-group ?? self.bless( :$gtk-window-group ) !! Nil;
