@@ -48,7 +48,7 @@ our subset GtkBuildableAncestry is export of Mu
 
 class GTK::Buildable {
   also does GLib::Roles::Object;
-  also does GLib::Roles::Buildable;
+  also does GTK::Roles::Buildable;
 
   submethod BUILD ( :$gtk-buildable ) {
     self.setGtkBuildable($gtk-buildable) if $gtk-buildable
@@ -81,65 +81,58 @@ class GTK::Buildable {
 
 }
 
-
-our subset GtkBuildableParseContextAncestry is export of Mu
-  where GtkBuildableParseContext | GObject;
-
 class GTK::Buildable::ParseContext {
   has GtkBuildableParseContext $!gtk-b-pc is implementor;
 
-  submethod BUILD ( :$gtk-buildable ) {
-    self.setGtkBuildableParseContext($gtk-buildable) if $gtk-buildable
-  }
-
-  method setGtkBuildableParseContext (GtkBuildableParseContextAncestry $_) {
-    my $to-parent;
-
-    $!gtk-b-pc = do {
-      when GtkBuildableParseContext {
-        $to-parent = cast(GObject, $_);
-        $_;
-      }
-
-      default {
-        $to-parent = $_;
-        cast(GtkBuildableParseContext, $_);
-      }
-    }
-    self!setObject($to-parent);
-  }
-
   submethod BUILD ( :$gtk-buildable-context ) {
-    $!gtk-b-pc = $gtk-buildable-context if $gtk-builable-context;
+    $!gtk-b-pc = $gtk-buildable-context if $gtk-buildable-context;
   }
 
   method GTK::Raw::Definitions::GtkParseContext
     is also<GtkParseContext>
-  { $!gtk-pc }
+  { $!gtk-b-pc }
+
+  multi method new (
+    GtkBuildableParseContext  $gtk-buildable-context,
+                             :$ref                    = True
+   ) {
+    return unless $gtk-buildable-context;
+
+    my $o = self.bless( :$gtk-buildable-context );
+    $o.ref if $ref;
+    $o;
+  }
 
   method get_element is also<get-element> {
-    gtk_buildable_parse_context_get_element($!gtk-b);
+    gtk_buildable_parse_context_get_element($!gtk-b-pc);
   }
 
   method get_element_stack ( :$raw = False, :$array = True )
     is also<get-element-stack>
   {
-    my $sa = gtk_buildable_parse_context_get_element_stack($!gtk-b);
+    my $sa = gtk_buildable_parse_context_get_element_stack($!gtk-b-pc);
     return $sa if $raw;
     $sa = GLib::Array::String.new($sa);
     return $sa unless $array;
     $sa.Array;
   }
 
-  method get_position ($line_number is rw, $char_number is rw)
+  proto method get_position (|)
     is also<get-position>
+  { * }
+
+  multi method get_position {
+    samewith($, $);
+  }
+  multi method get_position ($line_number is rw, $char_number is rw) {
     my gint ($l, $c) = 0 xx 2;
 
-    gtk_buildable_parse_context_get_position($!gtk-b, $l, $c);
+    gtk_buildable_parse_context_get_position($!gtk-b-pc, $l, $c);
+    ($line_number, $char_number) = ($l, $c);
   }
 
   method parse_context_pop is also<parse-context-pop> {
-    gtk_buildable_parse_context_pop($!gtk-b);
+    gtk_buildable_parse_context_pop($!gtk-b-pc);
   }
 
   method parse_context_push (
@@ -148,7 +141,7 @@ class GTK::Buildable::ParseContext {
   )
     is also<parse-context-push>
   {
-    gtk_buildable_parse_context_push($!gtk-b, $parser, $user_data);
+    gtk_buildable_parse_context_push($!gtk-b-pc, $parser, $user_data);
   }
 
 }
