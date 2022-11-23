@@ -21,7 +21,6 @@ class GTK::ApplicationWindow:ver<4> is GTK::Window {
     self.setGtkApplicationWindow($gtk-app-window) if $gtk-app-window;
   }
 
-
   method setGtkApplicationWindow (GtkApplicationWindowAncestry $_) {
     my $to-parent;
 
