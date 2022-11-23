@@ -2,8 +2,11 @@ use v6.c;
 
 use GTK::Raw::Types:ver<4>;
 
-role GTK::Roles::ShortcutsManager {
-  has GtkShortcutManger $!gtk-sm is implementor;
+use GLib::Roles::Implementor;
+use GLib::Roles::Object;
+
+role GTK::Roles::ShortcutManager {
+  has GtkShortcutManager $!gtk-sm is implementor;
 
   method roleInit-GtkShortcutManager {
     return if $!gtk-sm;
@@ -18,10 +21,10 @@ role GTK::Roles::ShortcutsManager {
   method GtkShortcutManager
   { $!gtk-sm }
 
-  method add_controller     { ... }
-  method remove_controller  { ... }
+  # method add_controller     { ... }
+  # method remove_controller  { ... }
 
-  method gtk_shortcut_manager_get_type {
+  method gtkshortcutmanager_get_type {
     state ($n, $t);
 
     unstable_get_type(
@@ -39,9 +42,7 @@ our subset GtkShortcutManagerAncestry is export of Mu
 
 class GTK::ShortcutsManager {
   also does GLib::Roles::Object;
-  also does GLib::Roles::ShortcutManager;
-
-  has GtkShortcutManager $!gtk-sm is implementor;
+  also does GTK::Roles::ShortcutManager;
 
   submethod BUILD ( :$gtk-shortcut-manager ) {
     self.setGtkShortcutManager($gtk-shortcut-manager)
@@ -76,16 +77,16 @@ class GTK::ShortcutsManager {
     $o;
   }
 
-  method add-controller (GtkShortcutController() $controller) {
+  method add_controller (GtkShortcutController() $controller) {
     invoke-vfunc( $!gtk-sm.add-controller, &*ROUTINE, $controller )
   }
 
-  method remove-controller (GtkShortcutController() $controller) {
+  method remove_controller (GtkShortcutController() $controller) {
     invoke-vfunc( $!gtk-sm.remove-controller, &*ROUTINE, $controller )
   }
 
   method get_type {
-    self.gtk_shortcut_manager_get_type
+    self.gtkshortcutmanager_get_type
   }
 
 }
