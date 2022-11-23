@@ -65,7 +65,8 @@ role GTK::Roles::Native:ver<4> {
     ($x, $y) = ($xx, $yy);
   }
 
-  method realize {
+  multi method realize (:$widget = False ) {
+    nextsame if $widget;
     gtk_native_realize($!gtk-n);
   }
 
