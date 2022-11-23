@@ -20,14 +20,16 @@ use GSK::Raw::Definitions:ver<4>;
 use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
 
+use GLib::Roles::Pointers;
+
 unit package GTK::Raw::Structs:ver<4>;
 
-class GtkWidget is repr<CStruct> is export {
+class GtkWidget is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 	has gpointer          $!priv           ;
 }
 
-class BindingExpressionInfo is repr<CStruct> is export {
+class BindingExpressionInfo is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint          $!tag_type    ;
 	has GObject        $!target      ;
 	has GParamSpec     $!target_pspec;
@@ -37,7 +39,7 @@ class BindingExpressionInfo is repr<CStruct> is export {
 	has int            $!col         ;
 }
 
-class BindingInfo is repr<CStruct> is export {
+class BindingInfo is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint         $!tag_type       ;
 	has GObject       $!target         ;
 	has GParamSpec    $!target_pspec   ;
@@ -48,30 +50,30 @@ class BindingInfo is repr<CStruct> is export {
 	has int           $!col            ;
 }
 
-class CacheInfo is repr<CStruct> is export {
+class CacheInfo is repr<CStruct> does GLib::Roles::Pointers is export {
 	has Str    $!cache        ;
 	has gsize   $!cache_size   ;
 	has guint32 $!n_directories;
 	has int     $!flags        ;
 }
 
-class CachedSizeX is repr<CStruct> is export {
+class CachedSizeX is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int $!minimum_size;
 	has int $!natural_size;
 }
 
-class CachedSizeY is repr<CStruct> is export {
+class CachedSizeY is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int $!minimum_size    ;
 	has int $!natural_size    ;
 	has int $!minimum_baseline;
 	has int $!natural_baseline;
 }
 
-class CommonInfo is repr<CStruct> is export {
+class CommonInfo is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint $!tag_type;
 }
 
-class ChildInfo is repr<CStruct> is export {
+class ChildInfo is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint      $!tag_type          ;
 	has GSList     $!packing_properties;
 	has GObject    $!object            ;
@@ -81,30 +83,30 @@ class ChildInfo is repr<CStruct> is export {
 	has gboolean   $!added             ;
 }
 
-# class GskPangoRendererClass is repr<CStruct> is export {
+# class GskPangoRendererClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS PangoRendererClass $!parent_class;
 # }
 
-# class GtkAccessibleValue is repr<CStruct> is export {
+# class GtkAccessibleValue is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	has GtkAccessibleValueClass $!value_class;
 # 	has int                     $!ref_count  ;
 # }
 
-class GtkAdjustment is repr<CStruct> is export {
+class GtkAdjustment is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkApplication is repr<CStruct> is export {
+class GtkApplication is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GApplication $!parent_instance;
 }
 
-class GtkApplicationImpl is repr<CStruct> is export {
+class GtkApplicationImpl is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject        $!parent_instance;
 	has GtkApplication $!application    ;
 	has GdkDisplay     $!display        ;
 }
 
-class GtkApplicationImplDBus is repr<CStruct> is export {
+class GtkApplicationImplDBus is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkApplicationImpl $!impl                 ;
 	has GDBusConnection    $!session              ;
 	has Str               $!application_id       ;
@@ -125,25 +127,25 @@ class GtkApplicationImplDBus is repr<CStruct> is export {
 	has guint              $!session_state        ;
 }
 
-class GtkWindow is repr<CStruct> is export {
+class GtkWindow is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkApplicationWindow is repr<CStruct> is export {
+class GtkApplicationWindow is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWindow $!parent_instance;
 }
 
-# class GtkApplicationWindowClass is repr<CStruct> is export {
+# class GtkApplicationWindowClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkWindowClass $!parent_class;
 # 	has gpointer       $!padding     ;
 # }
 
-class GtkBookmark is repr<CStruct> is export {
+class GtkBookmark is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GFile $!file ;
 	has Str  $!label;
 }
 
-class GtkBookmarksManager is repr<CStruct> is export {
+class GtkBookmarksManager is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GSList                  $!bookmarks                   ;
 	has GFileMonitor            $!bookmarks_monitor           ;
 	has gulong                  $!bookmarks_monitor_changed_id;
@@ -152,23 +154,23 @@ class GtkBookmarksManager is repr<CStruct> is export {
 	has GCancellable            $!cancellable                 ;
 }
 
-class GtkBorder is repr<CStruct> is export {
+class GtkBorder is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gint16 $.left   is rw;
 	has gint16 $.right  is rw;
 	has gint16 $.top    is rw;
 	has gint16 $.bottom is rw;
 }
 
-class GtkBox is repr<CStruct> is export {
+class GtkBox is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-# class GtkBoxClass is repr<CStruct> is export {
+# class GtkBoxClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkWidgetClass $!parent_class;
 # 	has gpointer       $!padding     ;
 # }
 
-class GtkBuildableParseContext is repr<CStruct> is export {
+class GtkBuildableParseContext is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GMarkupParser       $!internal_callbacks;
 	has GMarkupParseContext $!ctx               ;
 	has GtkBuildableParser  $!parser            ;
@@ -179,60 +181,60 @@ class GtkBuildableParseContext is repr<CStruct> is export {
 	has gboolean            $!awaiting_pop      ;
 }
 
-# class GtkBuilderCScopeClass is repr<CStruct> is export {
+# class GtkBuilderCScopeClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # }
 
-class GtkButton is repr<CStruct> is export {
+class GtkButton is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkCellArea is repr<CStruct> is export {
+class GtkCellArea is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkCellAreaBoxAllocation is repr<CStruct> is export {
+class GtkCellAreaBoxAllocation is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int $!group_idx;
 	has int $!position ;
 	has int $!size     ;
 }
 
-class GtkCellAreaContext is repr<CStruct> is export {
+class GtkCellAreaContext is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkCellAreaBoxContext is repr<CStruct> is export {
+class GtkCellAreaBoxContext is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCellAreaContext           $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-# class GtkCellAreaBoxContextClass is repr<CStruct> is export {
+# class GtkCellAreaBoxContextClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCellAreaContextClass $!parent_class;
 # }
 
-class GtkCellRenderer is repr<CStruct> is export {
+class GtkCellRenderer is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject      $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class GtkCellRendererGraph is repr<CStruct> is export {
+class GtkCellRendererGraph is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCellRenderer             $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkCellRendererText is repr<CStruct> is export {
+class GtkCellRendererText is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCellRenderer $!parent;
 }
 
-class GtkCheckButton is repr<CStruct> is export {
+class GtkCheckButton is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkComboBox is repr<CStruct> is export {
+class GtkComboBox is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkComposeTable is repr<CStruct> is export {
+class GtkComposeTable is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint16 $!data        ;
 	has Str    $!char_data   ;
 	has int     $!max_seq_len ;
@@ -243,30 +245,30 @@ class GtkComposeTable is repr<CStruct> is export {
 	has guint32 $!id          ;
 }
 
-class GtkConstraintExpressionBuilder is repr<CStruct> is export {
+class GtkConstraintExpressionBuilder is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!dummy1;
 	has gpointer $!dummy2;
 	has int      $!dummy3;
 }
 
-class GtkConstraintExpressionIter is repr<CStruct> is export {
+class GtkConstraintExpressionIter is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!dummy1;
 	has gpointer $!dummy2;
 	has gint64   $!dummy3;
 }
 
-class GtkConstraintVariablePair is repr<CStruct> is export {
+class GtkConstraintVariablePair is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkConstraintVariable $!first ;
 	has GtkConstraintVariable $!second;
 }
 
-class GtkConstraintVariableSetIter is repr<CStruct> is export {
+class GtkConstraintVariableSetIter is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!dummy1;
 	has gpointer $!dummy2;
 	has gint64   $!dummy3;
 }
 
-class GtkConstraintVfl is repr<CStruct> is export {
+class GtkConstraintVfl is repr<CStruct> does GLib::Roles::Pointers is export {
 	has Str                  $!view1     ;
 	has Str                  $!attr1     ;
 	has GtkConstraintRelation $!relation  ;
@@ -277,7 +279,7 @@ class GtkConstraintVfl is repr<CStruct> is export {
 	has gdouble                $!strength  ;
 }
 
-class GtkCrossingData is repr<CStruct> is export {
+class GtkCrossingData is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCrossingType      $!type          ;
 	has GtkCrossingDirection $!direction     ;
 	has GdkCrossingMode      $!mode          ;
@@ -288,12 +290,12 @@ class GtkCrossingData is repr<CStruct> is export {
 	has GdkDrop              $!drop          ;
 }
 
-class GtkCssValues is repr<CStruct> is export {
+class GtkCssValues is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int              $.ref_count;
 	has GtkCssValuesType $.type     ;
 }
 
-class GtkCssAnimationValues is repr<CStruct> is export {
+class GtkCssAnimationValues is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssValues $.base                     ;
 	has GtkCssValue  $.animation_name           ;
 	has GtkCssValue  $.animation_duration       ;
@@ -305,7 +307,7 @@ class GtkCssAnimationValues is repr<CStruct> is export {
 	has GtkCssValue  $.animation_fill_mode      ;
 }
 
-class GtkCssBackgroundValues is repr<CStruct> is export {
+class GtkCssBackgroundValues is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssValues $.base                 ;
 	has GtkCssValue  $.background_color     ;
 	has GtkCssValue  $.box_shadow           ;
@@ -318,7 +320,7 @@ class GtkCssBackgroundValues is repr<CStruct> is export {
 	has GtkCssValue  $.background_blend_mode;
 }
 
-class GtkCssBorderValues is repr<CStruct> is export {
+class GtkCssBorderValues is repr<CStruct> does GLib::Roles::Pointers is export {
   HAS GtkCssValues $.base;
   has GtkCssValue  $.border_top_style;
   has GtkCssValue  $.border_top_width;
@@ -342,7 +344,7 @@ class GtkCssBorderValues is repr<CStruct> is export {
   has GtkCssValue  $.border_image_width;
 };
 
-class GtkCssCoreValues is repr<CStruct> is export {
+class GtkCssCoreValues is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssValues $.base        ;
 	has GtkCssValue  $.color       ;
 	has GtkCssValue  $.dpi         ;
@@ -350,7 +352,7 @@ class GtkCssCoreValues is repr<CStruct> is export {
 	has GtkCssValue  $.icon_palette;
 }
 
-class GtkCssOtherValues is repr<CStruct> is export {
+class GtkCssOtherValues is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssValues $.base            ;
 	has GtkCssValue  $.icon_source     ;
 	has GtkCssValue  $.icon_transform  ;
@@ -361,7 +363,7 @@ class GtkCssOtherValues is repr<CStruct> is export {
 	has GtkCssValue  $.filter          ;
 }
 
-class GtkCssSizeValues is repr<CStruct> is export {
+class GtkCssSizeValues is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssValues $.base          ;
 	has GtkCssValue  $.margin_top    ;
 	has GtkCssValue  $.margin_left   ;
@@ -376,7 +378,7 @@ class GtkCssSizeValues is repr<CStruct> is export {
 	has GtkCssValue  $.min_height    ;
 }
 
-class GtkCssTransitionValues is repr<CStruct> is export {
+class GtkCssTransitionValues is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssValues $.base                      ;
 	has GtkCssValue  $.transition_property       ;
 	has GtkCssValue  $.transition_duration       ;
@@ -384,14 +386,14 @@ class GtkCssTransitionValues is repr<CStruct> is export {
 	has GtkCssValue  $.transition_delay          ;
 }
 
-class GtkCssIconValues is repr<CStruct> is export {
+class GtkCssIconValues is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssValues $.base       ;
 	has GtkCssValue  $.icon_size  ;
 	has GtkCssValue  $.icon_shadow;
 	has GtkCssValue  $.icon_style ;
 }
 
-class GtkCssOutlineValues is repr<CStruct> is export {
+class GtkCssOutlineValues is repr<CStruct> does GLib::Roles::Pointers is export {
   HAS GtkCssValues $.base;
   has GtkCssValue  $.outline_style;
   has GtkCssValue  $.outline_width;
@@ -399,7 +401,7 @@ class GtkCssOutlineValues is repr<CStruct> is export {
   has GtkCssValue  $.outline_color;
 }
 
-class GtkCssFontValues is repr<CStruct> is export {
+class GtkCssFontValues is repr<CStruct> does GLib::Roles::Pointers is export {
   HAS GtkCssValues $.base;
   has GtkCssValue  $.font_family;
   has GtkCssValue  $.font_style;
@@ -414,7 +416,7 @@ class GtkCssFontValues is repr<CStruct> is export {
   has GtkCssValue  $.line_height;
 }
 
-class GtkCssFontVariantValues is repr<CStruct> is export {
+class GtkCssFontVariantValues is repr<CStruct> does GLib::Roles::Pointers is export {
   HAS GtkCssValues $.base;
   has GtkCssValue  $.text_decoration_line;
   has GtkCssValue  $.text_decoration_color;
@@ -429,7 +431,7 @@ class GtkCssFontVariantValues is repr<CStruct> is export {
   has GtkCssValue  $.font_variant_east_asian;
 }
 
-class GtkCssStyle is repr<CStruct> is export {
+class GtkCssStyle is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject                 $.parent      ;
 	has GtkCssCoreValues        $.core        ;
 	has GtkCssBackgroundValues  $.background  ;
@@ -444,7 +446,7 @@ class GtkCssStyle is repr<CStruct> is export {
 	has GtkCssOtherValues       $.other       ;
 }
 
-class GtkCssAnimatedStyle is repr<CStruct> is export {
+class GtkCssAnimatedStyle is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssStyle $.parent      ;
 	has GtkCssStyle $.style       ;
 	has gint64      $.current_time;
@@ -452,16 +454,16 @@ class GtkCssAnimatedStyle is repr<CStruct> is export {
 	has guint       $.n_animations;
 }
 
-# class GtkCssAnimatedStyleClass is repr<CStruct> is export {
+# class GtkCssAnimatedStyleClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssStyleClass $!parent_class;
 # }
 
-class GtkStyleAnimation is repr<CStruct> is export {
+class GtkStyleAnimation is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer  $!class    ; #= GtkStyleAnimationClass
 	has guint                  $!ref_count;
 }
 
-class GtkCssKeyframes is repr<CStruct> is export {
+class GtkCssKeyframes is repr<CStruct> does GLib::Roles::Pointers is export {
   has gint                         $.ref_count;
   has gint                         $.n_keyframes;
   has CArray[gdouble]              $.keyframe_progress;
@@ -470,7 +472,7 @@ class GtkCssKeyframes is repr<CStruct> is export {
   has CArray[Pointer[GtkCssValue]] $.values;
 };
 
-class GtkProgressTracker is repr<CStruct> is export {
+class GtkProgressTracker is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint64  $!last_frame_time;
 	has guint64  $!duration       ;
 	has gdouble   $!iteration      ;
@@ -478,7 +480,7 @@ class GtkProgressTracker is repr<CStruct> is export {
 	has gboolean $!is_running     ;
 }
 
-class GtkCssAnimation is repr<CStruct> is export {
+class GtkCssAnimation is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkStyleAnimation  $!parent    ;
 	has Str               $!name      ;
 	has GtkCssKeyframes    $!keyframes ;
@@ -489,32 +491,32 @@ class GtkCssAnimation is repr<CStruct> is export {
 	has GtkProgressTracker $!tracker   ;
 }
 
-# class GtkCssAnimationClass is repr<CStruct> is export {
+# class GtkCssAnimationClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkStyleAnimationClass $!parent_class;
 # }
 
 
-class GtkCssDelimToken is repr<CStruct> is export {
+class GtkCssDelimToken is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssTokenType $!type ;
 	has gunichar        $!delim;
 }
 
-class GtkCssDimensionToken is repr<CStruct> is export {
+class GtkCssDimensionToken is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssTokenType $!type     ;
 	has gdouble          $!value    ;
 	has Str            $!dimension;
 }
 
-class GtkCssImage is repr<CStruct> is export {
+class GtkCssImage is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent;
 }
 
-class GtkCssImageConicColorStop is repr<CStruct> is export {
+class GtkCssImageConicColorStop is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssValue $!offset;
 	has GtkCssValue $!color ;
 }
 
-class GtkCssImageConic is repr<CStruct> is export {
+class GtkCssImageConic is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssImage               $!parent     ;
 	has GtkCssValue               $!center     ;
 	has GtkCssValue               $!rotation   ;
@@ -522,21 +524,21 @@ class GtkCssImageConic is repr<CStruct> is export {
 	has GtkCssImageConicColorStop $!color_stops;
 }
 
-# class GtkCssImageConicClass is repr<CStruct> is export {
+# class GtkCssImageConicClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-class GtkCssImageCrossFade is repr<CStruct> is export {
+class GtkCssImageCrossFade is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssImage $!parent        ;
 	has GArray      $!images        ;
 	has gdouble      $!total_progress;
 }
 
-# class GtkCssImageCrossFadeClass is repr<CStruct> is export {
+# class GtkCssImageCrossFadeClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-class GtkCssImageFallback is repr<CStruct> is export {
+class GtkCssImageFallback is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssImage $!parent  ;
 	has GtkCssImage $!images  ;
 	has int         $!n_images;
@@ -544,11 +546,11 @@ class GtkCssImageFallback is repr<CStruct> is export {
 	has GtkCssValue $!color   ;
 }
 
-# class GtkCssImageFallbackClass is repr<CStruct> is export {
+# class GtkCssImageFallbackClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-class GtkCssImageIconTheme is repr<CStruct> is export {
+class GtkCssImageIconTheme is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssImage      $!parent         ;
 	has GtkIconTheme     $!icon_theme     ;
 	has GdkRGBA          $!colors         ;
@@ -560,49 +562,49 @@ class GtkCssImageIconTheme is repr<CStruct> is export {
 	has GtkIconPaintable $!cached_icon    ;
 }
 
-# class GtkCssImageIconThemeClass is repr<CStruct> is export {
+# class GtkCssImageIconThemeClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-class GtkCssImageInvalid is repr<CStruct> is export {
+class GtkCssImageInvalid is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssImage $!parent      ;
 	has GFile       $!file        ;
 	has GtkCssImage $!loaded_image;
 }
 
-# class GtkCssImageInvalidClass is repr<CStruct> is export {
+# class GtkCssImageInvalidClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-# class GtkCssImageLinearClass is repr<CStruct> is export {
+# class GtkCssImageLinearClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-class GtkCssImageLinearColorStop is repr<CStruct> is export {
+class GtkCssImageLinearColorStop is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssValue $!offset;
 	has GtkCssValue $!color ;
 }
 
-class GtkCssImagePaintable is repr<CStruct> is export {
+class GtkCssImagePaintable is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssImage  $!parent          ;
 	has GdkPaintable $!paintable       ;
 	has GdkPaintable $!static_paintable;
 }
 
-# class GtkCssImagePaintableClass is repr<CStruct> is export {
+# class GtkCssImagePaintableClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 #
-# class GtkCssImageRadialClass is repr<CStruct> is export {
+# class GtkCssImageRadialClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-class GtkCssImageRadialColorStop is repr<CStruct> is export {
+class GtkCssImageRadialColorStop is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssValue $!offset;
 	has GtkCssValue $!color ;
 }
 
-class GtkCssImageRecolor is repr<CStruct> is export {
+class GtkCssImageRecolor is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssImage $!parent ;
 	has GFile       $!file   ;
 	has GtkCssValue $!palette;
@@ -613,32 +615,32 @@ class GtkCssImageRecolor is repr<CStruct> is export {
 	has GdkRGBA     $!error  ;
 }
 
-# class GtkCssImageRecolorClass is repr<CStruct> is export {
+# class GtkCssImageRecolorClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-class GtkCssImageScaled is repr<CStruct> is export {
+class GtkCssImageScaled is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssImage $!parent  ;
 	has GtkCssImage $!images  ;
 	has int         $!n_images;
 	has int         $!scales  ;
 }
 
-# class GtkCssImageScaledClass is repr<CStruct> is export {
+# class GtkCssImageScaledClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-class GtkCssImageUrl is repr<CStruct> is export {
+class GtkCssImageUrl is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkCssImage $!parent      ;
 	has GFile       $!file        ;
 	has GtkCssImage $!loaded_image;
 }
 
-# class GtkCssImageUrlClass is repr<CStruct> is export {
+# class GtkCssImageUrlClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssImageClass $!parent_class;
 # }
 
-class GtkCssLocation is repr<CStruct> is export {
+class GtkCssLocation is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gsize $!bytes     ;
 	has gsize $!chars     ;
 	has gsize $!lines     ;
@@ -646,121 +648,121 @@ class GtkCssLocation is repr<CStruct> is export {
 	has gsize $!line_chars;
 }
 
-class GtkCssLookupValue is repr<CStruct> is export {
+class GtkCssLookupValue is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssSection $!section;
 	has GtkCssValue   $!value  ;
 }
 
-class GtkCssNumberToken is repr<CStruct> is export {
+class GtkCssNumberToken is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssTokenType $!type  ;
 	has gdouble          $!number;
 }
 
-class GtkCssProvider is repr<CStruct> is export {
+class GtkCssProvider is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkStyleProperty is repr<CStruct> is export {
+class GtkStyleProperty is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent;
 	has Str    $!name  ;
 }
 
-class GtkCssShorthandProperty is repr<CStruct> is export {
+class GtkCssShorthandProperty is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkStyleProperty                 $!parent       ;
 	has GPtrArray                        $!subproperties;
 	has gpointer $!parse        ; #= GtkCssShorthandPropertyParseFunc
 }
 
-# class GtkCssShorthandPropertyClass is repr<CStruct> is export {
+# class GtkCssShorthandPropertyClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkStylePropertyClass $!parent_class;
 # }
 
-class GtkCssStaticStyle is repr<CStruct> is export {
+class GtkCssStaticStyle is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssStyle  $!parent  ;
 	has GPtrArray    $!sections;
 	has GtkCssChange $!change  ;
 }
 
-class GtkBitmask is repr<CStruct> is export {
+class GtkBitmask is repr<CStruct> does GLib::Roles::Pointers is export {
   has gsize $.len;
   HAS gsize @.data[1] is CArray;
 }
 
 
-# class GtkCssStaticStyleClass is repr<CStruct> is export {
+# class GtkCssStaticStyleClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkCssStyleClass $!parent_class;
 # }
 
-class GtkCssStringToken is repr<CStruct> is export {
+class GtkCssStringToken is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssTokenType $!type  ;
 	has Str            $!string;
 }
 
-class GtkCssStyleChange is repr<CStruct> is export {
+class GtkCssStyleChange is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssStyle   $!old_style;
 	has GtkCssStyle   $!new_style;
 	has GtkCssAffects $!affects  ;
 	has GtkBitmask    $!changes  ;
 }
 
-# class GtkCssStylePropertyClass is repr<CStruct> is export {
+# class GtkCssStylePropertyClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkStylePropertyClass $!parent_class    ;
 # 	has GPtrArray             $!style_properties;
 # }
 
-class GtkCssTransientNode is repr<CStruct> is export {
+class GtkCssTransientNode is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssNode $!node;
 }
 
-# class GtkCssTransientNodeClass is repr<CStruct> is export {
+# class GtkCssTransientNodeClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	has GtkCssNodeClass $!node_class;
 # }
 #
-# class GtkCssTransitionClass is repr<CStruct> is export {
+# class GtkCssTransitionClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkStyleAnimationClass $!parent_class;
 # }
 
-class GtkCssWidgetNode is repr<CStruct> is export {
+class GtkCssWidgetNode is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkCssNode  $!node              ;
 	has GtkWidget   $!widget            ;
 	has guint       $!validate_cb_id    ;
 	has GtkCssStyle $!last_updated_style;
 }
 
-# class GtkCssWidgetNodeClass is repr<CStruct> is export {
+# class GtkCssWidgetNodeClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	has GtkCssNodeClass $!node_class;
 # }
 
-class GtkDialog is repr<CStruct> is export {
+class GtkDialog is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWindow $!parent_instance;
 }
 
-class GtkDrawingArea is repr<CStruct> is export {
+class GtkDrawingArea is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkWidget $!widget;
 }
 
-class GtkEntry is repr<CStruct> is export {
+class GtkEntry is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkEntryBuffer is repr<CStruct> is export {
+class GtkEntryBuffer is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkEventController is repr<CStruct> is export {
+class GtkEventController is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkFileChooserErrorStack is repr<CStruct> is export {
+class GtkFileChooserErrorStack is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 	has GtkWidget $!stack          ;
 }
 
-# class GtkFileChooserErrorStackClass is repr<CStruct> is export {
+# class GtkFileChooserErrorStackClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkWidgetClass $!parent_class;
 # }
 
-class GtkFileChooserNative is repr<CStruct> is export {
+class GtkFileChooserNative is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkNativeDialog $!parent_instance;
 	has Str            $!accept_label   ;
 	has Str            $!cancel_label   ;
@@ -777,7 +779,7 @@ class GtkFileChooserNative is repr<CStruct> is export {
 	has gpointer        $!mode_data      ;
 }
 
-class GtkFileChooserNativeChoice is repr<CStruct> is export {
+class GtkFileChooserNativeChoice is repr<CStruct> does GLib::Roles::Pointers is export {
 	has Str $!id           ;
 	has Str $!label        ;
 	has Str $!options      ;
@@ -785,68 +787,68 @@ class GtkFileChooserNativeChoice is repr<CStruct> is export {
 	has Str $!selected     ;
 }
 
-class GtkFixed is repr<CStruct> is export {
+class GtkFixed is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-# class GtkFixedClass is repr<CStruct> is export {
+# class GtkFixedClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkWidgetClass $!parent_class;
 # 	has gpointer       $!padding     ;
 # }
 
-class GtkFlowBoxChild is repr<CStruct> is export {
+class GtkFlowBoxChild is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkFrame is repr<CStruct> is export {
+class GtkFrame is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkGLArea is repr<CStruct> is export {
+class GtkGLArea is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkGesture is repr<CStruct> is export {
+class GtkGesture is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkEventController $!parent_instance;
 }
 
-class GtkGestureSingle is repr<CStruct> is export {
+class GtkGestureSingle is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkGesture $!parent_instance;
 }
 
-class GtkGestureClick is repr<CStruct> is export {
+class GtkGestureClick is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkGestureSingle $!parent_instance;
 }
 
-class GtkGestureDrag is repr<CStruct> is export {
+class GtkGestureDrag is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkGestureSingle $!parent_instance;
 }
 
-class GtkGestureLongPress is repr<CStruct> is export {
+class GtkGestureLongPress is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkGestureSingle $!parent_instance;
 }
 
-class GtkGesturePan is repr<CStruct> is export {
+class GtkGesturePan is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkGestureDrag $!parent_instance;
 }
 
-class GtkGestureRotate is repr<CStruct> is export {
+class GtkGestureRotate is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkGesture $!parent_instance;
 }
 
-class GtkGestureStylus is repr<CStruct> is export {
+class GtkGestureStylus is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkGestureSingle $!parent_instance;
 }
 
-class GtkGestureSwipe is repr<CStruct> is export {
+class GtkGestureSwipe is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkGestureSingle $!parent_instance;
 }
 
-class GtkGestureZoom is repr<CStruct> is export {
+class GtkGestureZoom is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkGesture $!parent_instance;
 }
 
-class GtkGizmo is repr<CStruct> is export {
+class GtkGizmo is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget  $!parent_instance;
 	has gpointer   $!measure_func   ; #= GtkGizmoMeasureFunc
 	has gpointer   $!allocate_func  ; #= GtkGizmoAllocateFunc
@@ -856,121 +858,121 @@ class GtkGizmo is repr<CStruct> is export {
 	has gpointer   $!grab_focus_func; #= GtkGizmoGrabFocusFunc
 }
 
-# class GtkGizmoClass is repr<CStruct> is export {
+# class GtkGizmoClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkWidgetClass $!parent_class;
 # }
 
-class GtkGraphData is repr<CStruct> is export {
+class GtkGraphData is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GObject             $!object;
 	has gpointer $!priv  ;
 }
 
-class GtkGrid is repr<CStruct> is export {
+class GtkGrid is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-# class GtkGridClass is repr<CStruct> is export {
+# class GtkGridClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkWidgetClass $!parent_class;
 # 	has gpointer       $!padding     ;
 # }
 
-class GtkIMContext is repr<CStruct> is export {
+class GtkIMContext is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-# class GtkIMContextIMEClass is repr<CStruct> is export {
+# class GtkIMContextIMEClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkIMContextClass $!parent_class;
 # }
 
-class GtkIMContextSimple is repr<CStruct> is export {
+class GtkIMContextSimple is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkIMContext              $!object;
 	has gpointer $!priv  ;
 }
 
-# class GtkIMContextSimpleClass is repr<CStruct> is export {
+# class GtkIMContextSimpleClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkIMContextClass $!parent_class;
 # }
 
-class GtkIMMulticontext is repr<CStruct> is export {
+class GtkIMMulticontext is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkIMContext             $!object;
 	has gpointer $!priv  ;
 }
 
-class GtkIconView is repr<CStruct> is export {
+class GtkIconView is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkWidget          $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkInspectorCssEditor is repr<CStruct> is export {
+class GtkInspectorCssEditor is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBox                       $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkInspectorCssEditorClass is repr<CStruct> is export {
+# class GtkInspectorCssEditorClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkBoxClass $!parent;
 # }
 
-class GtkInspectorCssNodeTree is repr<CStruct> is export {
+class GtkInspectorCssNodeTree is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBox                         $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkInspectorCssNodeTreeClass is repr<CStruct> is export {
+# class GtkInspectorCssNodeTreeClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkBoxClass $!parent;
 # }
 
-class GtkInspectorRecording is repr<CStruct> is export {
+class GtkInspectorRecording is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent   ;
 	has gint64  $!timestamp;
 }
 
 
-class GtkInspectorEventRecording is repr<CStruct> is export {
+class GtkInspectorEventRecording is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkInspectorRecording $!parent;
 	has GdkEvent              $!event ;
 }
 
-# class GtkInspectorEventRecordingClass is repr<CStruct> is export {
+# class GtkInspectorEventRecordingClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkInspectorRecordingClass $!parent;
 # }
 
-class GtkInspectorMagnifier is repr<CStruct> is export {
+class GtkInspectorMagnifier is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBox                       $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkInspectorMagnifierClass is repr<CStruct> is export {
+# class GtkInspectorMagnifierClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkBoxClass $!parent;
 # }
 
-class GtkInspectorMenu is repr<CStruct> is export {
+class GtkInspectorMenu is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBox                  $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkInspectorMenuClass is repr<CStruct> is export {
+# class GtkInspectorMenuClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkBoxClass $!parent;
 # }
 
-class GtkInspectorObjectTree is repr<CStruct> is export {
+class GtkInspectorObjectTree is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBox                        $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkInspectorPropList is repr<CStruct> is export {
+class GtkInspectorPropList is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBox                      $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkInspectorPropListClass is repr<CStruct> is export {
+# class GtkInspectorPropListClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkBoxClass $!parent;
 # }
 
-# class GtkInspectorRecordingClass is repr<CStruct> is export {
+# class GtkInspectorRecordingClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent;
 # }
 
-class GtkInspectorRenderRecording is repr<CStruct> is export {
+class GtkInspectorRenderRecording is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkInspectorRecording $!parent       ;
 	has GdkRectangle          $!area         ;
 	has cairo_region_t        $!clip_region  ;
@@ -978,43 +980,43 @@ class GtkInspectorRenderRecording is repr<CStruct> is export {
 	has Str                  $!profiler_info;
 }
 
-# class GtkInspectorRenderRecordingClass is repr<CStruct> is export {
+# class GtkInspectorRenderRecordingClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkInspectorRecordingClass $!parent;
 # }
 
-class GtkInspectorSizeGroups is repr<CStruct> is export {
+class GtkInspectorSizeGroups is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkBox $!parent;
 }
 
-# class GtkInspectorSizeGroupsClass is repr<CStruct> is export {
+# class GtkInspectorSizeGroupsClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkBoxClass $!parent;
 # }
 
-class GtkInspectorStartRecording is repr<CStruct> is export {
+class GtkInspectorStartRecording is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkInspectorRecording $!parent;
 }
 
-# class GtkInspectorStartRecordingClass is repr<CStruct> is export {
+# class GtkInspectorStartRecordingClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkInspectorRecordingClass $!parent;
 # }
 
-class GtkInspectorStatistics is repr<CStruct> is export {
+class GtkInspectorStatistics is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBox                        $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkInspectorStatisticsClass is repr<CStruct> is export {
+# class GtkInspectorStatisticsClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkBoxClass $!parent;
 # }
 
-class GtkInspectorStrvEditor is repr<CStruct> is export {
+class GtkInspectorStrvEditor is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBox    $!parent ;
 	has GtkWidget $!box    ;
 	has GtkWidget $!button ;
 	has gboolean  $!blocked;
 }
 
-class GtkInspectorWindow is repr<CStruct> is export {
+class GtkInspectorWindow is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkWindow           $!parent               ;
 	has GtkWidget           $!top_stack            ;
 	has GtkWidget           $!object_stack         ;
@@ -1067,74 +1069,74 @@ class GtkInspectorWindow is repr<CStruct> is export {
 	has GdkDisplay          $!inspected_display    ;
 }
 
-# class GtkInspectorWindowClass is repr<CStruct> is export {
+# class GtkInspectorWindowClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkWindowClass $!parent;
 # }
 #
-# class GtkLayoutChildClass is repr<CStruct> is export {
+# class GtkLayoutChildClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # }
 
-class GtkListBase is repr<CStruct> is export {
+class GtkListBase is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkListBoxRow is repr<CStruct> is export {
+class GtkListBoxRow is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkListItemFactory is repr<CStruct> is export {
+class GtkListItemFactory is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkListItemManagerItem is repr<CStruct> is export {
+class GtkListItemManagerItem is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkWidget $!widget ;
 	has guint     $!n_items;
 }
 
-class GtkListItemManagerItemAugment is repr<CStruct> is export {
+class GtkListItemManagerItemAugment is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint $!n_items;
 }
 
-class GtkListItemWidget is repr<CStruct> is export {
+class GtkListItemWidget is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkListStore is repr<CStruct> is export {
+class GtkListStore is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GObject             $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkListStoreClass is repr<CStruct> is export {
+# class GtkListStoreClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # 	has gpointer     $!padding     ;
 # }
 
-class GtkListView is repr<CStruct> is export {
+class GtkListView is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkListBase        $!parent_instance;
 	has GtkListItemManager $!item_manager   ;
 	has gboolean           $!show_separators;
 	has int                $!list_width     ;
 }
 
-# class GtkListViewClass is repr<CStruct> is export {
+# class GtkListViewClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkListBaseClass $!parent_class;
 # }
 
-class GtkMessageDialog is repr<CStruct> is export {
+class GtkMessageDialog is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkDialog $!parent_instance;
 }
 
-class GtkMountOperation is repr<CStruct> is export {
+class GtkMountOperation is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GMountOperation          $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class GtkOrientableIface is repr<CStruct> is export {
+class GtkOrientableIface is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GTypeInterface $!base_iface;
 }
 
-class GtkPadActionEntry is repr<CStruct> is export {
+class GtkPadActionEntry is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkPadActionType $!type       ;
 	has int              $!index      ;
 	has int              $!mode       ;
@@ -1142,30 +1144,30 @@ class GtkPadActionEntry is repr<CStruct> is export {
 	has Str             $!action_name;
 }
 
-class GtkPageRange is repr<CStruct> is export {
+class GtkPageRange is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int $!start;
 	has int $!end  ;
 }
 
-class GtkPanedHandle is repr<CStruct> is export {
+class GtkPanedHandle is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-# class GtkPanedHandleClass is repr<CStruct> is export {
+# class GtkPanedHandleClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkWidgetClass $!parent_class;
 # }
 
-class GtkPangoAttributeParserData is repr<CStruct> is export {
+class GtkPangoAttributeParserData is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBuilder    $!builder;
 	has GObject       $!object ;
 	has PangoAttrList $!attrs  ;
 }
 
-class GtkParamSpecExpression is repr<CStruct> is export {
+class GtkParamSpecExpression is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GParamSpec $!parent_instance;
 }
 
-class GtkPointerFocus is repr<CStruct> is export {
+class GtkPointerFocus is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int              $!ref_count  ;
 	has GdkDevice        $!device     ;
 	has GdkEventSequence $!sequence   ;
@@ -1176,33 +1178,33 @@ class GtkPointerFocus is repr<CStruct> is export {
 	has gdouble           $!y          ;
 }
 
-class GtkPopover is repr<CStruct> is export {
+class GtkPopover is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent;
 }
 
-class GtkPopoverContent is repr<CStruct> is export {
+class GtkPopoverContent is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-# class GtkPopoverContentClass is repr<CStruct> is export {
+# class GtkPopoverContentClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkWidgetClass $!parent_class;
 # }
 
-class GtkPrintBackend is repr<CStruct> is export {
+class GtkPrintBackend is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject                $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class GtkPrintOperation is repr<CStruct> is export {
+class GtkPrintOperation is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject                  $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class GtkPrinter is repr<CStruct> is export {
+class GtkPrinter is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkPrinterOption is repr<CStruct> is export {
+class GtkPrinterOption is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject              $!parent_instance  ;
 	has Str                 $!name             ;
 	has Str                 $!display_text     ;
@@ -1216,30 +1218,30 @@ class GtkPrinterOption is repr<CStruct> is export {
 	has Str                 $!group            ;
 }
 
-class GtkPrinterOptionSet is repr<CStruct> is export {
+class GtkPrinterOptionSet is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject    $!parent_instance;
 	has GPtrArray  $!array          ;
 	has GHashTable $!hash           ;
 }
 
-class GtkPrinterOptionWidget is repr<CStruct> is export {
+class GtkPrinterOptionWidget is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkBox                        $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class GtkQuery is repr<CStruct> is export {
+class GtkQuery is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent;
 }
 
-# class GtkQueryClass is repr<CStruct> is export {
+# class GtkQueryClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # }
 
-class GtkRange is repr<CStruct> is export {
+class GtkRange is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkRecentData is repr<CStruct> is export {
+class GtkRecentData is repr<CStruct> does GLib::Roles::Pointers is export {
 	has Str     $!display_name;
 	has Str     $!description ;
 	has Str     $!mime_type   ;
@@ -1249,65 +1251,65 @@ class GtkRecentData is repr<CStruct> is export {
 	has gboolean $!is_private  ;
 }
 
-class GtkRecentManager is repr<CStruct> is export {
+class GtkRecentManager is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject                 $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class GtkRequestedSize is repr<CStruct> is export {
+class GtkRequestedSize is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!data        ;
 	has int      $!minimum_size;
 	has int      $!natural_size;
 }
 
-class GtkRequisition is repr<CStruct> is export {
+class GtkRequisition is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int $!width ;
 	has int $!height;
 }
 
-class GtkScale is repr<CStruct> is export {
+class GtkScale is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkRange $!parent_instance;
 }
 
-class GtkScaleButton is repr<CStruct> is export {
+class GtkScaleButton is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkSearchEngine is repr<CStruct> is export {
+class GtkSearchEngine is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GObject                $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkSearchEngineQuartz is repr<CStruct> is export {
+class GtkSearchEngineQuartz is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkSearchEngine              $!parent;
 	has gpointer $!priv  ;
 }
 #
-# class GtkSearchEngineQuartzClass is repr<CStruct> is export {
+# class GtkSearchEngineQuartzClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkSearchEngineClass $!parent_class;
 # }
 
-class GtkSearchHit is repr<CStruct> is export {
+class GtkSearchHit is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GFile     $!file;
 	has GFileInfo $!info;
 }
 
-# class GtkSidebarRowClass is repr<CStruct> is export {
+# class GtkSidebarRowClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GtkListBoxRowClass $!parent;
 # }
 
-class GtkSizeGroup is repr<CStruct> is export {
+class GtkSizeGroup is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkSortKeys is repr<CStruct> is export {
+class GtkSortKeys is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!klass    ; #= GtkSortKeysClass
 	has int              $!ref_count;
 	has gsize            $!key_size ;
 	has gsize            $!key_align;
 }
 
-class GtkStyleCascade is repr<CStruct> is export { ... }
+class GtkStyleCascade is repr<CStruct> does GLib::Roles::Pointers is export { ... }
 
 class GtkStyleCascade {
 	HAS GObject         $!object   ;
@@ -1316,19 +1318,19 @@ class GtkStyleCascade {
 	has int             $!scale    ;
 }
 
-# class GtkStyleCascadeClass is repr<CStruct> is export {
+# class GtkStyleCascadeClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # }
 
-class GtkStyleContext is repr<CStruct> is export {
+class GtkStyleContext is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_object;
 }
 
-class GtkText is repr<CStruct> is export {
+class GtkText is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkTextAppearance is repr<CStruct> is export {
+class GtkTextAppearance is repr<CStruct> does GLib::Roles::Pointers is export {
   has GdkRGBA $.bg_rgba;
   has GdkRGBA $.fg_rgba;
   has GdkRGBA $.underline_rgba;
@@ -1375,22 +1377,22 @@ class GtkTextAppearance is repr<CStruct> is export {
 };
 
 
-class GtkTextAttrAppearance is repr<CStruct> is export {
+class GtkTextAttrAppearance is repr<CStruct> does GLib::Roles::Pointers is export {
 	has PangoAttribute    $!attr      ;
 	has GtkTextAppearance $!appearance;
 }
 
-class GtkTextBuffer is repr<CStruct> is export {
+class GtkTextBuffer is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject              $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class GtkTextChildAnchor is repr<CStruct> is export {
+class GtkTextChildAnchor is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject  $!parent_instance;
 	has gpointer $!segment        ;
 }
 
-class GtkTextLine is repr<CStruct> is export {
+class GtkTextLine is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!parent                ; #= GtkTextBTreeNode
 	has gpointer $!next                  ; #= GtkTextLine
 	has gpointer $!segments              ; #= GtkTextLineSegment
@@ -1400,14 +1402,14 @@ class GtkTextLine is repr<CStruct> is export {
 	has guchar   $!dir_propagated_forward;
 }
 
-class GtkTextChildBody is repr<CStruct> is export {
+class GtkTextChildBody is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkTextChildAnchor $!obj    ;
 	has GSList             $!widgets;
 	has gpointer        $!tree   ; #= GtkTextBTree
 	has GtkTextLine        $!line   ;
 }
 
-class GtkTextIter is repr<CStruct> is export {
+class GtkTextIter is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!dummy1 ;
 	has gpointer $!dummy2 ;
 	has gint      $!dummy3 ;
@@ -1424,12 +1426,12 @@ class GtkTextIter is repr<CStruct> is export {
 	has gpointer $!dummy14;
 }
 
-# class GtkTextLayoutClass is repr<CStruct> is export {
+# class GtkTextLayoutClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # }
 
 
-# class GtkTextLineSegmentClass is repr<CStruct> is export {
+# class GtkTextLineSegmentClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	has Str                     $!name          ;
 # 	has gboolean                 $!leftGravity   ;
 # 	has GtkTextSegSplitFunc      $!splitFunc     ;
@@ -1439,120 +1441,120 @@ class GtkTextIter is repr<CStruct> is export {
 # 	has GtkTextSegCheckFunc      $!checkFunc     ;
 # }
 
-class GtkTextMark is repr<CStruct> is export {
+class GtkTextMark is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject  $!parent_instance;
 	has gpointer $!segment        ;
 }
 
-# class GtkTextMarkClass is repr<CStruct> is export {
+# class GtkTextMarkClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # 	has gpointer     $!padding     ;
 # }
 
-class GtkTextPaintable is repr<CStruct> is export {
+class GtkTextPaintable is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GdkPaintable $!paintable;
 	has gpointer $!tree     ; #= GtkTextBTree
 	has GtkTextLine  $!line     ;
 }
 
-class GtkTextTag is repr<CStruct> is export {
+class GtkTextTag is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject           $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-# class GtkTextTagClass is repr<CStruct> is export {
+# class GtkTextTagClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # 	has gpointer     $!padding     ;
 # }
 
-class GtkTextTagInfo is repr<CStruct> is export {
+class GtkTextTagInfo is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkTextTag $!tag         ;
 	has gpointer   $!tag_root    ; #= GtkTextBTreeNode
 	has int        $!toggle_count;
 }
 
-class GtkTextToggleBody is repr<CStruct> is export {
+class GtkTextToggleBody is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkTextTagInfo $!info        ;
 	has gboolean       $!inNodeCounts;
 }
 
-class GtkTextView is repr<CStruct> is export {
+class GtkTextView is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget          $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class GtkTimSortRun is repr<CStruct> is export {
+class GtkTimSortRun is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!base;
 	has gsize    $!len ;
 }
 
-class GtkToggleButton is repr<CStruct> is export {
+class GtkToggleButton is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkButton $!button;
 }
 
-class GtkTreeDataSortHeader is repr<CStruct> is export {
+class GtkTreeDataSortHeader is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gint                    $!sort_column_id;
 	has gpointer  $!func          ; #= GtkTreeIterCompareFunc
 	has gpointer               $!data          ;
 	has GDestroyNotify         $!destroy       ;
 }
 
-class GtkTreeIter is repr<CStruct> is export {
+class GtkTreeIter is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gint      $!stamp     ;
 	has gpointer $!user_data ;
 	has gpointer $!user_data2;
 	has gpointer $!user_data3;
 }
 
-class GtkTreeModelCssNode is repr<CStruct> is export {
+class GtkTreeModelCssNode is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GObject                    $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkTreeModelCssNodeClass is repr<CStruct> is export {
+# class GtkTreeModelCssNodeClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # }
 
-class GtkTreeModelFilter is repr<CStruct> is export {
+class GtkTreeModelFilter is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GObject                   $!parent;
 	has gpointer $!priv  ;
 }
 
-class GtkTreeModelSort is repr<CStruct> is export {
+class GtkTreeModelSort is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GObject                 $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkTreeModelSortClass is repr<CStruct> is export {
+# class GtkTreeModelSortClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # 	has gpointer     $!padding     ;
 # }
 
-class GtkTreeRBTree is repr<CStruct> is export {
+class GtkTreeRBTree is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!root       ; #= tkTreeRBNode
 	has gpointer $!parent_tree; #= tkTreeRBTree
 	has gpointer $!parent_node; #= tkTreeRBNode
 }
 
-class GtkTreeStore is repr<CStruct> is export {
+class GtkTreeStore is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject             $!parent;
 	has gpointer $!priv  ;
 }
 
-# class GtkTreeStoreClass is repr<CStruct> is export {
+# class GtkTreeStoreClass is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	HAS GObjectClass $!parent_class;
 # 	has gpointer     $!padding     ;
 # }
 
-class GtkTreeView is repr<CStruct> is export {
+class GtkTreeView is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget $!parent_instance;
 }
 
-class GtkVolumeButton is repr<CStruct> is export {
+class GtkVolumeButton is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkScaleButton $!parent;
 }
 
-class GtkWidgetAction is repr<CStruct> is export {
+class GtkWidgetAction is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkWidgetAction             $!next          ;
 	has Str                        $!name          ;
 	has GType                       $!owner         ;
@@ -1563,7 +1565,7 @@ class GtkWidgetAction is repr<CStruct> is export {
 }
 
 # cw: WTF?
-# class gpointer is repr<CStruct> is export {
+# class gpointer is repr<CStruct> does GLib::Roles::Pointers is export {
 # 	has GtkWidgetTemplate $!template           ;
 # 	has GListStore        $!shortcuts          ;
 # 	has GType             $!layout_manager_type;
@@ -1573,7 +1575,7 @@ class GtkWidgetAction is repr<CStruct> is export {
 # 	has GQuark            $!css_name           ;
 # }
 
-class GtkWidgetSurfaceTransformData is repr<CStruct> is export {
+class GtkWidgetSurfaceTransformData is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkWidget         $!tracked_parent                     ;
 	has guint             $!parent_surface_transform_changed_id;
 	has gboolean          $!cached_surface_transform_valid     ;
@@ -1581,23 +1583,23 @@ class GtkWidgetSurfaceTransformData is repr<CStruct> is export {
 	has GList             $!callbacks                          ;
 }
 
-class GtkWidgetTemplate is repr<CStruct> is export {
+class GtkWidgetTemplate is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GBytes          $!data    ;
 	has GSList          $!children;
 	has GtkBuilderScope $!scope   ;
 }
 
-class GtkWindowGroup is repr<CStruct> is export {
+class GtkWindowGroup is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject               $!parent_instance;
 	has gpointer $!priv           ;
 }
 
-class NamedTag is repr<CStruct> is export {
+class NamedTag is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int  $!tag ;
 	has Str $!name;
 }
 
-class SubParser is repr<CStruct> is export {
+class SubParser is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GtkBuildableParser $!parser ;
 	has Str               $!tagname;
 	has Str               $!start  ;
@@ -1606,7 +1608,7 @@ class SubParser is repr<CStruct> is export {
 	has GObject            $!child  ;
 }
 
-class ParserData is repr<CStruct> is export {
+class ParserData is repr<CStruct> does GLib::Roles::Pointers is export {
 	has Str                     $!last_element           ;
 	has GtkBuilder               $!builder                ;
 	has Str                     $!domain                 ;
@@ -1624,14 +1626,14 @@ class ParserData is repr<CStruct> is export {
 	has GHashTable               $!object_ids             ;
 }
 
-class RequiresInfo is repr<CStruct> is export {
+class RequiresInfo is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint $!tag_type;
 	has Str  $!library ;
 	has int   $!major   ;
 	has int   $!minor   ;
 }
 
-class SignalInfo is repr<CStruct> is export {
+class SignalInfo is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint         $!tag_type           ;
 	has Str          $!object_name        ;
 	has guint         $!id                 ;
@@ -1641,30 +1643,30 @@ class SignalInfo is repr<CStruct> is export {
 	has Str          $!connect_object_name;
 }
 
-class SizeRequestX is repr<CStruct> is export {
+class SizeRequestX is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int         $!lower_for_size;
 	has int         $!upper_for_size;
 	has CachedSizeX $!cached_size   ;
 }
 
-class SizeRequestY is repr<CStruct> is export {
+class SizeRequestY is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int         $!lower_for_size;
 	has int         $!upper_for_size;
 	has CachedSizeY $!cached_size   ;
 }
 
-class array_container_s is repr<CStruct> is export {
+class array_container_s is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int32_t  $!cardinality;
 	has int32_t  $!capacity   ;
 	has uint16_t $!array      ;
 }
 
-class bitset_container_s is repr<CStruct> is export {
+class bitset_container_s is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int32_t  $!cardinality;
 	has uint64_t $!array      ;
 }
 
-class closure is repr<CStruct> is export {
+class closure is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GType    $!type         ;
 	has Str     $!function_name;
 	has Str     $!object_name  ;
@@ -1672,24 +1674,24 @@ class closure is repr<CStruct> is export {
 	has GSList   $!params       ;
 }
 
-class constant is repr<CStruct> is export {
+class constant is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GType   $!type;
 	has GString $!text;
 }
 
-class gtk_secure_rec is repr<CStruct> is export {
+class gtk_secure_rec is repr<CStruct> does GLib::Roles::Pointers is export {
 	has Str   $!tag           ;
 	has size_t $!request_length;
 	has size_t $!block_length  ;
 }
 
-class property is repr<CStruct> is export {
+class property is repr<CStruct> does GLib::Roles::Pointers is export {
 	has GType          $!this_type    ;
 	has Str           $!property_name;
 	has gpointer $!expression   ; #= ExpressionInfo
 }
 
-class roaring_array_t is repr<CStruct> is export {
+class roaring_array_t is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int32  $!size           ;
 	has int32  $!allocation_size;
 	has gpointer     $!containers     ;
@@ -1698,11 +1700,11 @@ class roaring_array_t is repr<CStruct> is export {
 	has uint8 $!flags          ;
 }
 
-class roaring_bitmap_t is repr<CStruct> is export {
+class roaring_bitmap_t is repr<CStruct> does GLib::Roles::Pointers is export {
 	has roaring_array_t $!high_low_container;
 }
 
-class run_container_s is repr<CStruct> is export {
+class run_container_s is repr<CStruct> does GLib::Roles::Pointers is export {
 	has int32 $!n_runs  ;
 	has int32 $!capacity;
 	has uint16 $!runs    ; #= rle16_t

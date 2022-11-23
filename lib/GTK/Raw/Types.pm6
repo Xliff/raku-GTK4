@@ -4,6 +4,7 @@ use GLib::Raw::Exports;
 use ATK::Raw::Exports;
 use Pango::Raw::Exports;
 use GIO::Raw::Exports;
+use Graphene::Raw::Exports;
 use GDK::Raw::Exports:ver<4>;
 use GSK::Raw::Exports:ver<4>;
 use GTK::Raw::Exports:ver<4>;
@@ -35,6 +36,8 @@ need GIO::Raw::Enums;
 need GIO::Raw::Quarks;
 need GIO::Raw::Structs;
 need GIO::Raw::Subs;
+need Graphene::Raw::Definitions;
+need Graphene::Raw::Enums;
 need GDK::Raw::Compat:ver<4>;
 need GDK::Raw::Definitions:ver<4>;
 need GDK::Raw::Enums:ver<4>;
@@ -53,6 +56,7 @@ BEGIN {
                          |@atk-exports,
                          |@pango-exports,
                          |@gio-exports,
+                         |@graphene-exports,
                          |@gdk4-exports,
                          |@gsk4-exports,
                          |@gtk4-exports;

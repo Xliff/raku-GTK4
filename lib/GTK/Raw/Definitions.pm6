@@ -28,12 +28,22 @@ class GtkShortcut          is repr<CPointer> does GLib::Roles::Pointers is expor
 
 class GtkBuilder            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBuildableParser    is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkConstraint         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraintVariable is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssNode            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssSection         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFileFilter         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconPaintable      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconTheme          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkImage              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkInspectorOverlay   is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkLabel              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkListItemManager    is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkLayoutChild        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkOrientable         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNativeDialog       is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSettings           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkShortcutController is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkShortcutManager    is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkShortcutsWindow    is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkTooltip            is repr<CPointer> does GLib::Roles::Pointers is export { }
