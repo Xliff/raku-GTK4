@@ -69,7 +69,7 @@ class GTK::Window:ver<4> is GTK::Widget {
     self.roleInit-GtkShortcutManager;
   }
 
-  method GTK::Raw::Definitions::GtkWindow
+  method GTK::Raw::Structs::GtkWindow
     is also<GtkWindow>
   { $!gtk-win }
 
@@ -88,9 +88,13 @@ class GTK::Window:ver<4> is GTK::Widget {
   ) {
     my $gtk-window = gtk_window_new();
 
-    say "New-win: { $gtk-window }";
+    say "New-win: { $gtk-window // 'NO WINDOW!' }";
+    return unless $gtk-window;
 
-    $gtk-window ?? self.bless( :$gtk-window ) !! Nil;
+    my $o = self.bless( :$gtk-window );
+    $o.set_size_request( |$size );
+    $o.title = $title if $title;
+    $o
   }
 
   # Type: string
@@ -753,7 +757,12 @@ class GTK::Window:ver<4> is GTK::Widget {
     gtk_window_minimize($!gtk-win);
   }
 
-  method present {
+  method present
+    is also<
+      show_all
+      show-all
+    >
+  {
     gtk_window_present($!gtk-win);
   }
 
