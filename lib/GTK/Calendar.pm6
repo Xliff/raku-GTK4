@@ -6,6 +6,7 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Calendar:ver<4>;
 
+use GLib::DateTime;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
@@ -172,7 +173,7 @@ class GTK::Calendar:ver<4> is GTK::Widget:ver<4> {
     propReturnObject(
       gtk_calendar_get_date($!gtk-cal),
       $raw,
-      GLib::DateTime.getTypePair
+      |GLib::DateTime.getTypePair
     );
   }
 
