@@ -2,8 +2,9 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::Buttons:ver<4>;
+use GTK::Raw::Button:ver<4>;
 
 use GTK::Widget;
 
@@ -45,27 +46,26 @@ class GTK::Button:ver<4> is GTK::Widget {
     $o.ref if $ref;
     $o;
   }
-
-  method new {
+  multi method new {
     my $gtk-button = gtk_button_new();
 
     $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
   }
 
   method new_from_icon_name (Str() $icon_name) is also<new-from-icon-name> {
-    my $gtk-button = gtk_button_new_from_icon_name($!gtk-b, $icon_name);
+    my $gtk-button = gtk_button_new_from_icon_name($icon_name);
 
     $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
   }
 
   method new_with_label (Str() $label) is also<new-with-label> {
-    my $gtk-button = gtk_button_new_with_label($!gtk-b, $label);
+    my $gtk-button = gtk_button_new_with_label($label);
 
     $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
   }
 
   method new_with_mnemonic (Str() $label) is also<new-with-mnemonic> {
-    my $gtk-button = gtk_button_new_with_mnemonic($!gtk-b, $label);
+    my $gtk-button = gtk_button_new_with_mnemonic($label);
 
     $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
   }
