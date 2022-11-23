@@ -1,9 +1,12 @@
 use v6.c;
 
 use Method::Also;
+use NativeCall;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Application:ver<4>;
+use GTK::Raw::Main:ver<4>;
 
 use GIO::Application;
 use GIO::MenuModel;
@@ -40,7 +43,7 @@ class GTK::Application:ver<4> is GIO::Application {
     self.setGApplication($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkApplication
+  method GTK::Raw::Structs::GtkApplication
     is also<GtkApplcation>
   { $!gtk-app }
 
@@ -51,8 +54,7 @@ class GTK::Application:ver<4> is GIO::Application {
     $o.ref if $ref;
     $o;
   }
-
-  method new (Str() $id, Int() $flags) {
+  multi method new (Str() $id, Int() $flags = 0) {
     my GApplicationFlags $f = $flags;
 
     my $gtk-application = gtk_application_new($id, $f);
@@ -160,7 +162,7 @@ class GTK::Application:ver<4> is GIO::Application {
     gtk_application_get_active_window($!gtk-app);
   }
 
-  method get_menu_by_id (Str() )$id) is also<get-menu-by-id> {
+  method get_menu_by_id (Str() $id) is also<get-menu-by-id> {
     gtk_application_get_menu_by_id($!gtk-app, $id);
   }
 
@@ -200,9 +202,9 @@ class GTK::Application:ver<4> is GIO::Application {
 
   proto method set_accels_for_action (|)
     is also<set-accels-for-action>
-  { * ]
+  { * }
 
-  method set_accels_for_action (
+  multi method set_accels_for_action (
     Str() $detailed_action_name,
           @accels
   ) {
@@ -211,7 +213,7 @@ class GTK::Application:ver<4> is GIO::Application {
       ArrayToCArray(Str, @accels, :null)
     )
   }
-  method set_accels_for_action (
+  multi method set_accels_for_action (
     Str()       $detailed_action_name,
     CArray[Str] $accels
   ) {
