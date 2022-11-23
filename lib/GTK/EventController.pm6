@@ -2,15 +2,15 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::EventController:ver<4>
+use GTK::Raw::EventController:ver<4>;
 
 use GDK::Device:ver<4>;
-use GDK::Event:ver<4>;
+use GDK::Events:ver<4>;
 
 use GLib::Roles::Implementor:ver<4>;
 use GLib::Roles::Object:ver<4>;
-
 
 our subset GtkEventControllerAncestry is export of Mu
   where GtkEventController | GObject;
@@ -82,7 +82,7 @@ class GTK::EventController:ver<4> {
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('propagation-phase', $gv);
-        my $pp = $gv.valueFromEnum(GtkPropagationPhase)
+        my $pp = $gv.valueFromEnum(GtkPropagationPhase);
         return $pp unless $enum;
         GtkPropagationPhaseEnum( $gv.valueFromEnum(GtkPropagationPhase) );
       },
@@ -150,7 +150,7 @@ class GTK::EventController:ver<4> {
     is also<
       get-current-event-device
       current_event_device
-      current_event_device
+      current-event-device
       event_device
       event-device
       device
@@ -193,13 +193,17 @@ class GTK::EventController:ver<4> {
     gtk_event_controller_get_name($!gtk-ec);
   }
 
-  method get_propagation_limit ( :$enum = True ) is also<get-propagation-limit> {
+  method get_propagation_limit ( :$enum = True )
+    is also<get-propagation-limit>
+  {
     my $p =  gtk_event_controller_get_propagation_limit($!gtk-ec);
     return $p unless $enum;
     GtkPropagationLimitEnum($p);
   }
 
-  method get_propagation_phase is also<get-propagation-phase> {( :$enum = True )
+  method get_propagation_phase ( :$enum = True )
+    is also<get-propagation-phase>
+  {
     my $p = gtk_event_controller_get_propagation_phase($!gtk-ec);
     return $p unless $enum;
     GtkPropagationPhaseEnum($p);
@@ -220,7 +224,7 @@ class GTK::EventController:ver<4> {
   {
     returnProperWidget(
       gtk_event_controller_get_widget($!gtk-ec),
-      $raw.
+      $raw,
       $proper
     );
   }

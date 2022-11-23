@@ -7,6 +7,7 @@ use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Enums:ver<4>;
 use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
+use GTK::Raw::Structs:ver<4>;
 
 
 unit package GTK::Raw::EventController:ver<4>;
