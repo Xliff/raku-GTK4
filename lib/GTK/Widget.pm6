@@ -406,7 +406,15 @@ class GTK::Widget:ver<4> {
   }
 
   # Type: int
-  method margin-start is rw  is g-property is also<margin_start> {
+  method margin-start
+    is rw
+    is g-property
+    is also<
+      margin_start
+      margin-left
+      margin_left
+    >
+  {
     my $gv = GLib::Value.new( G_TYPE_INT );
     Proxy.new(
       FETCH => sub ($) {
@@ -421,7 +429,15 @@ class GTK::Widget:ver<4> {
   }
 
   # Type: int
-  method margin-end is rw  is g-property is also<margin_end> {
+  method margin-end
+    is rw
+    is g-property
+    is also<
+      margin_end
+      margin_right
+      margin-right
+    >
+ {
     my $gv = GLib::Value.new( G_TYPE_INT );
     Proxy.new(
       FETCH => sub ($) {
@@ -1036,11 +1052,23 @@ class GTK::Widget:ver<4> {
     gtk_widget_get_margin_bottom($!gtk-w);
   }
 
-  method get_margin_end is also<get-margin-end> {
+  method get_margin_end
+    is also<
+      get-margin-end
+      get_margin_right
+      get-margin-right
+    >
+  {
     gtk_widget_get_margin_end($!gtk-w);
   }
 
-  method get_margin_start is also<get-margin-start> {
+  method get_margin_start
+    is also<
+      get-margin-start
+      get_margin_left
+      get-margin-left
+    >
+  {
     gtk_widget_get_margin_start($!gtk-w);
   }
 
@@ -1584,13 +1612,25 @@ class GTK::Widget:ver<4> {
     gtk_widget_set_margin_bottom($!gtk-w, $m);
   }
 
-  method set_margin_end (Int() $margin) is also<set-margin-end> {
+  method set_margin_end (Int() $margin)
+    is also<
+      set-margin-end
+      set_margin_right
+      set-margin-right
+    >
+  {
     my gint $m = $margin;
 
     gtk_widget_set_margin_end($!gtk-w, $m);
   }
 
-  method set_margin_start (Int() $margin) is also<set-margin-start> {
+  method set_margin_start (Int() $margin)
+    is also<
+      set-margin-start
+      set_margin_left
+      set-margin-left
+    >
+  {
     my gint $m = $margin;
 
     gtk_widget_set_margin_start($!gtk-w, $m);
@@ -1640,8 +1680,6 @@ class GTK::Widget:ver<4> {
     is also<set-size-request>
   {
     my gint ($w, $h) = ($width, $height);
-
-    say "I: { $!gtk-w } / W: $w / H: $h ";
 
     gtk_widget_set_size_request($!gtk-w, $w, $h);
   }
