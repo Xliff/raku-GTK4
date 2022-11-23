@@ -28,6 +28,7 @@ class GtkShortcut          is repr<CPointer> does GLib::Roles::Pointers is expor
 
 class GtkBuilder            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBuildableParser    is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkCalendar           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraint         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraintVariable is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssNode            is repr<CPointer> does GLib::Roles::Pointers is export { }
