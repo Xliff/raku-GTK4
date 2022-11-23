@@ -5,7 +5,7 @@ use NativeCall;
 use GTK::Raw::Types:ver<4>;
 
 role GTK::Roles::Signals::Application {
-  has %!signals-gtk-win;
+  has %!signals-gtk-app;
 
   # GtkApplication, GtkWindow, gpointer
   method connect-window (
