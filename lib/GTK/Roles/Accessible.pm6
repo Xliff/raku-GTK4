@@ -1,7 +1,9 @@
 use v6.c;
 
 use Method::Also;
+use NativeCall;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Accessible;
 
@@ -10,6 +12,13 @@ use GLib::Roles::Object;
 
 role GTK::Roles::Accessible:ver<4> {
   has GtkAccessible $!gtk-a is implementor;
+
+  method roleInit-GtkAccessible {
+    return if $!gtk-a;
+
+    my \i = findProperImplementor(self.^attributes);
+    $!gtk-a = cast( GtkAccessible, i.get_value(self) );
+  }
 
   # Type: GTKAccessibleRole
   method accessible-role is rw  is g-property {
@@ -38,7 +47,7 @@ role GTK::Roles::Accessible:ver<4> {
   multi method property_init_value (Int() $property) {
     samewith(
       $property,
-      GLib::Value.alloc( GLib::Value.ty peFromEnum(GtkAccessibleProperty) )
+      GLib::Value.alloc( GLib::Value.typeFromEnum(GtkAccessibleProperty) )
     );
   }
   multi method property_init_value (Int() $property, GValue() $value)
@@ -111,7 +120,7 @@ role GTK::Roles::Accessible:ver<4> {
     my gint $n = $n_properties;
 
     propReturnObject(
-      gtk_accessible_update_property_value($!gtk-a, $n, $properties, $values).
+      gtk_accessible_update_property_value($!gtk-a, $n, $properties, $values),
       $raw,
       |GLib::Value.getTypePair
     );
@@ -122,31 +131,34 @@ role GTK::Roles::Accessible:ver<4> {
 
     gtk_accessible_update_relation($!gtk-a, $f, Str);
   }
-  method update_relations (*@relations where *.elems > 1);
+
+  proto method update_relations(|)
+    is also<update-relations>
+  { * }
+
+  multi method update_relations (*@relations where *.elems > 1) {
     self.update_relation(@relations);
   }
-  method update_relations (@relations)
-    is also<update-relations>
-  {
+  multi method update_relations (@relations) {
     self.update_relation($_) for @relations;
   }
 
-  method update_relation_value (|)
-
+  proto method update_relation_value (|)
     is also<update-relation-value>
   { * }
 
-  multi method update_relation_value (@relations, :$raw = False) is also<update-relation-value> {
+  multi method update_relation_value (@relations, :$raw = False) {
     samewith(
       @relations.elems,
-      ArrayToCArray(GtkAccessibleRelations, @relations),
+      ArrayToCArray(GtkAccessibleRelation, @relations),
       :$raw
     );
   }
   multi method update_relation_value (
-    Int()                         $n_relations,
-    CArray[GtkAccessibleRelation] $relations,
-    GValue()                      $values
+    Int()                          $n_relations,
+    CArray[GtkAccessibleRelation]  $relations,
+    GValue()                       $values,
+                                  :$raw           = False
   )
     is also<update-relation-value>
   {
@@ -180,7 +192,7 @@ role GTK::Roles::Accessible:ver<4> {
   }
   multi method update_state_value (
     Int()                       $n_states,
-    CArary[GtkAccessibleState]  $states,
+    CArray[GtkAccessibleState]  $states,
     GValue()                    $values,
                                :$raw        = False
   ) {
