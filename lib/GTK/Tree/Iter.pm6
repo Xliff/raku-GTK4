@@ -35,6 +35,24 @@ class GTK::Tree::Iter {
     );
   }
 
+  method setTreeModel (GtkTreeModel() $tree-model) {
+    $!gtk-tm = $tree-model;
+  }
+
+  method copy ( :$raw = False ) {
+    my $o = propReturnObject(
+      gtk_tree_iter_copy($!gtk-tm),
+      $raw,
+      |self.getTypePair
+    );
+    $o.setTreeModel($!gtk-tm);
+    $o
+  }
+
+  method free {
+    gtk_tree_iter_free($!gtk-tm);
+  }
+
   method children (GtkTreeIter() $parent)
     is also<
       first_child_of
@@ -62,7 +80,7 @@ class GTK::Tree::Iter {
       nth_child_of
       nth-child-of
     >
-  { 
+  {
     my gint $nn = $n;
 
     gtk_tree_model_iter_nth_child($!gtk-tm, $!gtk-ti, $parent, $nn);
@@ -79,6 +97,12 @@ class GTK::Tree::Iter {
 
   method previous {
     gtk_tree_model_iter_previous($!gtk-tm, $!gtk-ti);
+  }
+
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_tree_iter_get_type, $n, $t )
   }
 
 }
