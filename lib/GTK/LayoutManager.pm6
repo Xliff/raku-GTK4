@@ -44,6 +44,7 @@ class GTK::LayoutManager:ver<4> {
     gtk_layout_manager_layout_changed($!gtk-lm);
   }
 
+  # cw: -XXX- Finish adding multis!\
   method measure (
     GtkWidget        $widget,
     GtkOrientation   $orientation,
@@ -55,3 +56,5 @@ class GTK::LayoutManager:ver<4> {
   ) {
     gtk_layout_manager_measure($!gtk-lm, $widget, $orientation, $for_size, $minimum, $natural, $minimum_baseline, $natural_baseline);
   }
+
+}
