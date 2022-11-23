@@ -325,7 +325,7 @@ sub gtk_tree_path_get_depth (GtkTreePath $path)
 { * }
 
 sub gtk_tree_path_get_indices (GtkTreePath $path)
-  returns gint
+  returns CArray[gint]
   is      native(gtk4)
   is      export
 { * }
@@ -334,7 +334,7 @@ sub gtk_tree_path_get_indices_with_depth (
   GtkTreePath $path,
   gint        $depth is rw
 )
-  returns gint
+  returns CArray[gint]
   is      native(gtk4)
   is      export
 { * }
