@@ -4,11 +4,15 @@ use NativeCall;
 
 use GLib::Raw::Definitions;
 use Pango::Raw::Definitions;
+use Pango::Raw::Enums;
 use Graphene::Raw::Definitions;
 use GDK::Raw::Definitions;
 use GDK::Raw::Structs;
-use GSK::Raw:Definitions;
+use GSK::Raw::Definitions:ver<4>;
+use GSK::Raw::Structs:ver<4>;
+use GSK::Raw::Enums:ver<4>;
 use GTK::Raw::Definitions:ver<4>;
+use GTK::Raw::Structs:ver<4>;
 
 unit package GTK::Raw::Snapshot:ver<4>;
 
@@ -47,7 +51,7 @@ sub gtk_snapshot_append_conic_gradient (
   graphene_rect_t  $bounds,
   graphene_point_t $center,
   gfloat           $rotation,
-  GskColorStop     $stops,
+  gpointer         $stops,
   gsize            $n_stops
 )
   is      native(gtk4)
@@ -81,7 +85,7 @@ sub gtk_snapshot_append_linear_gradient (
   graphene_rect_t  $bounds,
   graphene_point_t $start_point,
   graphene_point_t $end_point,
-  GskColorStop     $stops,
+  gpointer         $stops,
   gsize            $n_stops
 )
   is      native(gtk4)
@@ -117,7 +121,7 @@ sub gtk_snapshot_append_radial_gradient (
   gfloat           $vradius,
   gfloat           $start,
   gfloat           $end,
-  GskColorStop     $stops,
+  gpointer         $stops,
   gsize            $n_stops
 )
   is      native(gtk4)
@@ -129,7 +133,7 @@ sub gtk_snapshot_append_repeating_linear_gradient (
   graphene_rect_t  $bounds,
   graphene_point_t $start_point,
   graphene_point_t $end_point,
-  GskColorStop     $stops,
+  gpointer         $stops,
   gsize            $n_stops
 )
   is      native(gtk4)
@@ -144,7 +148,7 @@ sub gtk_snapshot_append_repeating_radial_gradient (
   gfloat           $vradius,
   gfloat           $start,
   gfloat           $end,
-  GskColorStop     $stops,
+  gpointer         $stops,
   gsize            $n_stops
 )
   is      native(gtk4)
@@ -249,7 +253,7 @@ sub gtk_snapshot_push_cross_fade (
 sub gtk_snapshot_push_debug (
   GtkSnapshot $snapshot,
   Str         $message,
-  Str1
+  Str
 )
   is      native(gtk4)
   is      export
@@ -292,7 +296,7 @@ sub gtk_snapshot_push_rounded_clip (
 
 sub gtk_snapshot_push_shadow (
   GtkSnapshot $snapshot,
-  GskShadow   $shadow,
+  gpointer    $shadow,
   gsize       $n_shadows
 )
   is      native(gtk4)

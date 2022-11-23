@@ -1,6 +1,7 @@
 use v6.c;
 
 use Method::Also;
+use NativeCall;
 
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Snapshot:ver<4>;
@@ -16,7 +17,7 @@ our subset GtkSnapshotAncestry is export of Mu
   where GtkSnapshot | GdkSnapshotAncestry;
 
 class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
-  has GtkSnapshot $!gdk-ss is implementor;
+  has GtkSnapshot $!gtk-ss is implementor;
 
   submethod BUILD ( :$gtk-snapshot ) {
     self.setGtkSnapshot($gtk-snapshot) if $gtk-snapshot
@@ -25,7 +26,7 @@ class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
   method setGtkSnapshot (GtkSnapshotAncestry $_) {
     my $to-parent;
 
-    $!gdk-ss = do {
+    $!gtk-ss = do {
       when GtkSnapshot {
         $to-parent = cast(GdkSnapshot, $_);
         $_;
@@ -41,7 +42,7 @@ class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
 
   method GTK::Raw::Definitions::GtkSnapshot
     is also<GtkSnapshot>
-  { $!gdk-ss }
+  { $!gtk-ss }
 
   multi method new (GtkSnapshotAncestry $gtk-snapshot, :$ref = True) {
     return unless $gtk-snapshot;
@@ -50,8 +51,7 @@ class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
     $o.ref if $ref;
     $o;
   }
-
-  method new {
+  multi method new {
     my $gtk-snapshot = gtk_snapshot_new();
 
     $gtk-snapshot ?? self.bless( :$gtk-snapshot ) !! Nil;
@@ -160,8 +160,8 @@ class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
       $!gtk-ss,
       $outline,
       $color,
-      $d,
-      $d,
+      $x,
+      $y,
       $s,
       $b
     );
@@ -178,6 +178,7 @@ class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
 
   proto method append_linear_gradient (|)
     is also<append-linear-gradient>
+  { * }
 
   multi method append_linear_gradient (
     graphene_rect_t()  $bounds,
@@ -303,7 +304,7 @@ class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
     samewith(
       $bounds,
       $start_point,
-      $end_point
+      $end_point,
       GLib::Roles::TypedBuffer[GskColorStop].new(@stops).p,
       @stops.elems
     );
@@ -338,6 +339,7 @@ class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
     Num()              $vradius,
     Num()              $start,
     Num()              $end,
+                       @stops
   ) {
     samewith(
       $bounds,
@@ -586,7 +588,7 @@ class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
     gtk_snapshot_rotate($!gtk-ss, $a);
   }
 
-  method rotate_3d (Nun() $angle, graphene_vec3_t() $axis) is also<rotate-3d> {
+  method rotate_3d (Num() $angle, graphene_vec3_t() $axis) is also<rotate-3d> {
     my gfloat $a = $angle;
 
     gtk_snapshot_rotate_3d($!gtk-ss, $a, $axis);
@@ -632,7 +634,7 @@ class GTK::Snapshot:ver<4> is GDK::Snapshot:ver<4> {
     gtk_snapshot_transform_matrix($!gtk-ss, $matrix);
   }
 
-  method translate (graphene_point_() $point) {
+  method translate (graphene_point_t() $point) {
     gtk_snapshot_translate($!gtk-ss, $point);
   }
 
