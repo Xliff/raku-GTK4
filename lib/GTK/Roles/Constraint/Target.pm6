@@ -18,7 +18,7 @@ role GTK::Roles::Constraint::Target:ver<4> {
   method GtkConstraintTarget
   { $!gtk-ct }
 
-  method get_type {
+  method gtkconstrainttarget_get_type {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_constraint_target_get_type, $n, $t );
@@ -28,7 +28,7 @@ role GTK::Roles::Constraint::Target:ver<4> {
 
 
 our subset GtkConstraintTargetAncestry is export of Mu
-  where GtkConstraintTarget | GObjectAncestry;
+  where GtkConstraintTarget | GObject;
 
 class GTK::Constraint::Target:ver<4> {
   also does GLib::Roles::Object;
@@ -53,7 +53,7 @@ class GTK::Constraint::Target:ver<4> {
         cast(GtkConstraintTarget, $_);
       }
     }
-    self!setGObject($to-parent);
+    self!setObject($to-parent);
   }
 
   multi method new (
@@ -67,4 +67,14 @@ class GTK::Constraint::Target:ver<4> {
     $o;
   }
 
+  method get_type {
+    self.gtkconstrainttarget_get_type;
+  }
+
 }
+
+sub gtk_constraint_target_get_type
+  returns GType
+  is native(gtk4)
+  is export
+{ * }
