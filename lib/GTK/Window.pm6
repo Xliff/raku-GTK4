@@ -2,6 +2,7 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Window:ver<4>;
 
@@ -9,31 +10,25 @@ use GDK::Display:ver<4>;
 use GTK::Widget:ver<4>;
 use GTK::Window::Group:ver<4>;
 
+use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 use GTK::Roles::Native:ver<4>;
 use GTK::Roles::Root:ver<4>;
-use GTK::Roles::ShortcutsManager:ver<4>;
+use GTK::Roles::ShortcutManager:ver<4>;
 
 our subset GtkWindowAncestry is export of Mu
-  where GtkWindow          | GtkNative | GtkRoot | GtkShortcutsManager |
+  where GtkWindow          | GtkNative | GtkRoot | GtkShortcutManager |
         GtkWidgetAncestry;
 
-class GTK::Window:ver<4> {
+class GTK::Window:ver<4> is GTK::Widget {
   also does GTK::Roles::Native;
   also does GTK::Roles::Root;
-  also does GTK::Roles::ShortcutsManager;
+  also does GTK::Roles::ShortcutManager;
 
   has GtkWindow $!gtk-win is implementor;
 
-  submethod BUILD ( :$gtk-window ) {
-    self.setGtkWindow($gtk-window) if $gtk-window
-  }
-
-  submethod TWEAK ( :$title, :$size ) {
-    if self {
-       self.title        = $title if $title;
-       self.size-request = $size  if $size;
-    }
+  submethod BUILD ( :$gtk-window, :$title, :$size ) {
+    self.setGtkWindow($gtk-window) if $gtk-window;
   }
 
   method setGtkWindow (GtkWindowAncestry $_) {
@@ -57,8 +52,8 @@ class GTK::Window:ver<4> {
         cast(GtkWindow, $_);
       }
 
-      when GtkShortcutsManager {
-        $!gtk-scm  = $_;
+      when GtkShortcutManager {
+        $!gtk-sm   = $_;
         $to-parent = cast(GtkWidget, $_);
         cast(GtkWindow, $_);
       }
@@ -71,7 +66,7 @@ class GTK::Window:ver<4> {
     self.setGtkWidget($to-parent);
     self.roleInit-GtkNative;
     self.roleInit-GtkRoot;
-    self.roleInit-GtkShortcutsManager;
+    self.roleInit-GtkShortcutManager;
   }
 
   method GTK::Raw::Definitions::GtkWindow
@@ -92,6 +87,8 @@ class GTK::Window:ver<4> {
     :$size   = ($width, $height)
   ) {
     my $gtk-window = gtk_window_new();
+
+    say "New-win: { $gtk-window }";
 
     $gtk-window ?? self.bless( :$gtk-window ) !! Nil;
   }
@@ -285,7 +282,7 @@ class GTK::Window:ver<4> {
   }
 
   # Type: boolean
-  method is-active is rw  is g-property is also<is_active> {
+  method is-active is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -502,7 +499,14 @@ class GTK::Window:ver<4> {
   }
 
   # Type: GTKWidget
-  method titlebar is rw  is g-property {
+  method titlebar (
+    :$raw           = False,
+    :quick(:$fast)  = False,
+    :slow(:$proper) = $fast.not
+  )
+    is rw
+    is g-property
+  {
     my $gv = GLib::Value.new( GTK::Widget.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -521,7 +525,11 @@ class GTK::Window:ver<4> {
   }
 
   # Type: boolean
-  method handle-menubar-accel is rw  is g-property is also<handle_menubar_accel> {
+  method handle-menubar-accel
+    is rw
+    is g-property
+    is also<handle_menubar_accel>
+  {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -579,18 +587,21 @@ class GTK::Window:ver<4> {
     so gtk_window_get_decorated($!gtk-win);
   }
 
-  method get_default_icon_name is also<get-default-icon-name> {
-    gtk_window_get_default_icon_name($!gtk-win);
+  method get_default_icon_name
+    is static
+    is also<get-default-icon-name>
+  {
+    gtk_window_get_default_icon_name();
   }
 
   proto method get_default_size (|)
     is also<get-default-size>
   { * }
 
-  method get_default_size {
+  multi method get_default_size {
     samewith($, $);
   }
-  method get_default_size ($width is rw, $height is rw) {
+  multi method get_default_size ($width is rw, $height is rw) {
     my gint ($w, $h) = 0 xx 2;
 
     gtk_window_get_default_size($!gtk-win, $w, $h);
@@ -688,13 +699,14 @@ class GTK::Window:ver<4> {
   }
 
   method get_toplevels ( :$raw = False, :$raw-model, :$model = False )
+    is static
     is also<get-toplevels>
   {
-    my $t = gtk_window_get_toplevels($!gtk-win);
+    my $t = gtk_window_get_toplevels();
     return $t if $raw-model;
     $t = GIO::ListModel.new($t);
     return $t if $model;
-    $t.Array if $raw
+    $t.Array if $raw;
     $t.Array.map({ propReturnObject($_, False, |GTK::Window.getTypePair) });
   }
 
@@ -716,7 +728,7 @@ class GTK::Window:ver<4> {
     so gtk_window_has_group($!gtk-win, $group);
   }
 
-  method is_active is also<is-active> {
+  method is_active {
     so gtk_window_is_active($!gtk-win);
   }
 
@@ -729,7 +741,8 @@ class GTK::Window:ver<4> {
   }
 
   method list_toplevels is also<list-toplevels> {
-    gtk_window_list_toplevels($!gtk-win);
+    # cw: -XXX- Finish refinement!
+    gtk_window_list_toplevels();
   }
 
   method maximize {
@@ -762,7 +775,12 @@ class GTK::Window:ver<4> {
     gtk_window_set_auto_startup_notification($!gtk-win);
   }
 
-  method set_child (GtkWidget() $child) is also<set-child> {
+  method set_child (GtkWidget() $child)
+    is also<
+      set-child
+      add
+    >
+  {
     gtk_window_set_child($!gtk-win, $child);
   }
 
@@ -772,8 +790,8 @@ class GTK::Window:ver<4> {
     gtk_window_set_decorated($!gtk-win, $s);
   }
 
-  method set_default_icon_name is also<set-default-icon-name> {
-    gtk_window_set_default_icon_name($!gtk-win);
+  method set_default_icon_name (Str() $name) is also<set-default-icon-name> {
+    gtk_window_set_default_icon_name($name);
   }
 
   method set_default_size (Int() $width, Int() $height)

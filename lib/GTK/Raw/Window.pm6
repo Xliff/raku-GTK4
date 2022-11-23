@@ -1,10 +1,14 @@
 use v6.c;
 
+use NativeCall;
+
 use GLib::Raw::Definitions;
 use GLib::Raw::Structs;
+use GIO::Raw::Definitions;
 use GDK::Raw::Definitions:ver<4>;
 use GSK::Raw::Definitions:ver<4>;
 use GTK::Raw::Definitions:ver<4>;
+use GTK::Raw::Structs:ver<4>;
 
 unit package GTK::Raw::Window:ver<4>;
 
