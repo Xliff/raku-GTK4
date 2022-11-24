@@ -2,6 +2,7 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::StyleContext:ver<4>;
 
@@ -73,8 +74,14 @@ class GTK::StyleContext:ver<4> {
   method addProviderForCurrentDisplay (
     GtkStyleProvider() $provider,
     Int()              $priority  = GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
-  ) {
-    samewith( GDK::Display.get_default, $provider, $priority);
+  )
+    is static
+  {
+    ::?CLASS.add_provider_for_display(
+      GDK::Display.get_default,
+      $provider,
+      $priority
+    );
   }
 
   method add_provider_for_display (
@@ -82,11 +89,12 @@ class GTK::StyleContext:ver<4> {
     GtkStyleProvider() $provider,
     Int()              $priority  = GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
   )
+    is static
     is also<add-provider-for-display>
   {
     my guint $p = $priority;
 
-    gtk_style_context_add_provider_for_display($!gtk-sc, $provider, $p);
+    gtk_style_context_add_provider_for_display($display, $provider, $p);
   }
 
   proto method get_border (|)
