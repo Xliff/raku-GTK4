@@ -278,3 +278,12 @@ class GTK::Scale:ver<4> is GTK::Range {
   }
 
 }
+
+INIT {
+  my \O = GTK::Scale;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

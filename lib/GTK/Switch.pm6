@@ -124,6 +124,15 @@ class GTK::Switch:ver<4> is GTK::Widget:ver<4> {
 
 }
 
+INIT {
+  my \O = GTK::Switch;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}
+
 ### /usr/src/gtk4-4.8.1+ds/gtk/gtkswitch.h
 
 sub gtk_switch_get_active (GtkSwitch $self)

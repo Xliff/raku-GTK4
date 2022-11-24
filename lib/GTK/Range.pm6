@@ -312,3 +312,12 @@ class GTK::Range:ver<4> is GTK::Widget {
   }
 
 }
+
+INIT {
+  my \O = GTK::Range;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

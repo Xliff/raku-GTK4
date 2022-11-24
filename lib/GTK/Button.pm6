@@ -227,3 +227,12 @@ class GTK::Button:ver<4> is GTK::Widget {
   }
 
 }
+
+INIT {
+  my \O = GTK::Button;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

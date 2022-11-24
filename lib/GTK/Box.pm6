@@ -207,3 +207,12 @@ class GTK::Box:ver<4> is GTK::Widget {
   }
 
 }
+
+INIT {
+  my \O = GTK::Box;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

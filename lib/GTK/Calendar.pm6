@@ -236,3 +236,12 @@ class GTK::Calendar:ver<4> is GTK::Widget:ver<4> {
   }
 
 }
+
+INIT {
+  my \O = GTK::Calendar;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

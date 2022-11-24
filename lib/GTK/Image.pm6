@@ -329,3 +329,12 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
   }
 
 }
+
+INIT {
+  my \O = GTK::Image;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

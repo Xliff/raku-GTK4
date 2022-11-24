@@ -124,3 +124,12 @@ class GTK::ApplicationWindow:ver<4> is GTK::Window {
   }
 
 }
+
+INIT {
+  my \O = GTK::ApplicationWindow;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}
