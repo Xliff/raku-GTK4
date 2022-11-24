@@ -109,10 +109,10 @@ sub gtk_scale_set_draw_value (
 { * }
 
 sub gtk_scale_set_format_value_func (
-  GtkScale                $scale,
-                          &func (GtkScale, gdouble, gpointer --> Str),
-  gpointer                $user_data,
-  GDestroyNotify          $destroy_notify
+  GtkScale $scale,
+           &func (GtkScale, gdouble, gpointer --> Str),
+  gpointer $user_data,
+           &destroy_notify (gpointer)
 )
   is      native(gtk4)
   is      export
