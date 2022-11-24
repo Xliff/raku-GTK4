@@ -35,7 +35,7 @@ class GTK::CheckButton:ver<4> is GTK::Widget:ver<4> {
     self.setGtkWidget($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkCheckButton
+  method GTK::Raw::Structs::GtkCheckButton
     is also<GtkCheckButton>
   { $!gtk-cb }
 
