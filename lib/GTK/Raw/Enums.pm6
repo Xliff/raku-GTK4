@@ -1848,6 +1848,15 @@ our enum GtkStyleContextPrintFlagsEnum is export <
   GTK_STYLE_CONTEXT_PRINT_SHOW_CHANGE
 >;
 
+constant GtkStyleProviderPriority is export := guint32;
+our enum GtkStyleProviderPriorityEnum is export (
+  GTK_STYLE_PROVIDER_PRIORITY_FALLBACK    =>   1,
+  GTK_STYLE_PROVIDER_PRIORITY_THEME       => 200,
+  GTK_STYLE_PROVIDER_PRIORITY_SETTINGS    => 400,
+  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION => 600,
+  GTK_STYLE_PROVIDER_PRIORITY_USER        => 800
+);
+
 constant GtkSymbolicColor is export := guint32;
 our enum GtkSymbolicColorEnum is export <
   GTK_SYMBOLIC_COLOR_FOREGROUND
