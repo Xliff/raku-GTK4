@@ -10,6 +10,7 @@ use GTK::Raw::Main:ver<4>;
 
 use GIO::Application;
 use GIO::MenuModel;
+use GTK::ApplicationWindow;
 
 use GLib::Roles::Implementor;
 use GTK::Roles::Signals::Application:ver<4>;
@@ -22,8 +23,12 @@ class GTK::Application:ver<4> is GIO::Application {
 
   has GtkApplication $!gtk-app is implementor;
 
+  has $.window handles<present>;
+  #has $.init;
+
   submethod BUILD ( :$gtk-application ) {
     self.setGtkApplication($gtk-application) if $gtk-application;
+    #$!init = Promise.new;
   }
 
   method setGtkApplication (GtkApplicationAncestry $_) {
@@ -47,20 +52,46 @@ class GTK::Application:ver<4> is GIO::Application {
     is also<GtkApplcation>
   { $!gtk-app }
 
-  multi method new (GtkApplicationAncestry $gtk-application, :$ref = True) {
+  multi method new (GtkApplicationAncestry $gtk-application, :$ref = True)
+    is static
+  {
     return unless $gtk-application;
 
     my $o = self.bless( :$gtk-application );
     $o.ref if $ref;
     $o;
   }
-  multi method new (Str() $id, Int() $flags = 0) {
+  multi method new (
+    :id(:$title) = 'org.genex.Application',
+    :$flags      = 0,
+    :$width      = 200,
+    :$height     = $width
+  )
+    is static
+  {
+    my $o = ::?CLASS.new($title, $flags);
+    $o.Activate.tap( -> *@a {
+      say "Setting window...";
+      $o.setWindow( GTK::ApplicationWindow.new($o) );
+      $o.window.set-size-request($width, $height);
+    });
+    $o;
+  }
+  multi method new (Str() $id, Int() $flags = 0) is static {
     my GApplicationFlags $f = $flags;
 
     my $gtk-application = gtk_application_new($id, $f);
 
     $gtk-application ?? self.bless( :$gtk-application ) !! Nil;
   }
+
+  method setWindow ($window) {
+    $!window = $window;
+  }
+
+  # method wait-for-init {
+  #   await $!init;
+  # }
 
   # Type: boolean
   method register-session is rw  is g-property is also<register_session> {
