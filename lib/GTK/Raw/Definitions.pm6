@@ -34,6 +34,7 @@ class GtkConstraintVariable is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkCssNode            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssSection         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFileFilter         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkFlowBox            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconPaintable      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconTheme          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkImage              is repr<CPointer> does GLib::Roles::Pointers is export { }
