@@ -653,6 +653,30 @@ class GTK::Widget:ver<4> {
       STORE => -> $, @size where *.elems == 2 { self.set_size_request( |@size ) };
   }
 
+  method margins is rw {
+    Proxy.new:
+      FETCH => -> $ {
+        ( .margin-left, .margin-right, .margin-top, .margin-bottom )
+          given self;
+      },
+
+      STORE => -> $, $val is copy {
+        $val = $val xx 4 if $val ~~ Int;
+        $val .= Array if $val.^can('Array');
+        # cw: We use CArray for its type safety...
+        my $v = ArrayToCArray(uint32, $val) if $val ~~ Array;
+        X::GLib::InvalidSize.new(
+          message => 'margin value must be Array-compatible with 4 elements!'
+        ).throw unless $v.elems == 4;
+        # cw: ...however that means we have to spell out our assignments
+        ( .margin-left, .margin-right, .margin-top, .margin-bottom) = $v[^4]
+          given self;
+      }
+  }
+
+
+
+
   method Destroy {
     self.connect($!gtk-w, 'destroy');
   }
