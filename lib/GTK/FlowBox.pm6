@@ -88,12 +88,13 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('selection-mode', $gv);
-        my $m = $gv.valueFromEnum(GtkSelectionMode);
+        my $m = $gv.enum; # $gv.valueFromEnum(GtkSelectionMode);
         return $m unless $enum;
         GtkSelectionModeEnum($m);
       },
       STORE => -> $, Int() $val is copy {
         $gv.valueFromEnum(GtkSelectionMode) = $val;
+        #$gv.enum = $val;
         self.prop_set('selection-mode', $gv);
       }
     );
@@ -209,6 +210,12 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
   method Activate-Cursor-Child {
     self.connect($!gtk-flow, 'activate-cursor-child');
   }
+
+  method Child-Activated is also<Child_Activated> {
+    self.connect-child-activated($!gtk-flow);
+  }
+
+
 
   method Select-All {
     self.connect($!gtk-flow, 'select-all');
