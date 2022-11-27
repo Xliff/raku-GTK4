@@ -1,4 +1,5 @@
 prefix=GTK
+type-prefix=Gtk
 modules=GTK::Raw::Types
 backups=backup,bitbucket,google-backup,azure-backupm,hut
 excluded_namespaces=GTK::Class
