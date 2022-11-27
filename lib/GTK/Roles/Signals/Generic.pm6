@@ -18,7 +18,7 @@ role GTK::Roles::Signals::Generic:ver<4> {
     my $hid;
     %!signals-gtk{$signal} //= do {
       my $s = Supplier.new;
-      $hid = g_connect_move_cursor2($obj, $signal,
+      $hid = g_connect_move_cursor($obj, $signal,
         -> $, $ms is rw, $c, $es, $ud {
           CATCH {
             default { note($_) }
@@ -36,7 +36,7 @@ role GTK::Roles::Signals::Generic:ver<4> {
 
 }
 
-sub g_connect_move_cursor2 (
+sub g_connect_move_cursor (
   Pointer $app,
   Str     $name,
           &handler (gpointer, uint32 is rw, gint, gboolean, gpointer),
