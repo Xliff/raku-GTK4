@@ -6,7 +6,7 @@ use GTK::Raw::Types:ver<4>;
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
-role GTK::Roles::Orientable {
+role GTK::Roles::Orientable:ver<4> {
   has GtkOrientable $!gtk-o is implementor;
 
   method GTK::Raw::Definitions::GtkOrientable
