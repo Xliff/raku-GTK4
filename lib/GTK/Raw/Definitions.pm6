@@ -15,16 +15,16 @@ constant gtk4 is export = 'gtk-4';
 constant GtkAllocation is export := GdkRectangle;
 constant GtkCssChange  is export := guint64;
 
-class GtkAccessible        is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkBuildable         is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkBuilderScope      is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkConstraintTarget  is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkCssValue          is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkLayoutManager     is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkNative            is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkRoot              is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkSnapshot          is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkShortcut          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkAccessible         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkBuildable          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkBuilderScope       is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkConstraintTarget   is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkCssValue           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkLayoutManager      is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkNative             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkRoot               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSnapshot           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkShortcut           is repr<CPointer> does GLib::Roles::Pointers is export { }
 
 class GtkBuilder            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBuildableParser    is repr<CPointer> does GLib::Roles::Pointers is export { }
