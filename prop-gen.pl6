@@ -250,11 +250,16 @@ sub generateFromFile (
   /;
 
   my %properties;
-  for $search[] {
+
+  sub property-name ($n) {
+  	$n<p>[0].Str
+  }
+
+  for $search[].sort({ .&property-name }) {
 
     #.gist.say;
 
-    my $prop-name = .<p>[0].Str;
+    my $prop-name = .&property-name;
 
     my $rw = (
       do gather for .<p>.tail
