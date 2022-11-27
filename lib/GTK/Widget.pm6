@@ -377,7 +377,7 @@ class GTK::Widget:ver<4> {
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('halign', $gv);
-        my $a = $gv.valueFromEnum(GtkAlign);
+        my $a = $gv.enum;
         return $a unless $enum;
         GtkAlignEnum($a);
       },
@@ -394,7 +394,7 @@ class GTK::Widget:ver<4> {
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('valign', $gv);
-        my $a = $gv.valueFromEnum(GtkAlign);
+        my $a = $gv.enum;
         return $a unless $enum;
         GtkAlignEnum($a);
       },
@@ -562,7 +562,7 @@ class GTK::Widget:ver<4> {
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('overflow', $gv);
-        my $o = $gv.valueFromEnum(GtkOverflow);
+        my $o = $gv.enum;
         return $o unless $enum;
         GtkOverflowEnum($o);
       },
@@ -606,7 +606,6 @@ class GTK::Widget:ver<4> {
   method css-classes ( :$raw = False, :$carray = False )
     is rw
     is g-property
-
     is also<css_classes>
   {
     my $gv = GLib::Value.new( G_TYPE_POINTER );
@@ -619,15 +618,7 @@ class GTK::Widget:ver<4> {
         CArrayToArray($r);
       },
       STORE => -> $, $val is copy {
-        my $i = $val;
-        $i = $i.Array                       if $i.^can('Array');
-        $i = ArrayToCArray(Str, $i, :null)  if $i ~~ Array;
-        $i = cast(gpointer, $i)             if $i ~~ CArray[Str];
-        X::GLib::UnkownType.new(
-          message => "Value passed to css-class property is not{
-                      '' } Array-compatible!";
-        ).throw unless $i ~~ gpointer;
-        $gv.pointer = $i;
+        $gv.pointer = propAssignArray(Str, $val);
         self.prop_set('css-classes', $gv);
       }
     );
