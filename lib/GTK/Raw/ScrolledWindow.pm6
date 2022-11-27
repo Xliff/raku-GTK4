@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GLib::Raw::Definitions;
 use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
@@ -33,37 +35,49 @@ sub gtk_scrolled_window_get_hscrollbar (GtkScrolledWindow $scrolled_window)
   is      export
 { * }
 
-sub gtk_scrolled_window_get_kinetic_scrolling (GtkScrolledWindow $scrolled_window)
+sub gtk_scrolled_window_get_kinetic_scrolling (
+  GtkScrolledWindow $scrolled_window
+)
   returns uint32
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_scrolled_window_get_max_content_height (GtkScrolledWindow $scrolled_window)
+sub gtk_scrolled_window_get_max_content_height (
+  GtkScrolledWindow $scrolled_window
+)
   returns gint
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_scrolled_window_get_max_content_width (GtkScrolledWindow $scrolled_window)
+sub gtk_scrolled_window_get_max_content_width (
+  GtkScrolledWindow $scrolled_window
+ )
   returns gint
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_scrolled_window_get_min_content_height (GtkScrolledWindow $scrolled_window)
+sub gtk_scrolled_window_get_min_content_height (
+  GtkScrolledWindow $scrolled_window
+ )
   returns gint
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_scrolled_window_get_min_content_width (GtkScrolledWindow $scrolled_window)
+sub gtk_scrolled_window_get_min_content_width (
+  GtkScrolledWindow $scrolled_window
+)
   returns gint
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_scrolled_window_get_overlay_scrolling (GtkScrolledWindow $scrolled_window)
+sub gtk_scrolled_window_get_overlay_scrolling (
+  GtkScrolledWindow $scrolled_window
+)
   returns uint32
   is      native(gtk4)
   is      export
@@ -84,13 +98,17 @@ sub gtk_scrolled_window_get_policy (
   is      export
 { * }
 
-sub gtk_scrolled_window_get_propagate_natural_height (GtkScrolledWindow $scrolled_window)
+sub gtk_scrolled_window_get_propagate_natural_height (
+  GtkScrolledWindow $scrolled_window
+)
   returns uint32
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_scrolled_window_get_propagate_natural_width (GtkScrolledWindow $scrolled_window)
+sub gtk_scrolled_window_get_propagate_natural_width (
+  GtkScrolledWindow $scrolled_window
+)
   returns uint32
   is      native(gtk4)
   is      export
@@ -102,7 +120,9 @@ sub gtk_scrolled_window_get_type
   is      export
 { * }
 
-sub gtk_scrolled_window_get_vadjustment (GtkScrolledWindow $scrolled_window)
+sub gtk_scrolled_window_get_vadjustment (
+  GtkScrolledWindow $scrolled_window
+)
   returns GtkAdjustment
   is      native(gtk4)
   is      export

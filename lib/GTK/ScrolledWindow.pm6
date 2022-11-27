@@ -2,11 +2,12 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::ScrolledWindow:ver<4>;
 
-use GTK::Adjustment;
-use GTK::Widget;
+use GTK::Adjustment:ver<4>;
+use GTK::Window:ver<4>;
 
 use GLib::Roles::Implementor;
 
@@ -143,7 +144,7 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
   method get_policy (Int() $hscrollbar_policy, Int() $vscrollbar_policy)
     is also<get-policy>
   {
-    my GtkPolicyType ($hp, $vp) = ($hscrollbar_policy, $vscrollbar_policy;
+    my GtkPolicyType ($hp, $vp) = ($hscrollbar_policy, $vscrollbar_policy);
 
     gtk_scrolled_window_get_policy($!gtk-sw, $hp, $vp);
   }
@@ -240,7 +241,7 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
     is also<set-overlay-scrolling>
   {
     my gboolean $o = $overlay_scrolling;
-    `
+
     gtk_scrolled_window_set_overlay_scrolling($!gtk-sw, $overlay_scrolling);
   }
 
@@ -253,7 +254,7 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
   method set_policy (Int() $hscrollbar_policy, Int() $vscrollbar_policy)
     is also<set-policy>
   {
-    my GtkPolicyType ($hscrollbar_policy, $vscrollbar_policy);
+    my GtkPolicyType ($h, $v) = ($hscrollbar_policy, $vscrollbar_policy);
 
     gtk_scrolled_window_set_policy($!gtk-sw, $h, $v);
   }
@@ -262,8 +263,8 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
     is also<set-propagate-natural-height>
   {
     my gboolean $p = $propagate;
-    `
-    gtk_scrolled_window_set_propagate_natural_height($!gtk-sw, $propagate);
+
+    gtk_scrolled_window_set_propagate_natural_height($!gtk-sw, $p);
   }
 
   method set_propagate_natural_width (Int() $propagate)
