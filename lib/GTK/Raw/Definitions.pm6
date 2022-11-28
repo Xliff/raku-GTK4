@@ -51,6 +51,7 @@ class GtkProgressBar        is repr<CPointer> does GLib::Roles::Pointers is exp
 class GtkNativeDialog       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrollbar          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrolledWindow     is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSeparator          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSettings           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutController is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutManager    is repr<CPointer> does GLib::Roles::Pointers is export { }
