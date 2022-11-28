@@ -2,6 +2,7 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Adjustment:ver<4>;
 
@@ -41,7 +42,11 @@ class GTK::Adjustment:ver<4> {
     is also<GtkAdjustment>
   { $!gtk-adj }
 
-  multi method new (GtkAdjustmentAncestry $gtk-adjustment, :$ref = True) {
+  multi method new (
+    $gtk-adjustment where * ~~ GtkAdjustmentAncestry,
+
+    :$ref = True
+  ) {
     return unless $gtk-adjustment;
 
     my $o = self.bless( :$gtk-adjustment );
@@ -56,7 +61,6 @@ class GTK::Adjustment:ver<4> {
     Num() $page_increment = 10,
     Num() $page_size      = 100
   ) {
-    say "Adj: { $value } / { $lower } / { $upper } / { $step_increment }";
     my gdouble ($v, $l, $u, $s, $p, $sz) =
       ($value, $lower, $upper, $step_increment, $page_increment, $page_size);
 
@@ -65,12 +69,114 @@ class GTK::Adjustment:ver<4> {
     $gtk-adjustment ?? self.bless( :$gtk-adjustment ) !! Nil;
   }
   multi method new (
-    Range() $range,
+            $range where { $_ ~~ Range || .^can('Range') },
             :v(:$value)              =  $range.min,
-            :step_increment(:$step)  = ($range.max - $range.min) / 100,
-            :page_increment(:$page)  = ($range.max - $range.min) / 10
+            :step_increment(:$step)  = ($range.max - $range.min) / 20,
+            :page_increment(:$page)  = ($range.max - $range.min) / 4
   ) {
     samewith($value, $range.min, $range.max, $step, $page)
+  }
+
+  # Type: double
+  method lower is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('lower', $gv);
+        $gv.double;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv.double = $val;
+        self.prop_set('lower', $gv);
+      }
+    );
+  }
+
+  # Type: double
+  method page-increment
+    is rw
+    is g-property
+    is also<page_increment>
+  {
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('page-increment', $gv);
+        $gv.double;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv.double = $val;
+        self.prop_set('page-increment', $gv);
+      }
+    );
+  }
+
+  # Type: double
+  method page-size
+    is rw
+    is g-property
+    is also<page_size>
+  {
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('page-size', $gv);
+        $gv.double;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv.double = $val;
+        self.prop_set('page-size', $gv);
+      }
+    );
+  }
+
+  # Type: double
+  method step-increment
+    is rw
+    is g-property
+    is also<step_increment>
+  {
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('step-increment', $gv);
+        $gv.double;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv.double = $val;
+        self.prop_set('step-increment', $gv);
+      }
+    );
+  }
+
+  # Type: double
+  method upper is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('upper', $gv);
+        $gv.double;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv.double = $val;
+        self.prop_set('upper', $gv);
+      }
+    );
+  }
+
+  # Type: double
+  method value is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('value', $gv);
+        $gv.double;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv.double = $val;
+        self.prop_set('value', $gv);
+      }
+    );
   }
 
   method clamp_page (Num() $lower, Num() $upper) is also<clamp-page> {
@@ -126,6 +232,20 @@ class GTK::Adjustment:ver<4> {
   method get_value is also<get-value> {
     gtk_adjustment_get_value($!gtk-adj);
   }
+
+  method gist {
+    qq:to/GIST/.chomp
+      GTK::Adjustment.new(
+        value          => { self.value          },
+        lower          => { self.lower          },
+        upper          => { self.upper          },
+        step_increment => { self.step_increment },
+        page_increment => { self.page_increment },
+        page_size      => { self.page_size      }
+      )
+      GIST
+  }
+
 
   method set_lower (Num() $lower) is also<set-lower> {
     my gdouble $l = $lower;
