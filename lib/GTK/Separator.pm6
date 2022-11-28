@@ -58,11 +58,16 @@ class GTK::Separator:ver<4> is GTK::Widget:ver<4> {
     $o;
   }
   multi method new (Int() $orientation) {
-    my GtkOrientable $o = $orientation;
+    my GtkOrientation $o = $orientation;
 
     my $gtk-separator = gtk_separator_new($o);
 
     $gtk-separator ?? self.bless( :$gtk-separator ) !! Nil;
+  }
+  multi method new (:horizontal(:$h) = True, :vertical(:$v) = $h.not ) {
+    samewith(
+      $v ?? GTK_ORIENTATION_VERTICAL !! GTK_ORIENTATION_HORIZONTAL
+    )
   }
 
   method get_type is also<get-type> {
