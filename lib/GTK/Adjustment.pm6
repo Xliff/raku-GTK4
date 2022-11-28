@@ -37,7 +37,7 @@ class GTK::Adjustment:ver<4> {
     self!setObject($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkAdjustment
+  method GTK::Raw::Structs::GtkAdjustment
     is also<GtkAdjustment>
   { $!gtk-adj }
 
@@ -49,20 +49,29 @@ class GTK::Adjustment:ver<4> {
     $o;
   }
   multi method new (
+    Num() $value,
     Num() $lower          = 0,
     Num() $upper          = 100,
     Num() $step_increment = 1,
     Num() $page_increment = 10,
     Num() $page_size      = 100
   ) {
-    my ($l, $u, $s, $p, $sz) =
-      ($lower, $upper, $step_increment, $page_increment, $page_size);
+    say "Adj: { $value } / { $lower } / { $upper } / { $step_increment }";
+    my gdouble ($v, $l, $u, $s, $p, $sz) =
+      ($value, $lower, $upper, $step_increment, $page_increment, $page_size);
 
-    my $gtk-adjustment = gtk_adjustment_new($!gtk-adj, $l, $u, $s, $p, $sz);
+    my $gtk-adjustment = gtk_adjustment_new($v, $l, $u, $s, $p, $sz);
 
     $gtk-adjustment ?? self.bless( :$gtk-adjustment ) !! Nil;
   }
-
+  multi method new (
+    Range() $range,
+            :v(:$value)              =  $range.min,
+            :step_increment(:$step)  = ($range.max - $range.min) / 100,
+            :page_increment(:$page)  = ($range.max - $range.min) / 10
+  ) {
+    samewith($value, $range.min, $range.max, $step, $page)
+  }
 
   method clamp_page (Num() $lower, Num() $upper) is also<clamp-page> {
     my gdouble ($l, $u) = ($lower, $upper);
