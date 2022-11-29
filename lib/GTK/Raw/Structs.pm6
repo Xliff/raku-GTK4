@@ -25,7 +25,7 @@ use GLib::Roles::Pointers;
 unit package GTK::Raw::Structs:ver<4>;
 
 class GtkWidget is repr<CStruct> does GLib::Roles::Pointers is export {
-	HAS GObject $!parent_instance;
+	HAS GObject $.parent;
 	has gpointer          $!priv           ;
 }
 
