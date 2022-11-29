@@ -125,3 +125,12 @@ class GTK::ToggleButton:ver<4> is GTK::Button:ver<4> {
   }
 
 }
+
+INIT {
+  my \O = GTK::ToggleButton;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

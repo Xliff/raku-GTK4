@@ -286,3 +286,12 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
   }
 
 }
+
+INIT {
+  my \O = GTK::ScrolledWindow;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}
