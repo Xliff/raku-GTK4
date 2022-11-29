@@ -57,7 +57,9 @@ class GTK::CssProvider:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new ( :$pod, :$style = '' ) {
+  multi method new ( :$pod, :$style is copy) {
+    $style //= '';
+    
     my $gtk-css-provider = gtk_css_provider_new();
 
     return Nil unless $gtk-css-provider;
@@ -66,7 +68,7 @@ class GTK::CssProvider:ver<4> {
       my %sections;
       for $pod.grep( *.name eq 'css' ).Array {
         # This may not always be true. Keep up with POD spec!
-        %sections{ .name } //= $_.contents.map( *.contents[0] ).join("\n");
+        %sections{ .name } = .contents.map( *.contents[0] ).join("\n");
         last when %sections<css>.defined;
       }
       $style ~= %sections<css>;
