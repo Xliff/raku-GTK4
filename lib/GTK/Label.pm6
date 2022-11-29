@@ -44,7 +44,10 @@ class GTK::Label:ver<4> is GTK::Widget {
     is also<GtkLabel>
   { $!gtk-l }
 
-  multi method new (GtkLabelAncestry $gtk-label, :$ref = True) {
+  proto method new (|)
+  { * }
+
+  multi method new ($gtk-label where * ~~ GtkLabelAncestry, :$ref = True) {
     return unless $gtk-label;
 
     my $o = self.bless( :$gtk-label );
@@ -125,11 +128,11 @@ class GTK::Label:ver<4> is GTK::Widget {
 
   # Type: GTKJustification
   method justify ( :$enum = True ) is rw  is g-property {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkJustification) );
+    my $gv = GLib::Value.new( GLib::Value.new-enum(GtkJustification) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('justify', $gv);
-        my $j = $gv.valueFromEnum(GtkJustification);
+        my $j = $gv.enum;
         return $j unless $enum;
         GtkJustificationEnum($j);
       },
@@ -187,11 +190,11 @@ class GTK::Label:ver<4> is GTK::Widget {
 
   # Type: GTKWrapMode
   method wrap-mode ( :$enum = True ) is rw  is g-property is also<wrap_mode> {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkWrapMode) );
+    my $gv = GLib::Value.new( GLib::Value.new-enum(GtkWrapMode) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('wrap-mode', $gv);
-        my $w = $gv.valueFromEnum(GtkWrapMode);
+        my $w = $gv.enum;
         return $w unless $enum;
         GtkWrapModeEnum($w);
       },
@@ -208,11 +211,11 @@ class GTK::Label:ver<4> is GTK::Widget {
     is g-property
     is also<natural_wrap_mode>
   {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkNaturalWrapMode) );
+    my $gv = GLib::Value.new( GLib::Value.new-enum(GtkNaturalWrapMode) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('natural-wrap-mode', $gv);
-        my $nwm = $gv.valueFromEnum(GtkNaturalWrapMode);
+        my $nwm = $gv.enum;
         return $nwm unless $enum;
         GtkNaturalWrapModeEnum($nwm);
       },
@@ -282,11 +285,11 @@ class GTK::Label:ver<4> is GTK::Widget {
 
   # Type: PangoEllipsizeMode
   method ellipsize ( :$enum = True ) is rw  is g-property {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(PangoEllipsizeMode) );
+    my $gv = GLib::Value.new( GLib::Value.new-enum(PangoEllipsizeMode) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('ellipsize', $gv);
-        my $e = $gv.typeFromEnum(PangoEllipsizeMode);
+        my $e = $gv.enum;
         return $e unless $enum;
         PangoEllipsizeModeEnum( $gv.valueFromEnum(PangoEllipsizeMode) );
       },
