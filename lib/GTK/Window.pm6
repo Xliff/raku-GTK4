@@ -410,7 +410,7 @@ class GTK::Window:ver<4> is GTK::Widget {
   }
 
   method Close-Request is also<Close_Request> {
-    self.connect-rbool($!gtk-win, 'Close-Request');
+    self.connect-ruint($!gtk-win, 'Close-Request');
   }
 
   method Enable-Debugging is also<Enable_Debugging> {
@@ -437,9 +437,9 @@ class GTK::Window:ver<4> is GTK::Widget {
       FETCH => sub ($) {
         self.prop_get('default-widget', $gv);
         returnProperWidget(
-          $gv.object,
-          $raw,
-          $proper
+           $gv.object,
+          :$raw,
+          :$proper
         );
       },
       STORE => -> $, GtkWidget() $val is copy {
@@ -464,9 +464,9 @@ class GTK::Window:ver<4> is GTK::Widget {
       FETCH => sub ($) {
         self.prop_get('focus-widget', $gv);
         returnProperWidget(
-          $gv.object,
-          $raw,
-          $proper
+           $gv.object,
+          :$raw,
+          :$proper
         );
       },
       STORE => -> $c, GtkWidget() $val is copy {
@@ -490,9 +490,9 @@ class GTK::Window:ver<4> is GTK::Widget {
        FETCH => sub ($) {
          self.prop_get('child', $gv);
          returnProperWidget(
-           $gv.object,
-           $raw,
-           $proper
+            $gv.object,
+           :$raw,
+           :$proper
          );
        },
        STORE => -> $, GtkWidget() $val is copy {
@@ -516,9 +516,9 @@ class GTK::Window:ver<4> is GTK::Widget {
       FETCH => sub ($) {
         self.prop_get('titlebar', $gv);
         returnProperWidget(
-          $gv.object,
-          $raw,
-          $proper
+           $gv.object,
+          :$raw,
+          :$proper
         );
       },
       STORE => -> $, GtkWidget() $val is copy {
@@ -581,9 +581,9 @@ class GTK::Window:ver<4> is GTK::Widget {
     is also<get-child>
   {
     returnProperWidget(
-      gtk_window_get_child($!gtk-win),
-      $raw,
-      $proper
+       gtk_window_get_child($!gtk-win),
+      :$raw,
+      :$proper
     );
   }
 
@@ -620,9 +620,9 @@ class GTK::Window:ver<4> is GTK::Widget {
     is also<get-default-widget>
   {
     returnProperWidget(
-      gtk_window_get_default_widget($!gtk-win),
-      $raw,
-      $proper
+       gtk_window_get_default_widget($!gtk-win),
+      :$raw,
+      :$proper
     );
   }
 
@@ -641,7 +641,7 @@ class GTK::Window:ver<4> is GTK::Widget {
   )
     is also<get-focus>
   {
-    returnProperWidget(
+    $(
       gtk_window_get_focus($!gtk-win),
       $raw,
       $proper
@@ -696,9 +696,9 @@ class GTK::Window:ver<4> is GTK::Widget {
     is also<get-titlebar>
   {
     returnProperWidget(
-      gtk_window_get_titlebar($!gtk-win),
-      $raw,
-      $proper
+       gtk_window_get_titlebar($!gtk-win),
+      :$raw,
+      :$proper
     );
   }
 
@@ -919,7 +919,7 @@ class GTK::Window:ver<4> is GTK::Widget {
 
 INIT {
   my \O = GTK::Window;
-  %widget-types{O.get_type} = {
+  %widget-types<GTK::Widget> = %widget-types{O.get_type} = {
     name        => O.^name,
     object      => O,
     pair        => O.getTypePair
