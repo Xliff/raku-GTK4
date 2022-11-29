@@ -169,7 +169,12 @@ class GTK::Calendar:ver<4> is GTK::Widget:ver<4> {
     gtk_calendar_clear_marks($!gtk-cal);
   }
 
-  method get_date ( :$raw = False ) is also<get-date> {
+  method get_date ( :$raw = False )
+    is also<
+      date
+      get-date
+    >
+  {
     propReturnObject(
       gtk_calendar_get_date($!gtk-cal),
       $raw,

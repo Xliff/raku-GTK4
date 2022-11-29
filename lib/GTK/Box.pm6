@@ -109,11 +109,11 @@ class GTK::Box:ver<4> is GTK::Widget {
 
   # Type: GTKBaselinePosition
   method baseline-position ( :$enum = True ) is rw  is g-property is also<baseline_position> {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkBaselinePosition) );
+    my $gv = GLib::Value.new( GLib::Value.new-enum(GtkBaselinePosition) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('baseline-position', $gv);
-        my $p = $gv.valueFromEnum(GtkBaselinePosition);
+        my $p = $gv.enum;
         return $p unless $enum;
         GtkBaselinePositionEnum($p);
       },
@@ -134,7 +134,8 @@ class GTK::Box:ver<4> is GTK::Widget {
   multi method append (*@children where * > 1) {
     self.append($_) for @children;
   }
-  multi method append (GtkWidget() $child) {
+  multi method append ($child is copy) {
+     $child = $child.GtkWidget if $child.^can('GtkWidget');
     gtk_box_append($!gtk-box, $child);
   }
 
