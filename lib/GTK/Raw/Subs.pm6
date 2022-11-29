@@ -19,17 +19,16 @@ sub returnProperWidget (
   is export
 {
   my $o = ($object ~~ GObject) ?? $object !! cast(GObject, $object);
-  unless $proper {
-    if %widget-types{ $object.g_type_instance.g_class.g_type } -> $ot {
-      return returnProperObject(
-        $raw,
-        |%widget-types{$ot}<pair>
-      );
+
+  if $proper {
+    if %widget-types{ $o.g_type_instance.g_class.g_type } -> $ot {
+      return propReturnObject( $o, $raw, |$ot<pair> );
     }
   }
-  returnProperObject(
-    $raw,
-    |GTK::Widget.getTypePair
+  propReturnObject(
+     $o,
+     $raw,
+    |%widget-types<GTK::Widget><pair>
   );
 }
 
