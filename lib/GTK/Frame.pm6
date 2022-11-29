@@ -2,6 +2,7 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Frame:ver<4>;
 
@@ -47,10 +48,103 @@ class GTK::Frame:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Str() $label)  {
+  multi method new (Str() $label = '')  {
     my $gtk-frame = gtk_frame_new($label);
 
     $gtk-frame ?? self.bless( :$gtk-frame ) !! Nil;
+  }
+
+  # Type: GtkWidget
+  method child (
+    :$raw           = False,
+    :quick(:$fast)  = False,
+    :slow(:$proper) = $fast.not
+  )
+    is rw
+    is g-property
+  {
+    my $gv = GLib::Value.new( GTK::Widget.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('child', $gv);
+
+        say "Frame-child: { $gv.object }";
+
+        returnProperWidget(
+          $gv.object,
+          :$raw,
+          :$proper
+        )
+      },
+      STORE => -> $, GtkWidget() $val is copy {
+        $gv.object = $val;
+        self.prop_set('child', $gv);
+      }
+    );
+  }
+
+  # Type: string
+  method label is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('label', $gv);
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv.string = $val;
+        self.prop_set('label', $gv);
+      }
+    );
+  }
+
+  # Type: GtkWidget
+  method label-widget (
+    :$raw           = False,
+    :quick(:$fast)  = False,
+    :slow(:$proper) = $fast.not
+  )
+    is rw
+    is g-property
+    is also<label_widget>
+  {
+    my $gv = GLib::Value.new( GTK::Widget.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('label-widget', $gv);
+        say "label-widget: { $gv.object }";
+
+        returnProperWidget(
+          $gv.object,
+          :$raw,
+          :$proper
+        );
+      },
+
+      STORE => -> $, GtkWidget() $val is copy {
+        $gv.GtkWidget = $val;
+        self.prop_set('label-widget', $gv);
+      }
+    );
+  }
+
+  # Type: float
+  method label-xalign
+    is rw
+    is g-property
+    is also<label_xalign>
+  {
+    my $gv = GLib::Value.new( G_TYPE_FLOAT );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('label-xalign', $gv);
+        $gv.float;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv.float = $val;
+        self.prop_set('label-xalign', $gv);
+      }
+    );
   }
 
   method get_child (
@@ -62,8 +156,8 @@ class GTK::Frame:ver<4> is GTK::Widget:ver<4> {
   {
     returnProperWidget(
       gtk_frame_get_child($!gtk-f),
-      $raw,
-      $proper
+      :$raw,
+      :$proper
     );
   }
 
@@ -82,10 +176,14 @@ class GTK::Frame:ver<4> is GTK::Widget:ver<4> {
   )
     is also<get-label-widget>
   {
+    my $lw = gtk_frame_get_label_widget($!gtk-f);
+    say "LabelWidget: { $lw }";
+    say "Type: { $lw.parent.g_type_instance.g_class.g_type }";
+
     returnProperWidget(
-      gtk_frame_get_label_widget($!gtk-f),
-      $raw,
-      $proper
+      $lw,
+      :$raw,
+      :$proper
     );
   }
 
