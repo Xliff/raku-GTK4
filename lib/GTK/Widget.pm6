@@ -373,13 +373,12 @@ class GTK::Widget:ver<4> {
 
   # Type: GTKAlign
   method halign ( :$enum = True ) is rw  is g-property {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkAlign) );
+    my $gv = GLib::Value.new( GLib::Value.new-enum(GtkAlign) );
     Proxy.new(
-      FETCH => sub ($) {
+      FETCH => -> $ {
         self.prop_get('halign', $gv);
         my $a = $gv.enum;
-        return $a unless $enum;
-        GtkAlignEnum($a);
+        $enum ?? GtkAlignEnum($a) !! $a;
       },
       STORE => -> $, Int() $val is copy {
         $gv.valueFromEnum(GtkAlign) = $val;
@@ -390,7 +389,7 @@ class GTK::Widget:ver<4> {
 
   # Type: GTKAlign
   method valign ( :$enum = True ) is rw  is g-property {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkAlign) );
+    my $gv = GLib::Value.new( GLib::Value.new-enum(GtkAlign) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('valign', $gv);
@@ -558,7 +557,7 @@ class GTK::Widget:ver<4> {
 
   # Type: GTKOverflow
   method overflow ( :$enum = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkOverflow) );
+    my $gv = GLib::Value.new( GLib::Value.new-enum(GtkOverflow) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('overflow', $gv);
@@ -656,8 +655,8 @@ class GTK::Widget:ver<4> {
   method margins is rw {
     Proxy.new:
       FETCH => -> $ {
-        ( .margin-left, .margin-right, .margin-top, .margin-bottom )
-          given self;
+        ( .get-margin-left, .get-margin-right,
+          .get-margin-top,  .get-margin-bottom ) given self;
       },
 
       STORE => -> $, $val is copy {
@@ -669,13 +668,12 @@ class GTK::Widget:ver<4> {
           message => 'margin value must be Array-compatible with 4 elements!'
         ).throw unless $v.elems == 4;
         # cw: ...however that means we have to spell out our assignments
-        ( .margin-left, .margin-right, .margin-top, .margin-bottom) = $v[^4]
-          given self;
+        self.set-margin-left(   $v[0] );
+        self.set-margin-right(  $v[1] );
+        self.set-margin-top(    $v[2] );
+        self.set-margin-bottom( $v[3] );
       }
   }
-
-
-
 
   method Destroy {
     self.connect($!gtk-w, 'destroy');
@@ -1895,5 +1893,14 @@ class GTK::Requisition {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_requisition_get_type, $n, $t );
+  }
+}
+
+INIT {
+  my \O = GTK::Widget;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
   }
 }
