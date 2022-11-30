@@ -59,6 +59,7 @@ class GtkShortcutManager    is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkShortcutsWindow    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSpinner            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSpinButton         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkStatusbar          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStyleProvider      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSwitch             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTooltip            is repr<CPointer> does GLib::Roles::Pointers is export { }
