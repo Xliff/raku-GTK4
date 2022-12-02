@@ -3,6 +3,7 @@ use v6.c;
 use NativeCall;
 
 use GLib::Raw::Definitions;
+use GLib::Raw::Object;
 use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Structs:ver<4>;
 
@@ -35,6 +36,8 @@ class GtkConstraintVariable is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkCssNode            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssSection         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEditable           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkExpression         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkExpressionWatch    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFileFilter         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFlowBox            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconPaintable      is repr<CPointer> does GLib::Roles::Pointers is export { }
