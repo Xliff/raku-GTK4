@@ -3,7 +3,6 @@ use v6.c;
 use NativeCall;
 
 use GLib::Raw::Definitions;
-use GLib::Raw::Object;
 use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Structs:ver<4>;
 
@@ -35,6 +34,7 @@ class GtkConstraint         is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkConstraintVariable is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssNode            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssSection         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkDropDown           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEditable           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpression         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpressionWatch    is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -46,6 +46,7 @@ class GtkImage              is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkInfoBar            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkInspectorOverlay   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLabel              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkListItem           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkListItemManager    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLayoutChild        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOrientable         is repr<CPointer> does GLib::Roles::Pointers is export { }
