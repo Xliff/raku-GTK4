@@ -128,15 +128,24 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
         $gv.int = $val;
         self.prop_set('row-spacing', $gv);
       }
-    );
+    0`1);
   }
 
+  method attach (
+    GtkWidget()     $child,
+    Int()       :c(:$column) = 0,
+    Int()       :r(:$row)    = 0,
+    Int()       :w(:$width)  = 1,
+    Int()       :h(:$height) = 1
+  ) {
+    samewith($child, $column, $row, $width, $height);
+  }
   method attach (
     GtkWidget() $child,
     Int()       $column,
     Int()       $row,
-    Int()       $width,
-    Int()       $height
+    Int()       $width   = 1,
+    Int()       $height  = 1
   ) {
     my gint ($c, $r, $w, $h) = ($column, $row, $width, $height);
 
