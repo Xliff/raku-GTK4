@@ -4,6 +4,7 @@ use Method::Also;
 
 use NativeCall;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Expression:ver<4>;
 
@@ -56,12 +57,21 @@ class GTK::Expression:ver<4> {
     $o;
   }
 
-  method bind (
+  multi method bind (
     GObject() $target,
     Str()     $property,
-    GObject() $this      = GObject;
+    GObject() $this      = GObject,
+
+    :e(:expr(:$expression)) is required
   ) {
-    gtk_expression_bind($!gtk-e, $target, $property, $this_);
+    self.bind_target($target, $property, $this);
+  }
+  method bind_expression (
+    GObject() $target,
+    Str()     $property,
+    GObject() $this      = GObject
+  ) {
+    gtk_expression_bind($!gtk-e, $target, $property, $this);
   }
 
   multi method evaluate {
