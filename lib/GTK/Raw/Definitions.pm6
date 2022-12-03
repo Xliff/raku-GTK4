@@ -42,6 +42,7 @@ class GtkExpression         is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkExpressionWatch    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFileFilter         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFlowBox            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkGridView           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconPaintable      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconTheme          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkImage              is repr<CPointer> does GLib::Roles::Pointers is export { }
