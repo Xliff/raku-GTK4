@@ -14,7 +14,7 @@ our subset GtkStatusbarAncestry is export of Mu
   where GtkStatusbar | GtkWidgetAncestry;
 
 class GTK::Statusbar:ver<4> is GTK::Widget:ver<4> {
-  also does GTK::Roles::Signals::Statusbar:ver<4>;
+  also does GTK::Roles::Signals::Statusbar;
 
   has GtkStatusbar $!gtk-sb is implementor;
 
