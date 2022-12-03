@@ -56,7 +56,7 @@ class GTK::Popover:ver<4> is GTK::Widget:ver<4> {
     self.roleInit-GtkShortcutManager;
   }
 
-  method GTK::Raw::Definitions::GtkPopover
+  method GTK::Raw::Structs::GtkPopover
     is also<GtkPopover>
   { $!gtk-pop }
 
