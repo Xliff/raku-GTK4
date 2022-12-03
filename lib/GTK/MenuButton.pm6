@@ -7,6 +7,7 @@ use GTK::Raw::Types:ver<4>;
 use GTK::Raw::MenuButton:ver<4>;
 
 use GTK::Widget:ver<4>;
+use GTK::Popover:ver<4>;
 
 use GLib::Roles::Implementor;
 
@@ -79,7 +80,7 @@ class GTK::MenuButton is GTK::Widget:ver<4> {
     :$raw           = False,
     :quick(:$fast)  = False,
     :slow(:$proper) = $fast.not
-  ) 
+  )
     is rw
     is g-property
   {
