@@ -24,6 +24,10 @@ use GLib::Roles::Pointers;
 
 unit package GTK::Raw::Structs:ver<4>;
 
+class GtkBitsetIter is repr<CStruct> does GLib::Roles::Pointers is export {
+	HAS gpointer @!private[10] is CArray;
+}
+
 class GtkWidget is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $.parent;
 	has gpointer          $!priv           ;
@@ -670,7 +674,7 @@ class GtkStyleProperty is repr<CStruct> does GLib::Roles::Pointers is export {
 class GtkCssShorthandProperty is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GtkStyleProperty                 $!parent       ;
 	has GPtrArray                        $!subproperties;
-	has gpointer $!parse        ; #= GtkCssShorthandPropertyParseFunc
+	has gpointer $!parse        ; #= G/tkCssShorthandPropertyParseFunc
 }
 
 # class GtkCssShorthandPropertyClass is repr<CStruct> does GLib::Roles::Pointers is export {
