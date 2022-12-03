@@ -57,6 +57,7 @@ class GtkOrientable         is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkPaned              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPicture            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkProgressBar        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSelectionModel     is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrollbar          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrolledWindow     is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSeparator          is repr<CPointer> does GLib::Roles::Pointers is export { }
