@@ -49,11 +49,12 @@ class GtkLabel              is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkListItem           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkListItemManager    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLayoutChild        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkMenuButton         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkNativeDialog       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOrientable         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPaned              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPicture            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkProgressBar        is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkNativeDialog       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrollbar          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrolledWindow     is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSeparator          is repr<CPointer> does GLib::Roles::Pointers is export { }
