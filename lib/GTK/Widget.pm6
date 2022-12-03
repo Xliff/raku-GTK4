@@ -1496,6 +1496,13 @@ class GTK::Widget:ver<4> {
     gtk_widget_remove_css_class($!gtk-w, $css_class);
   }
 
+  method removeAllCssClasses {
+    self.removeCssClasses(self.css-classes);
+  }
+  method removeCssClasses (@classes) {
+    self.remove_css_class($_) for @classes;
+  }
+
   method remove_mnemonic_label (GtkWidget() $label)
     is also<remove-mnemonic-label>
   {
