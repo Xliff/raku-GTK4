@@ -11,7 +11,7 @@ use GTK::Widget;
 our subset GtkButtonAncestry is export of Mu
   where GtkButton | GtkWidgetAncestry;
 
-class GTK::Button:ver<4> is GTK::Widget {
+class GTK::Button:ver<4> is GTK::Widget:ver<4> {
   has GtkButton $!gtk-b is implementor;
 
   submethod BUILD ( :$gtk-button ) {
