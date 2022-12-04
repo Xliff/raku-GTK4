@@ -22,8 +22,7 @@ class GTK::ListBase:ver<4> is GTK::Widget:ver<4> {
   has GtkListBase $!gtk-lb is implementor;
 
   submethod BUILD ( :$gtk-list-base ) {
-    self.setGtkListBase($gtk-list-base)
-      if $gtk-list-base
+    self.setGtkListBase($gtk-list-base) if $gtk-list-base
   }
 
   method setGtkListBase (GtkListBaseAncestry $_) {
