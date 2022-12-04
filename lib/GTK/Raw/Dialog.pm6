@@ -93,6 +93,7 @@ sub gtk_dialog_new_with_button (
   returns GtkDialog
   is      native(gtk4)
   is      export
+  is      symbol('gtk_dialog_new_with_buttons')
 { * }
 
 sub gtk_dialog_response (
