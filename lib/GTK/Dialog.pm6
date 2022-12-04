@@ -74,6 +74,17 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
   }
   multi method new_with_buttons (
     Str()        $title,
+                *@buttons where { .none ~~ Pair && .elems % 2 == 0 },
+    Int()       :$flags = GTK_DIALOG_DESTROY_WITH_PARENT
+  ) {
+     samewith(
+       $title,
+       @buttons.rotor(2).map({ Pair.new( |$_ ) }).cache,
+       :$flags
+     );
+  }
+  multi method new_with_buttons (
+    Str()        $title,
     GtkWindow()  $parent,
                  @buttons where { .all ~~ Pair && .elems >= 1 },
 
@@ -103,7 +114,7 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
 
     return Nil unless $gtk-dialog;
     my $o = self.bless( :$gtk-dialog );
-    $o.add-buttons( @buttons.skip(1) );
+    $o.add-buttons( @buttons.skip(1).cache );
     $o;
   }
 
@@ -160,14 +171,10 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
 
     my $b = gtk_dialog_add_button($!gtk-d, $button_text, $r);
     return Nil unless $allow-return-value;
-    returnProperWidget($b, $raw, $proper);
+    returnProperWidget($b, :$raw, :$proper);
   }
 
-  proto method add_buttons (|)
-    is also<add-buttons>
-  { * }
-
-  multi method add_buttons (@buttons where *.all ~~ Pair) {
+  method add_buttons (@buttons where @buttons.all ~~ Pair) {
     self.add_button( .key, .value ) for @buttons;
   }
 
@@ -180,8 +187,8 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
   {
     returnProperWidget(
       gtk_dialog_get_content_area($!gtk-d),
-      $raw,
-      $proper
+      :$raw,
+      :$proper
     )
   }
 
@@ -194,8 +201,8 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
   {
     returnProperWidget(
       gtk_dialog_get_header_bar($!gtk-d),
-      $raw,
-      $proper
+      :$raw,
+      :$proper
     );
   }
 
@@ -224,8 +231,8 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
 
     returnProperWidget(
       gtk_dialog_get_widget_for_response($!gtk-d, $r),
-      $raw,
-      $proper
+      :$raw,
+      :$proper
     );
   }
 
@@ -233,6 +240,26 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
     my gint $r = $response_id;
 
     gtk_dialog_response($!gtk-d, $r);
+  }
+
+  # cw: Backwards compat
+  method run (
+    :b(:block(:$blocking))  = False,
+    :$enum                  = True,
+    :enum_type(:$enum-type) = GtkResponseTypeEnum
+  ) {
+    self.show;
+    return unless $blocking;
+
+    my $p = Promise.new;
+    self.Response.tap( -> *@a {
+      $p.keep( @a[1] );
+      self.hide;
+    });
+    await $p;
+    my $r = $p.result;
+    return unless $enum;
+    $enum-type($r);
   }
 
   method set_default_response (Int() $response_id)
