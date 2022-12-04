@@ -10,7 +10,7 @@ unit package GTK::Raw::Subs:ver<4>;
 
 our %widget-types is export;
 
-sub returnProperWidget (
+multi sub returnProperWidget (
    $object,
   :$raw                   = False,
   :quick(:$fast)          = False,
@@ -30,6 +30,10 @@ sub returnProperWidget (
      $raw,
     |%widget-types<GTK::Widget><pair>
   );
+}
+
+multi sub returnProper ($object, $raw, $proper) is export {
+  returnProperWidget($object, :$raw, :$proper)
 }
 
 sub invoke-vfunc ($pointer, &ROUTINE, *@args) is export {
