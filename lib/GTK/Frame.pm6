@@ -193,7 +193,12 @@ class GTK::Frame:ver<4> is GTK::Widget:ver<4> {
     unstable_get_type( self.^name, &gtk_frame_get_type, $n, $t );
   }
 
-  method set_child (GtkWidget() $child) is also<set-child> {
+  method set_child (GtkWidget() $child)
+    is also<
+      set-child
+      add
+    >
+  {
     gtk_frame_set_child($!gtk-f, $child);
   }
 
