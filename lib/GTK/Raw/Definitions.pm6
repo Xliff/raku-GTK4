@@ -35,6 +35,7 @@ class GtkConstraint         is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkConstraintVariable is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssNode            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssSection         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkDirectoryList      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkDropDown           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEditable           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEmojiChooser       is repr<CPointer> does GLib::Roles::Pointers is export { }
