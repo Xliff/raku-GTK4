@@ -72,8 +72,7 @@ class GTK::Dialog::Message:ver<4> is GTK::Dialog:ver<4> {
     Int()       $flags,
     Int()       $type,
     Int()       $buttons,
-    Str()       $message,
-    Str
+    Str()       $message
   ) {
     my GtkDialogFlags $f = $flags;
     my GtkMessageType $t = $type;
@@ -84,7 +83,8 @@ class GTK::Dialog::Message:ver<4> is GTK::Dialog:ver<4> {
       $flags,
       $type,
       $buttons,
-      $message
+      $message,
+      Str
     );
 
     $gtk-message-dialog ?? self.bless( :$gtk-message-dialog ) !! Nil
