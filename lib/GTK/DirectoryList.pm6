@@ -64,8 +64,11 @@ class GTK::DirectoryList {
     $o;
   }
   multi method new (GFile() $file) {
-    my $gtk-dir-list = gtk_directory_list_new($file);
-
+    samewith(Str, $file);
+  }
+  multi method new (Str() $attributes, GFile() $file) {
+    my $gtk-dir-list = gtk_directory_list_new($attributes, $file);
+    
     $gtk-dir-list ?? self.bless( :$gtk-dir-list ) !! Nil;
   }
 
@@ -184,7 +187,14 @@ class GTK::DirectoryList {
   }
 
   # Type: uint
-  method n-items is rw  is g-property is also<n_items> {
+  method n-items
+    is rw
+    is g-property
+    is also<
+      n_items
+      elems
+    >
+  {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
