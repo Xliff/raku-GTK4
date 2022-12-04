@@ -128,10 +128,10 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
         $gv.int = $val;
         self.prop_set('row-spacing', $gv);
       }
-    0`1);
+    );
   }
 
-  method attach (
+  multi method attach (
     GtkWidget()     $child,
     Int()       :c(:$column) = 0,
     Int()       :r(:$row)    = 0,
@@ -140,7 +140,7 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
   ) {
     samewith($child, $column, $row, $width, $height);
   }
-  method attach (
+  multi method attach (
     GtkWidget() $child,
     Int()       $column,
     Int()       $row,
