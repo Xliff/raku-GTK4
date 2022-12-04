@@ -41,7 +41,11 @@ class GTK::Box:ver<4> is GTK::Widget {
     is also<GtkBox>
   { $!gtk-box }
 
-  multi method new (GtkBoxAncestry $gtk-box, :$ref = True) {
+  multi method new (
+    $gtk-box where $gtk-box ~~ GtkBoxAncestry,
+
+    :$ref is required = True
+  ) {
     return unless $gtk-box;
 
     my $o = self.bless( :$gtk-box );
@@ -205,6 +209,11 @@ class GTK::Box:ver<4> is GTK::Widget {
     my gint $s = $spacing;
 
     gtk_box_set_spacing($!gtk-box, $s);
+  }
+
+  # cw: Backwards compat
+  method run {
+    self.show;
   }
 
 }
