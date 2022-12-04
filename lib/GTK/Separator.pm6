@@ -70,6 +70,26 @@ class GTK::Separator:ver<4> is GTK::Widget:ver<4> {
     )
   }
 
+  method new-h-separator
+    is also<
+      new_h_separator
+      new-hseparator
+      new_hseparator
+    >
+  {
+    ::?CLASS.new( :h )
+  }
+
+  method new-v-separator
+    is also<
+      new_v_separator
+      new-vseparator
+      new_vseparator
+    >
+  {
+    ::?CLASS.new( :v )
+  }
+
   method get_type is also<get-type> {
     state ($n, $t);
 
