@@ -31,6 +31,9 @@ sub gtk_tree_model_foreach (
 sub gtk_tree_model_get (
   GtkTreeModel $tree_model,
   GtkTreeIter  $iter
+  GType        $type,
+  gpointer     $val,
+  gint         $terminator
 )
   is      native(gtk4)
   is      export
