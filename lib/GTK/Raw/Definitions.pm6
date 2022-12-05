@@ -10,7 +10,7 @@ use GLib::Roles::Pointers;
 
 unit package GTK::Raw::Definitions:ver<4>;
 
-constant gtk4 is export = 'gtk-4';
+constant gtk4 is export = '/usr/src/gtk4/build/gtk/gtk-4',v1;
 
 constant GtkAllocation is export := GdkRectangle;
 constant GtkCssChange  is export := guint64;
@@ -33,6 +33,7 @@ class GtkBoxLayout          is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkBuilder            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBuildableParser    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCalendar           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkColorDialog        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraint         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraintVariable is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssNode            is repr<CPointer> does GLib::Roles::Pointers is export { }
