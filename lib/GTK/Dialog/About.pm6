@@ -8,14 +8,15 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Dialog::About:ver<4>;
 
-use GTK::Dialog:ver<4>;
+use GTK::Window:ver<4>;
 
 use GLib::Roles::Implementor;
+use GDK::Roles::Paintable;
 
 our subset GtkAboutDialogAncestry is export of Mu
-  where GtkAboutDialog | GtkDialogAncestry;
+  where GtkAboutDialog | GtkWindowAncestry;
 
-class GTK::Dialog::About:ver<4> {
+class GTK::Dialog::About:ver<4> is GTK::Window:ver<4> {
   has GtkAboutDialog $!gtk-d-a is implementor;
 
   submethod BUILD ( :$gtk-about-dialog ) {
@@ -27,7 +28,7 @@ class GTK::Dialog::About:ver<4> {
 
     $!gtk-d-a = do {
       when GtkAboutDialog {
-        $to-parent = cast(GtkDialog, $_);
+        $to-parent = cast(GtkWindow, $_);
         $_;
       }
 
@@ -36,7 +37,7 @@ class GTK::Dialog::About:ver<4> {
         cast(GtkAboutDialog, $_);
       }
     }
-    self.setGtkDialog($to-parent);
+    self.setGtkWindow($to-parent);
   }
 
   method GTK::Raw::Definitions::GtkAboutDialog
@@ -62,11 +63,11 @@ class GTK::Dialog::About:ver<4> {
 
   # Type: GtkStrv
   method artists ( :$raw = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( G_TYPE_POINTER );
+    my $gv = GLib::Value.new( G_TYPE_BOXED );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('artists', $gv);
-        my $sa = cast(CArray[Str], $gv.pointer);
+        my $sa = cast(CArray[Str], $gv.boxed);
         return $sa if $raw;
         CArrayToArray($sa);
       },
@@ -76,7 +77,8 @@ class GTK::Dialog::About:ver<4> {
         X::GLib::InvalidArgument.new(
           message => "Invalid argument of type { $val.^name } passed to {
                       &?ROUTINE.name }!"
-        ).throw;
+        ).throw unless $val ~~ CArray[Str];
+        $gv.boxed = $val;
         self.prop_set('artists', $gv);
       }
     );
@@ -84,11 +86,11 @@ class GTK::Dialog::About:ver<4> {
 
   # Type: GtkStrv
   method authors ( :$raw = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( G_TYPE_POINTER );
+    my $gv = GLib::Value.new( G_TYPE_BOXED );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('authors', $gv);
-        my $sa = cast(CArray[Str], $gv.pointer);
+        my $sa = cast(CArray[Str], $gv.boxed);
         return $sa if $raw;
         CArrayToArray($sa);
       },
@@ -98,7 +100,8 @@ class GTK::Dialog::About:ver<4> {
         X::GLib::InvalidArgument.new(
           message => "Invalid argument of type { $val.^name } passed to {
                       &?ROUTINE.name }!"
-        ).throw;
+        ).throw unless $val ~~ CArray[Str];
+        $gv.boxed = $val;
         self.prop_set('authors', $gv);
       }
     );
@@ -136,11 +139,11 @@ class GTK::Dialog::About:ver<4> {
 
   # Type: GtkStrv
   method documenters ( :$raw = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( G_TYPE_POINTER );
+    my $gv = GLib::Value.new( G_TYPE_BOXED );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('documenters', $gv);
-        my $sa = cast(CArray[Str], $gv.pointer);
+        my $sa = cast(CArray[Str], $gv.boxed);
         return $sa if $raw;
         CArrayToArray($sa);
       },
@@ -150,8 +153,8 @@ class GTK::Dialog::About:ver<4> {
         X::GLib::InvalidArgument.new(
           message => "Invalid argument of type { $val.^name } passed to {
                       &?ROUTINE.name }!"
-        ).throw;
-        $gv.pointer = $val;
+        ).throw unless $val ~~ CArray[Str];
+        $gv.boxed = $val;
         self.prop_set('documenters', $gv);
       }
     );
@@ -206,7 +209,7 @@ class GTK::Dialog::About:ver<4> {
         );
       },
       STORE => -> $, GdkPaintable() $val is copy {
-        $gv.object5 = $val;
+        $gv.object = $val;
         self.prop_set('logo', $gv);
       }
     );
@@ -330,6 +333,10 @@ class GTK::Dialog::About:ver<4> {
         self.prop_set('wrap-license', $gv);
       }
     );
+  }
+
+  method Activate-Link {
+    self.connect-string($!gtk-d-a, 'activate-link');
   }
 
   proto method add_credit_section (|)
