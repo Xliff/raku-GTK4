@@ -211,11 +211,6 @@ class GTK::Box:ver<4> is GTK::Widget {
     gtk_box_set_spacing($!gtk-box, $s);
   }
 
-  # cw: Backwards compat
-  method run {
-    self.show;
-  }
-
 }
 
 INIT {
