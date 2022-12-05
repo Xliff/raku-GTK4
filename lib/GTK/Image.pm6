@@ -13,11 +13,12 @@ use GLib::Roles::Implementor;
 use GIO::Roles::Icon;
 use GDK::Roles::Paintable:ver<4>;
 
-
 our subset GtkImageAncestry is export of Mu
-  where GtkImage | GtkWidgetAncestry;
+  where GtkImage | GdkPaintable | GtkWidgetAncestry;
 
 class GTK::Image:ver<4> is GTK::Widget:ver<4> {
+  also does GDK::Roles::Paintable;
+
   has GtkImage $!gtk-i is implementor;
 
   submethod BUILD ( :$gtk-image ) {
@@ -33,12 +34,19 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
         $_;
       }
 
+      when GdkPaintable {
+        $!gdk-p = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkImage, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkImage, $_);
       }
     }
     self.setGtkWidget($to-parent);
+    self.roleInit-GdkPaintable;
   }
 
   method GTK::Raw::Definitions::GtkImage
