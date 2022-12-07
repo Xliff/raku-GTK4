@@ -23,8 +23,8 @@ $a.Activate.tap(-> *@a {
   my $t = GDK::Texture.new_from_file( GIO::File.new_for_path($logo) );
 
   ( .hexpand, .vexpand ) = True xx 2 given $i;
-  say "Image: { $i }";
-  say "Paintable: { $i.GdkPaintable }";
+  say "Image:        { $i }";
+  say "Paintable:    { $i.GdkPaintable }";
   say "Texture size: { $t.width } x { $t.height }";
 
   my $button = GTK::Button.new-with-label('About');
