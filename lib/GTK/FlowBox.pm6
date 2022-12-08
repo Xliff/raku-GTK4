@@ -83,7 +83,11 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GTKSelectionMode
-  method selection-mode ( :$enum = True ) is rw  is g-property {
+  method selection-mode ( :$enum = True )
+    is also<selection_mode>
+    is rw
+    is g-property
+  {
     my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkSelectionMode) );
     Proxy.new(
       FETCH => sub ($) {
@@ -101,7 +105,11 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method activate-on-single-click is rw  is g-property {
+  method activate-on-single-click
+    is also<activate_on_single_click>
+    is rw
+    is g-property
+  {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -116,7 +124,11 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method accept-unpaired-release is rw  is g-property {
+  method accept-unpaired-release
+    is also<accept_unpaired_release>
+    is rw
+    is g-property
+  {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -146,7 +158,11 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: uint
-  method min-children-per-line is rw  is g-property {
+  method min-children-per-line
+    is also<min_children_per_line>
+    is rw
+    is g-property
+  {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -161,7 +177,11 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: uint
-  method max-children-per-line is rw  is g-property {
+  method max-children-per-line
+    is also<max_children_per_line>
+    is rw
+    is g-property
+  {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -176,7 +196,7 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: uint
-  method row-spacing is rw  is g-property {
+  method row-spacing is also<row_spacing> is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -191,7 +211,7 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: uint
-  method column-spacing is rw  is g-property {
+  method column-spacing is also<column_spacing> is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -325,7 +345,10 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
     unstable_get_type( self.^name, &gtk_flow_box_get_type, $n, $t );
   }
 
-  method insert (GtkWidget() $widget, Int() $position = -1) {
+  method insert (GtkWidget() $widget, Int() $position = -1)
+    # cw:Backwards compatibility
+    is also<add>
+  {
     my gint $p = $position;
 
     gtk_flow_box_insert($!gtk-flow, $widget, $p);
