@@ -30,7 +30,7 @@ sub gtk_link_button_get_visited (GtkLinkButton $link_button)
 { * }
 
 sub gtk_link_button_new (Str $uri)
-  returns GtkLinkButtons
+  returns GtkLinkButton
   is      native(gtk4)
   is      export
 { * }

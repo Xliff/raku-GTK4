@@ -94,6 +94,10 @@ class GTK::Button::Link:ver<4> is GTK::Button:ver<4> {
     );
   }
 
+  method Activate-Link {
+    self.connect($!gtk-lb, 'activate-link');
+  }
+
   method get_type is also<get-type> {
     state ($n, $t);
 
