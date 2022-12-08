@@ -164,6 +164,11 @@ class GTK::Button:ver<4> is GTK::Widget:ver<4> {
     self.connect($!gtk-b, 'clicked');
   }
 
+  # cw: Backwards compatibility
+  method add (GtkWidget() $child) {
+    self.child = $child;
+  }
+
   method get_child (
     :$raw                   = False,
     :quick(:$fast)          = False,
