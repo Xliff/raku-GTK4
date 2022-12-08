@@ -56,6 +56,7 @@ class GtkImage              is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkInfoBar            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkInspectorOverlay   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLabel              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkLinkButton         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkListItem           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkListItemManager    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLayoutChild        is repr<CPointer> does GLib::Roles::Pointers is export { }
