@@ -71,66 +71,43 @@ sub gtk_paned_new (GtkOrientation $orientation)
   is      export
 { * }
 
-sub gtk_paned_set_end_child (
-  GtkPaned  $paned,
-  GtkWidget $child
+sub gtk_paned_set_end_child (GtkPaned  $paned, GtkWidget $child)
+  is      native(gtk4)
+  is      export
+{ * }
+
+sub gtk_paned_set_position (GtkPaned $paned, gint $position)
+  is      native(gtk4)
+  is      export
+{ * }
+
+sub gtk_paned_set_resize_end_child  GtkPaned $paned, gboolean $resize
 )
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_paned_set_position (
-  GtkPaned $paned,
-  gint     $position
-)
+sub gtk_paned_set_resize_start_child (GtkPaned $paned, gboolean $resize)
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_paned_set_resize_end_child (
-  GtkPaned $paned,
-  gboolean $resize
-)
+sub gtk_paned_set_shrink_end_child (GtkPaned $paned, gboolean $resize)
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_paned_set_resize_start_child (
-  GtkPaned $paned,
-  gboolean $resize
-)
+sub gtk_paned_set_shrink_start_child (GtkPaned $paned, gboolean $resize)
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_paned_set_shrink_end_child (
-  GtkPaned $paned,
-  gboolean $resize
-)
+sub gtk_paned_set_start_child (GtkPaned  $paned, GtkWidget $child)
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_paned_set_shrink_start_child (
-  GtkPaned $paned,
-  gboolean $resize
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_paned_set_start_child (
-  GtkPaned  $paned,
-  GtkWidget $child
-)
-  is      native(gtk4)
-  is      export
-{ * }
-
-sub gtk_paned_set_wide_handle (
-  GtkPaned $paned,
-  gboolean $wide
-)
+sub gtk_paned_set_wide_handle (GtkPaned $paned, gboolean $wide)
   is      native(gtk4)
   is      export
 { * }
