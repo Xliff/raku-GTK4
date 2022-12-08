@@ -1,14 +1,58 @@
 use v6.c;
 
+use Method::Also;
+
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::CenterBox:ver<4>;
 
+use GLib::Value;
+use GTK::Widget:ver<4>;
+
 use GLib::Roles::Implementor;
 
-class GTK::CenterBox {
+our subset GtkCenterBoxAncestry is export of Mu
+  where GtkCenterBox | GtkWidgetAncestry;
+
+class GTK::CenterBox is GTK::Widget:ver<4> {
   has GtkCenterBox $!gtk-c is implementor;
 
+  submethod BUILD ( :$gtk-center-box ) {
+    self.setGtkCenterBox($gtk-center-box) if $gtk-center-box
+  }
+
+  method setGtkCenterBox (GtkCenterBoxAncestry $_) {
+    my $to-parent;
+
+    $!gtk-c = do {
+      when GtkCenterBox {
+        $to-parent = cast(GtkWidget, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GtkCenterBox, $_);
+      }
+    }
+    self.setGtkWidget($to-parent);
+  }
+
+  method GTK::Raw::Definitions::GtkCenterBox
+    is also<GtkCenterBox>
+  { $!gtk-c }
+
+  multi method new (
+    $gtk-center-box where * ~~ GtkCenterBoxAncestry,
+
+    :$ref = True
+  ) {
+    return unless $gtk-center-box;
+
+    my $o = self.bless( :$gtk-center-box );
+    $o.ref if $ref;
+    $o;
+  }
   multi method new {
     my $gtk-center-box = gtk_center_box_new();
 
@@ -16,7 +60,11 @@ class GTK::CenterBox {
   }
 
   # Type: GtkBaselinePosition
-  method baseline-position ( :$enum = True ) is rw  is g-property {
+  method baseline-position ( :$enum = True )
+    is rw
+    is g-property
+    is also<baseline_position>
+  {
     my $gv = GLib::Value.new-enum( GtkBaselinePosition );
     Proxy.new(
       FETCH => sub ($) {
@@ -40,16 +88,16 @@ class GTK::CenterBox {
   )
     is rw
     is g-property
+
+    is also<center_widget>
   {
     my $gv = GLib::Value.new( GTK::Widget.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('center-widget', $gv);
-        returnProperWidget(
-          $gv.object,
-          $raw,
-          $proper
-        );
+        my $o = $gv.object;
+        return Nil unless $o;
+        returnProperWidget($o, $raw, $proper);
       },
       STORE => -> $, GtkWidget() $val is copy {
         $gv.object = $val;
@@ -66,16 +114,16 @@ class GTK::CenterBox {
   )
     is rw
     is g-property
+
+    is also<end_widget>
   {
     my $gv = GLib::Value.new( GTK::Widget.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('end-widget', $gv);
-        returnProperWidget(
-          $gv.object,
-          $raw,
-          $proper
-        );
+        my $o = $gv.object;
+        return Nil unless $o;
+        returnProperWidget($o, $raw, $proper);
       },
       STORE => -> $, GtkWidget() $val is copy {
         $gv.object = $val;
@@ -92,16 +140,16 @@ class GTK::CenterBox {
   )
     is rw
     is g-property
+
+    is also<start_widget>
   {
     my $gv = GLib::Value.new( GTK::Widget.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('start-widget', $gv);
-        returnProperWidget(
-          $gv.object,
-          $raw,
-          $proper
-        );
+        my $o = $gv.object;
+        return Nil unless $o;
+        returnProperWidget($o, $raw, $proper);
       },
       STORE => -> $, GtkWidget() $val is copy {
         $gv.object = $val;
@@ -110,7 +158,33 @@ class GTK::CenterBox {
     );
   }
 
-  method get_baseline_position ( :$enum = True ) {
+  method widgets (
+    :$raw           = False,
+    :quick(:$fast)  = False,
+    :slow(:$proper) = $fast.not
+  ) is rw {
+    Proxy.new:
+      FETCH => -> $ {
+        (
+          self.start-widget(:$raw, :$proper),
+          self.center-widget(:$raw, :$proper),
+          self.end-widget(:$raw, :$proper)
+        )
+      },
+
+      STORE => -> $, $widgets is copy {
+        X::GLib::InvalidSize.new(
+          message => "\$widgets can only have 3 elements (value has {
+                      $widgets.elems })"
+        ).throw unless $widgets.elems == 3;
+        $widgets = ArrayToCArray(GtkWidget, $widgets);
+
+        ( .start-widget, .center-widget, .end-widget) =
+          $widgets.Array.map( *.deref ) given self;
+      }
+  }
+
+  method get_baseline_position ( :$enum = True ) is also<get-baseline-position> {
     my $p = gtk_center_box_get_baseline_position($!gtk-c);
     return $p unless $enum;
     GtkBaselinePositionEnum($p);
@@ -120,7 +194,9 @@ class GTK::CenterBox {
     :$raw           = False,
     :quick(:$fast)  = False,
     :slow(:$proper) = $fast.not
-  ) {
+  )
+    is also<get-center-widget>
+  {
     returnProperWidget(
       gtk_center_box_get_center_widget($!gtk-c),
       $raw,
@@ -132,7 +208,9 @@ class GTK::CenterBox {
     :$raw           = False,
     :quick(:$fast)  = False,
     :slow(:$proper) = $fast.not
-  ) {
+  )
+    is also<get-end-widget>
+  {
     returnProperWidget(
       gtk_center_box_get_end_widget($!gtk-c),
       $raw,
@@ -144,7 +222,9 @@ class GTK::CenterBox {
     :$raw           = False,
     :quick(:$fast)  = False,
     :slow(:$proper) = $fast.not
-  ) {
+  )
+    is also<get-start-widget>
+  {
     returnProperWidget(
       gtk_center_box_get_start_widget($!gtk-c),
       $raw,
@@ -152,27 +232,27 @@ class GTK::CenterBox {
     );
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_center_box_get_type, $n, $t );
   }
 
-  method set_baseline_position (Int() $position) {
+  method set_baseline_position (Int() $position) is also<set-baseline-position> {
     my GtkBaselinePosition $p = $position;
 
     gtk_center_box_set_baseline_position($!gtk-c, $p);
   }
 
-  method set_center_widget (GtkWidget() $child) {
+  method set_center_widget (GtkWidget() $child) is also<set-center-widget> {
     gtk_center_box_set_center_widget($!gtk-c, $child);
   }
 
-  method set_end_widget (GtkWidget() $child) {
+  method set_end_widget (GtkWidget() $child) is also<set-end-widget> {
     gtk_center_box_set_end_widget($!gtk-c, $child);
   }
 
-  method set_start_widget (GtkWidget() $child) {
+  method set_start_widget (GtkWidget() $child) is also<set-start-widget> {
     gtk_center_box_set_start_widget($!gtk-c, $child);
   }
 
