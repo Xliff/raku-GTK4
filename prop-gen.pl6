@@ -265,10 +265,12 @@ sub generateFromFile (
       do gather for .<p>.tail
                         .lc
                         .split(/ <.ws> '|' <.ws> /)
+                        .map({ .trim })
+                        .map({ S:g/<[\(\)]>// })
      {
         my @perms;
 
-        #"RW-P: $_";
+        #say "RW-P: { $_ }";
 
         s/ 'writ'» /write/;
 
@@ -276,11 +278,14 @@ sub generateFromFile (
         @perms.push: 'write'          if .ends-with('_write' | '_writable');
         @perms.append: |<read write>  if .ends-with('readwrite');
 
+        #say "Perms: { @perms.gist }";
+
         if +@perms {
           take $_ for @perms;
         }
       }
     ).cache;
+    next unless +$rw;
 
     #say "RW: { $rw.gist }";
 
@@ -290,6 +295,8 @@ sub generateFromFile (
       $*types = $type;
       getType
     } else {
+      next unless .<p>[3];
+
       $*types = $type-prefix ~ .<p>[3].split('_')
                                       .skip(2)
                                       .map( *.lc.tc )
