@@ -88,3 +88,5 @@ class GtkTooltip            is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkTreeModel          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreePath           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeRowReference   is repr<CPointer> does GLib::Roles::Pointers is export { }
+
+class GtkPasswordEntryBuffer is repr<CPointer> does GLib::Roles::Pointers is export { }
