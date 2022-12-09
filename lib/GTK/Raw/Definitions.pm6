@@ -27,6 +27,7 @@ class GtkSnapshot           is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkShortcut           is repr<CPointer> does GLib::Roles::Pointers is export { }
 
 class GtkAboutDialog        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkActionable         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAlertDialog        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkActionBar          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBitset             is repr<CPointer> does GLib::Roles::Pointers is export { }
