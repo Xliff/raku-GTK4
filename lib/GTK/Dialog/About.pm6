@@ -72,13 +72,7 @@ class GTK::Dialog::About:ver<4> is GTK::Window:ver<4> {
         CArrayToArray($sa);
       },
       STORE => -> $,  $val is copy {
-        $val .= Array if $val.^can('Array');
-        $val = ArrayToCArray(Str, $val) if $val ~~ Array;
-        X::GLib::InvalidArgument.new(
-          message => "Invalid argument of type { $val.^name } passed to {
-                      &?ROUTINE.name }!"
-        ).throw unless $val ~~ CArray[Str];
-        $gv.boxed = $val;
+        $gv.boxed = setGStrV($val);
         self.prop_set('artists', $gv);
       }
     );
@@ -95,13 +89,7 @@ class GTK::Dialog::About:ver<4> is GTK::Window:ver<4> {
         CArrayToArray($sa);
       },
       STORE => -> $,  $val is copy {
-        $val .= Array if $val.^can('Array');
-        $val = ArrayToCArray(Str, $val) if $val ~~ Array;
-        X::GLib::InvalidArgument.new(
-          message => "Invalid argument of type { $val.^name } passed to {
-                      &?ROUTINE.name }!"
-        ).throw unless $val ~~ CArray[Str];
-        $gv.boxed = $val;
+        $gv.boxed = setGStrV($val);
         self.prop_set('authors', $gv);
       }
     );
