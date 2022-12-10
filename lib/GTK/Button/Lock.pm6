@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use NativeCall;
 
 use GLib::Raw::Traits;
@@ -8,10 +10,49 @@ use GTK::Raw::Types:ver<4>;\
 use GIO::Permission;
 use GTK::Button:ver<4>;
 
-class GTK::LockButton:ver<4> is GTK::Button:ver<4> {
+our subset GtkLockButtonAncestry is export of Mu
+  where GtkLockButton | GtkButtonAncestry;
+
+class GTK::Button::Lock:ver<4> is GTK::Button:ver<4> {
   has GtkLockButton $!gtk-lb is implementor;
 
-  method new (GPermission() $perm) {
+  submethod BUILD ( :$gtk-lock-button ) {
+    self.setGtkLockButton($gtk-lock-button) if $gtk-lock-button
+  }
+
+  method setGtkLockButton (GtkLockButtonAncestry $_) {
+    my $to-parent;
+
+    $!gtk-lb = do {
+      when GtkLockButton {
+        $to-parent = cast(GtkButton, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GtkLockButton, $_);
+      }
+    }
+    self.setGtkButton($to-parent);
+  }
+
+  method GTK::Raw::Definitions::GtkLockButton
+    is also<GtkLockButton>
+  { $!gtk-lb }
+
+  multi method new (
+    $gtk-lock-button where * ~~ GtkLockButtonAncestry,
+
+    :$ref = True
+  ) {
+    return unless $gtk-lock-button;
+
+    my $o = self.bless( :$gtk-lock-button );
+    $o.ref if $ref;
+    $o;
+  }
+  multi method new (GPermission() $perm) {
     my $gtk-lock-button = gtk_lock_button_new($perm);
 
     $gtk-lock-button ?? self.bless( :$gtk-lock-button ) !! Nil;
@@ -37,7 +78,7 @@ class GTK::LockButton:ver<4> is GTK::Button:ver<4> {
   }
 
   # Type: string
-  method text-lock is rw  is g-property {
+  method text-lock is rw  is g-property is also<text_lock> {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -52,7 +93,7 @@ class GTK::LockButton:ver<4> is GTK::Button:ver<4> {
   }
 
   # Type: string
-  method text-unlock is rw  is g-property {
+  method text-unlock is rw  is g-property is also<text_unlock> {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -67,7 +108,7 @@ class GTK::LockButton:ver<4> is GTK::Button:ver<4> {
   }
 
   # Type: string
-  method tooltip-lock is rw  is g-property {
+  method tooltip-lock is rw  is g-property is also<tooltip_lock> {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -82,7 +123,11 @@ class GTK::LockButton:ver<4> is GTK::Button:ver<4> {
   }
 
   # Type: string
-  method tooltip-not-authorized is rw  is g-property {
+  method tooltip-not-authorized
+    is rw
+    is g-property
+    is also<tooltip_not_authorized>
+  {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -97,7 +142,7 @@ class GTK::LockButton:ver<4> is GTK::Button:ver<4> {
   }
 
   # Type: string
-  method tooltip-unlock is rw  is g-property {
+  method tooltip-unlock is rw  is g-property is also<tooltip_unlock> {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -111,7 +156,7 @@ class GTK::LockButton:ver<4> is GTK::Button:ver<4> {
     );
   }
 
-  method get_permission ( :$raw = False ) {
+  method get_permission ( :$raw = False ) is also<get-permission> {
     propReturnObject(
       gtk_lock_button_get_permission($!gtk-lb),
       $raw,
@@ -119,13 +164,13 @@ class GTK::LockButton:ver<4> is GTK::Button:ver<4> {
     );
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_lock_button_get_type, $n, $t );
   }
 
-  method set_permission (GPermission() $permission) {
+  method set_permission (GPermission() $permission) is also<set-permission> {
     gtk_lock_button_set_permission($!gtk-lb, $permission);
   }
 
