@@ -48,6 +48,7 @@ class GtkEmojiChooser       is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkEntryCompletion    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpression         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpressionWatch    is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkFilter             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFileFilter         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFlowBox            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkGridView           is repr<CPointer> does GLib::Roles::Pointers is export { }
