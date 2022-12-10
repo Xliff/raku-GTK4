@@ -71,10 +71,10 @@ class GtkPaned              is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkPasswordEntry      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPicture            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkProgressBar        is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkSelectionModel     is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrollable         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrollbar          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrolledWindow     is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSelectionModel     is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSeparator          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSettings           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutController is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -91,5 +91,6 @@ class GtkTooltip            is repr<CPointer> does GLib::Roles::Pointers is expo
 class GtkTreeModel          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreePath           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeRowReference   is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkWindowControls     is repr<CPointer> does GLib::Roles::Pointers is export { }
 
 class GtkPasswordEntryBuffer is repr<CPointer> does GLib::Roles::Pointers is export { }
