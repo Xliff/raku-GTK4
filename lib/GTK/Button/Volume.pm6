@@ -9,10 +9,15 @@ use GTK::Raw::Types:ver<4>;
 
 use GTK::Button::Scale:ver<4>;
 
-our subset GtkVolumeButtonAncestry is export of Mu
-  where GtkVolumeButton | GtkScaleButtonAncestry;
+use GLib::Roles::Implementor;
+use GTK::Roles::Orientable;
 
-class GTK::VolumeButton:ver<4> is GTK::Button::Scale:ver<4> {
+our subset GtkVolumeButtonAncestry is export of Mu
+  where GtkVolumeButton | GtkOrientable | GtkScaleButtonAncestry;
+
+class GTK::Button::Volume:ver<4> is GTK::Button::Scale:ver<4> {
+  also does GTK::Roles::Orientable;
+
   has GtkVolumeButton $!gtk-vb is implementor;
 
   submethod BUILD ( :$gtk-volume-button ) {
@@ -28,12 +33,19 @@ class GTK::VolumeButton:ver<4> is GTK::Button::Scale:ver<4> {
         $_;
       }
 
+      when GtkOrientable {
+        $!gtk-o = $_;
+        $to-parent = cast(GtkScaleButton, $_);
+        cast(GtkVolumeButton, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkVolumeButton, $_);
       }
     }
     self.setGtkScaleButton($to-parent);
+    self.roleInit-GtkOrientable;
   }
 
   method GTK::Raw::Definitions::GtkVolumeButton
@@ -51,11 +63,17 @@ class GTK::VolumeButton:ver<4> is GTK::Button::Scale:ver<4> {
     $o.ref if $ref;
     $o;
   }
-
-  multi method new {
+  multi method new (
+    :horizontal(:$h) = True;
+    :vertical(:$v)   = $h.not
+  ) {
     my $gtk-volume-button = gtk_volume_button_new();
 
-    $gtk-volume-button ?? self.bless( :$gtk-volume-button ) !! Nil;
+    return Nil unless $gtk-volume-button;
+    my $b = self.bless( :$gtk-volume-button );
+    $b.orientation = $v ?? GTK_ORIENTATION_VERTICAL
+                        !! GTK_ORIENTATION_HORIZONTAL;
+    $b;
   }
 
   # Type: boolean
