@@ -69,6 +69,7 @@ class GtkNativeDialog        is repr<CPointer> does GLib::Roles::Pointers is exp
 class GtkNotebook            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNotebookPage        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOrientable          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkOverlay             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPaned               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPasswordEntry       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPicture             is repr<CPointer> does GLib::Roles::Pointers is export { }
