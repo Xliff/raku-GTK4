@@ -46,6 +46,7 @@ class GtkDropDown            is repr<CPointer> does GLib::Roles::Pointers is exp
 class GtkEditable            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEmojiChooser        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEntryCompletion     is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkExpander            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpression          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpressionWatch     is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFilter              is repr<CPointer> does GLib::Roles::Pointers is export { }
