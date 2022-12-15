@@ -64,6 +64,25 @@ class GTK::CheckButton:ver<4> is GTK::Widget:ver<4> {
     $gtk-check-button ?? self.bless( :$gtk-check-button ) !! Nil;
   }
 
+  proto method new-group (|)
+  { * }
+
+  multi method new-group (*@labels) {
+    samewith(@labels);
+  }
+  multi method new-group (@labels) {
+    my @group;
+    my $first = ::?CLASS.new_with_label(@labels.head);
+    @group.push: $first;
+
+    for @labels.skip(1) {
+      @group.push: ::?CLASS.new_with_label($_);
+      @group.tail.group = $first;
+    };
+
+    @group;
+  }
+
   # Type: boolean
   method active is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
