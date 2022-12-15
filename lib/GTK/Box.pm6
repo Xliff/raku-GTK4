@@ -9,11 +9,14 @@ use GTK::Raw::Box:ver<4>;
 use GTK::Widget;
 
 use GLib::Roles::Implementor;
+use GTK::Roles::Orientable:ver<4>;
 
 our subset GtkBoxAncestry is export of Mu
-  where GtkBox | GtkWidgetAncestry;
+  where GtkBox | GtkOrientable | GtkWidgetAncestry;
 
 class GTK::Box:ver<4> is GTK::Widget {
+  also does GTK::Roles::Orientable;
+
   has GtkBox $!gtk-box is implementor;
 
   submethod BUILD ( :$gtk-box ) {
@@ -29,12 +32,19 @@ class GTK::Box:ver<4> is GTK::Widget {
         $_;
       }
 
+      when GtkOrientable {
+        $!gtk-o = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkBox, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkBox, $_);
       }
     }
     self.setGtkWidget($to-parent);
+    self.roleInit-GtkOrientable;
   }
 
   method GTK::Raw::Structs::GtkBox
@@ -112,7 +122,11 @@ class GTK::Box:ver<4> is GTK::Widget {
   }
 
   # Type: GTKBaselinePosition
-  method baseline-position ( :$enum = True ) is rw  is g-property is also<baseline_position> {
+  method baseline-position ( :$enum = True )
+    is rw
+    is g-property
+    is also<baseline_position>
+  {
     my $gv = GLib::Value.new( GLib::Value.new-enum(GtkBaselinePosition) );
     Proxy.new(
       FETCH => sub ($) {
@@ -128,7 +142,20 @@ class GTK::Box:ver<4> is GTK::Widget {
     );
   }
 
-  method pack_start (GtkWidget() $child, *@) is also<pack-start> {
+  method pack_start ($child, *@a)
+    is also<pack-start>
+  {
+    if @a.head {
+      (self.orientation == GTK_ORIENTATION_HORIZONTAL
+        ?? $child.vexpand
+        !! $child.hexpand ) = True;
+    }
+    if @a.head(2).tail {
+      (self.orientation == GTK_ORIENTATION_HORIZONTAL
+        ?? $child.hexpand
+        !! $child.vexpand ) = True;
+    }
+
     self.append($child);
   }
 
