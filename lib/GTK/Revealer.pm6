@@ -2,7 +2,7 @@ use v6.c;
 
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::Revealer:ver<4>
+use GTK::Raw::Revealer:ver<4>;
 
 use GTK::Widget:ver<4>;
 
