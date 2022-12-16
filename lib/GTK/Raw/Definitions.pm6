@@ -77,6 +77,7 @@ class GtkPasswordEntry       is repr<CPointer> does GLib::Roles::Pointers is exp
 class GtkPicture             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkProgressBar         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRecentInfo          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkRevealer            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrollable          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrollbar           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrolledWindow      is repr<CPointer> does GLib::Roles::Pointers is export { }
