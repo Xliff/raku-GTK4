@@ -339,5 +339,13 @@ class GTK::Recent::Info {
   method unref {
     gtk_recent_info_unref($!gtk-ri);
   }
+}
 
- }
+INIT {
+  my \O = GTK::RecentManager;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

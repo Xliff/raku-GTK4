@@ -479,6 +479,16 @@ class GTK::FlowBox:ver<4> is GTK::Widget:ver<4> {
 
 }
 
+INIT {
+  my \O = GTK::FlowBox;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}
+
+
   # method child_changed {
   #   gtk_flow_box_child_changed($!gtk-flow);
   # }

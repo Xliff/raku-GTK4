@@ -240,3 +240,12 @@ class GTK::LevelBar:ver<4> is GTK::Widget:ver<4> {
   }
 
 }
+
+INIT {
+  my \O = GTK::LevelBar;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

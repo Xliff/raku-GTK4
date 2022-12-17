@@ -139,3 +139,12 @@ class GTK::Overlay is GTK::Widget {
   }
 
 }
+
+INIT {
+  my \O = GTK::Overlay;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

@@ -249,3 +249,12 @@ class GTK::GridView:ver<4> is GTK::ListBase:ver<4> {
   }
 
 }
+
+INIT {
+  my \O = GTK::GridView;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}

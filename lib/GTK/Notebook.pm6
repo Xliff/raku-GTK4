@@ -672,3 +672,12 @@ class GTK::Notebook::Page {
   }
 
  }
+
+INIT {
+  my \O = GTK::Notebook;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}
