@@ -369,7 +369,7 @@ class GTK::Popover:ver<4> is GTK::Widget:ver<4> {
 }
 
 INIT {
-  my \O = GTK::EmojiChooser;
+  my \O = GTK::Popover;
   %widget-types{O.get_type} = {
     name        => O.^name,
     object      => O,
