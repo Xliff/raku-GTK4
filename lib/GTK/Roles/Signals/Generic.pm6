@@ -62,7 +62,7 @@ role GTK::Roles::Signals::Generic:ver<4> {
 
 }
 
-sub g_connect_move_cursor (
+sub g_connect_widget (
   Pointer $app,
   Str     $name,
           &handler (gpointer, GtkWidget, gpointer),
