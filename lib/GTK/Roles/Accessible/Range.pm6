@@ -33,6 +33,8 @@ role GTK::Roles::Accessible::Range:ver<4> {
 
 }
 
+### /usr/src/gtk4/gtk/gtkaccessiblerange.h
+
 sub gtk_accessible_range_set_current_value (gdouble $v)
   is native(gtk4)
   is export
