@@ -106,15 +106,21 @@ class GTK::ListBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GtkSelectionMode
-  method selection-mode is rw  is g-property is also<selection_mode> {
-    my $gv = GLib::Value.new( GtkSelectionMode );
+  method selection-mode ( :$enum = True )
+    is rw
+    is g-property
+    is also<selection_mode>
+  {
+    my $gv = GLib::Value.new-enum( GtkSelectionMode );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('selection-mode', $gv);
-        $gv.GtkSelectionMode;
+        my $m = $gv.enum;
+        return $m unless $enum;
+        GtkSelectionModeEnum($m);
       },
-      STORE => -> $,  $val is copy {
-        $gv.GtkSelectionMode = $val;
+      STORE => -> $, Int() $val is copy {
+        $gv.valueFromEnum(GtkSelectionMode) = $val;
         self.prop_set('selection-mode', $gv);
       }
     );
@@ -267,7 +273,7 @@ class GTK::ListBox:ver<4> is GTK::Widget:ver<4> {
     unstable_get_type( self.^name, &gtk_list_box_get_type, $n, $t );
   }
 
-  method insert (GtkWidget() $child, Int() $position) {
+  method insert (GtkWidget() $child, Int() $position = -1) {
     my gint $p = $position;
 
     gtk_list_box_insert($!gtk-lb, $child, $p);
@@ -565,4 +571,14 @@ class GTK::ListBox::Row:ver<4> {
     gtk_list_box_row_set_selectable($!gtk-lbr, $s);
   }
 
+}
+
+INIT {
+  for GTK::ListBox, GTK::ListBox::Row -> \O {
+    %widget-types{O.get_type} = {
+      name        => O.^name,
+      object      => O,
+      pair        => O.getTypePair
+    }
+  }
 }
