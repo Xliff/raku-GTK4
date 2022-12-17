@@ -16,6 +16,7 @@ constant GtkAllocation is export := GdkRectangle;
 constant GtkCssChange  is export := guint64;
 
 class GtkAccessible         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkAccessibleRange    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBuildable          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBuilderScope       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraintTarget   is repr<CPointer> does GLib::Roles::Pointers is export { }
