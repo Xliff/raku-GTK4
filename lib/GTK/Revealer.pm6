@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Revealer:ver<4>;
@@ -8,10 +10,48 @@ use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
 
+our subset GtkRevealerAncestry is export of Mu
+  where GtkRevealer | GtkWidgetAncestry;
+
 class GTK::Revealer:ver<4> is GTK::Widget:ver<4> {
   has GtkRevealer $!gtk-r is implementor;
 
-  method new {
+  submethod BUILD ( :$gtk-revealer ) {
+    self.setGtkRevealer($gtk-revealer) if $gtk-revealer
+  }
+
+  method setGtkRevealer (GtkRevealerAncestry $_) {
+    my $to-parent;
+
+    $!gtk-r = do {
+      when GtkRevealer {
+        $to-parent = cast(GtkWidget, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GtkRevealer, $_);
+      }
+    }
+    self.setGtkWidget($to-parent);
+  }
+
+  method GTK::Raw::Definitions::GtkRevealer
+    is also<GtkRevealer>
+  { $!gtk-r }
+
+  multi method new (
+    $gtk-revealer where * ~~ GtkRevealerAncestry,
+    :$ref = True
+  ) {
+    return unless $gtk-revealer;
+
+    my $o = self.bless( :$gtk-revealer );
+    $o.ref if $ref;
+    $o;
+  }
+  multi method new {
     my $gtk-revealer = gtk_revealer_new();
 
     $gtk-revealer ?? self.bless( :$gtk-revealer ) !! Nil;
@@ -44,7 +84,7 @@ class GTK::Revealer:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method child-revealed is rw  is g-property {
+  method child-revealed is rw  is g-property is also<child_revealed> {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -58,7 +98,7 @@ class GTK::Revealer:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method reveal-child is rw  is g-property {
+  method reveal-child is rw  is g-property is also<reveal_child> {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -73,7 +113,11 @@ class GTK::Revealer:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: uint
-  method transition-duration is rw  is g-property {
+  method transition-duration
+    is rw
+    is g-property
+    is also<transition_duration>
+  {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -88,7 +132,11 @@ class GTK::Revealer:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GtkRevealerTransitionType
-  method transition-type ( :$enum = True ) is rw  is g-property {
+  method transition-type ( :$enum = True )
+    is rw
+    is g-property
+    is also<transition_type>
+  {
     my $gv = GLib::Value.new-enum( GtkRevealerTransitionType );
     Proxy.new(
       FETCH => sub ($) {
@@ -108,7 +156,9 @@ class GTK::Revealer:ver<4> is GTK::Widget:ver<4> {
     :$raw           = False,
     :quick(:$fast)  = False,
     :slow(:$proper) = $fast.not
-  ) {
+  )
+    is also<get-child>
+  {
     returnProperWidget(
       gtk_revealer_get_child($!gtk-r),
       $raw,
@@ -116,50 +166,69 @@ class GTK::Revealer:ver<4> is GTK::Widget:ver<4> {
     )
   }
 
-  method get_child_revealed {
+  method get_child_revealed is also<get-child-revealed> {
     so gtk_revealer_get_child_revealed($!gtk-r);
   }
 
-  method get_reveal_child {
+  method get_reveal_child is also<get-reveal-child> {
     so gtk_revealer_get_reveal_child($!gtk-r);
   }
 
-  method get_transition_duration ( :$enum = True ) {
+  method get_transition_duration ( :$enum = True )
+    is also<get-transition-duration>
+  {
     gtk_revealer_get_transition_duration($!gtk-r);
   }
 
-  method get_transition_type ( :$enum = True ) {
+  method get_transition_type ( :$enum = True ) is also<get-transition-type> {
     my $e = gtk_revealer_get_transition_type($!gtk-r);
     return $e unless $enum;
     GtkRevealerTransitionTypeEnum($e);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_revealer_get_type, $n, $t );
   }
 
-  method set_child (GtkWidget() $child) {
+  method set_child (GtkWidget() $child) is also<set-child> {
     gtk_revealer_set_child($!gtk-r, $child);
   }
 
-  method set_reveal_child (Int() $reveal_child) {
+  method unsetChild {
+    self.set_child(GtkWidget);
+  }
+
+  method set_reveal_child (Int() $reveal_child) is also<set-reveal-child> {
     my gboolean $r = $reveal_child.so.Int;
 
     gtk_revealer_set_reveal_child($!gtk-r, $r);
   }
 
-  method set_transition_duration (Int() $duration) {
+  method set_transition_duration (Int() $duration)
+    is also<set-transition-duration>
+  {
     my guint $d = $duration;
 
     gtk_revealer_set_transition_duration($!gtk-r, $d);
   }
 
-  method set_transition_type (Int() $transition) {
+  method set_transition_type (Int() $transition)
+    is also<set-transition-type>
+  {
     my GtkRevealerTransitionType $t = $transition;
 
     gtk_revealer_set_transition_type($!gtk-r, $t);
   }
 
+}
+
+INIT {
+  my \O = GTK::Revealer;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
 }
