@@ -8,6 +8,32 @@ use GTK::Raw::Types:ver<4>;
 role GTK::Roles::Signals::Generic:ver<4> {
   has %!signals-gtk;
 
+  method connect-widget (
+    $obj,
+    $signal,
+    &handler?
+  )
+    is also<connect_widget>
+  {
+    my $hid;
+    %!signals-gtk{$signal} //= do {
+      my $s = Supplier.new;
+      $hid = g_connect_widget($obj, $signal,
+        -> $, $w, $ud {
+          CATCH {
+            default { note($_) }
+          }
+
+          $s.emit( [self, $w, $ud] );
+        },
+        Pointer, 0
+      );
+      [ self.create-signal-supply($signal, $s), $obj, $hid];
+    };
+    %!signals-gtk{$signal}[0].tap(&handler) with &handler;
+    %!signals-gtk{$signal}[0];
+  }
+
   method connect-move-cursor (
     $obj,
     $signal,
@@ -35,6 +61,18 @@ role GTK::Roles::Signals::Generic:ver<4> {
   }
 
 }
+
+sub g_connect_move_cursor (
+  Pointer $app,
+  Str     $name,
+          &handler (gpointer, GtkWidget, gpointer),
+  Pointer $data,
+  uint32  $flags
+)
+  returns uint64
+  is native('gobject-2.0')
+  is symbol('g_signal_connect_object')
+{ * }
 
 sub g_connect_move_cursor (
   Pointer $app,
