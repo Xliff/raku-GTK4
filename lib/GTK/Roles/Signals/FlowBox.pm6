@@ -18,7 +18,7 @@ role GTK::Roles::Signals::FlowBox:ver<4> {
     my $hid;
     %!signals-gtk-fb{$signal} //= do {
       my $s = Supplier.new;
-      $hid = g_connect-child-activated($obj, $signal,
+      $hid = g-connect-child-activated($obj, $signal,
         -> $, $c, $ud {
           CATCH {
             default { note($_) }
@@ -62,7 +62,7 @@ role GTK::Roles::Signals::FlowBox:ver<4> {
 
 }
 
-sub g_connect_child-activated (
+sub g-connect-child-activated (
   Pointer $app,
   Str     $name,
           &handler (GtkFlowBox, GtkFlowBoxChild, gpointer),
