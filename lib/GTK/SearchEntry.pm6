@@ -10,11 +10,14 @@ use GTK::Raw::Types:ver<4>;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
+use GTK::Roles::Editable;
 
 our subset GtkSearchEntryAncestry is export of Mu
-  where GtkSearchEntry | GtkWidgetAncestry;
+  where GtkSearchEntry | GtkEditable | GtkWidgetAncestry;
 
 class GTK::SearchEntry:ver<4> is GTK::Widget:ver<4> {
+  also does GTK::Roles::Editable;
+  
   has GtkSearchEntry $!gtk-se is implementor;
 
   submethod BUILD ( :$gtk-search-entry ) {
@@ -30,12 +33,19 @@ class GTK::SearchEntry:ver<4> is GTK::Widget:ver<4> {
         $_;
       }
 
+      when GtkEditable {
+        $!gtk-e = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkSearchEntry, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkSearchEntry, $_);
       }
     }
     self.setGtkWidget($to-parent);
+    self.roleInit-GtkEditable;
   }
 
   method GTK::Raw::Definitions::GtkSearchEntry
