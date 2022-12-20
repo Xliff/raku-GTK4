@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GLib::Raw::Definitions;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Enums:ver<4>;
