@@ -16,7 +16,8 @@ multi sub returnProperWidget (
    $object,
   :$raw           = False,
   :quick(:$fast)  = False,
-  :slow(:$proper) = $fast.not
+  :slow(:$proper) = $fast.not,
+  :$base          = GTK::Widget
 )
   is export
 {
@@ -27,11 +28,7 @@ multi sub returnProperWidget (
       return propReturnObject( $o, $raw, |$ot<pair> );
     }
   }
-  propReturnObject(
-     $o,
-     $raw,
-    |%widget-types<GTK::Widget><pair>
-  );
+  propReturnObject($o, $raw, $base.getTypePair);
 }
 
 multi sub returnProper ($object, $raw, $proper) is export {
