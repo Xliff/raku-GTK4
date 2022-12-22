@@ -57,6 +57,7 @@ class GtkFilter                is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkFileDialog            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFileFilter            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFlowBox               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkHeaderBar             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkGridView              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconPaintable         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconTheme             is repr<CPointer> does GLib::Roles::Pointers is export { }
