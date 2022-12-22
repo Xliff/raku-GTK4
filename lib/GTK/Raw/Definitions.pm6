@@ -98,6 +98,7 @@ class GtkSpinner               is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkSpinButton            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStack                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStackPage             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkStackSidebar          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStatusbar             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStringList            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStringObject          is repr<CPointer> does GLib::Roles::Pointers is export { }
