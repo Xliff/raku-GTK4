@@ -10,6 +10,7 @@ use GLib::Roles::Pointers;
 
 unit package GTK::Raw::Definitions:ver<4>;
 
+#constant gtk4 is export = '/usr/src/gtk4/build/gtk/gtk-4',v1;
 constant gtk4 is export = 'gtk-4',v1;
 
 constant GtkAllocation is export := GdkRectangle;
@@ -23,6 +24,7 @@ class GtkConstraintTarget      is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkCssValue              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLayoutManager         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNative                is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPrintOperationPreview is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRoot                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSnapshot              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcut              is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -83,6 +85,7 @@ class GtkOverlay               is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkPaned                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPasswordEntry         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPicture               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPrintContext          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkProgressBar           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRecentInfo            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRevealer              is repr<CPointer> does GLib::Roles::Pointers is export { }
