@@ -20,8 +20,7 @@ class GTK::StyleContext:ver<4> {
   has GtkStyleContext $!gtk-sc is implementor;
 
   submethod BUILD ( :$gtk-style-context ) {
-    self.setGtkStyleContext($gtk-style-context)
-      if $gtk-style-context
+    self.setGtkStyleContext($gtk-style-context) if $gtk-style-context
   }
 
   method setGtkStyleContext (GtkStyleContextAncestry $_) {
