@@ -39,7 +39,7 @@ class GTK::Scale:ver<4> is GTK::Range {
     is also<GtkScale>
   { $!gtk-s }
 
-  multi method new (GtkScaleAncestry $gtk-scale, :$ref = True) {
+  multi method new ($gtk-scale where * ~~ GtkScaleAncestry, :$ref = True) {
     return unless $gtk-scale;
 
     my $o = self.bless( :$gtk-scale );
@@ -181,6 +181,12 @@ class GTK::Scale:ver<4> is GTK::Range {
     );
   }
 
+  method value is rw is an-attribute {
+    Proxy.new:
+      FETCH => -> $     { self.get_value    },
+      STORE => -> $, \v { self.set_value(v) };
+  }
+
   method add_mark (Num() $value, Int() $position, Str() $markup)
     is also<add-mark>
   {
@@ -277,6 +283,22 @@ class GTK::Scale:ver<4> is GTK::Range {
     gtk_scale_set_value_pos($!gtk-s, $p);
   }
 
+}
+
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::Scale;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    %widgets = from-json( .slurp );
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
 }
 
 INIT {
