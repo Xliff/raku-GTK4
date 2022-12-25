@@ -82,10 +82,14 @@ class GtkNotebook              is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkNotebookPage          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOrientable            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOverlay               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPageSetup             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPageSettings          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPaned                 is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPaperSize             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPasswordEntry         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPicture               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPrintContext          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPrintSettings         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkProgressBar           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRecentInfo            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRevealer              is repr<CPointer> does GLib::Roles::Pointers is export { }
