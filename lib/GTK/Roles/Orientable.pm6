@@ -23,11 +23,11 @@ role GTK::Roles::Orientable:ver<4> {
 
   # Type: GTKOrientation
   method orientation ( :$enum = True ) is rw  is g-property {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkOrientation) );
+    my $gv = GLib::Value.new( GLib::Value.new-enum(GtkOrientation) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('orientation', $gv);
-        my $o = $gv.valueFromEnum(GtkOrientation);
+        my $o = $gv.enum;
         return $o unless $enum;
         GtkOrientationEnum($o);
       },
