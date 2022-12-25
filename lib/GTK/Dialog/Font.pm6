@@ -314,6 +314,12 @@ class GTK::Dialog::Font:ver<4> {
     gtk_font_dialog_get_title($!gtk-fd);
   }
 
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_font_dialog_get_type, $n, $t );
+  }
+
   method set_filter (GtkFilter() $filter) {
     gtk_font_dialog_set_filter($!gtk-fd, $filter);
   }
@@ -336,4 +342,29 @@ class GTK::Dialog::Font:ver<4> {
     gtk_font_dialog_set_title($!gtk-fd, $title);
   }
 
+}
+
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::Dialog::Font;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    %widgets = from-json( .slurp );
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
+}
+
+INIT {
+  my \O = GTK::Dialog::Font;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
 }

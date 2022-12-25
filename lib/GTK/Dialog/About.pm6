@@ -19,7 +19,7 @@ our subset GtkAboutDialogAncestry is export of Mu
 class GTK::Dialog::About:ver<4> is GTK::Window:ver<4> {
   has GtkAboutDialog $!gtk-d-a is implementor;
 
-  submethod BUILD ( :$gtk-about-dialog ) {
+  submethod BUILD ( $gtk-about-dialog ) {
     self.setGtkAboutDialog($gtk-about-dialog) if $gtk-about-dialog
   }
 
@@ -519,4 +519,29 @@ class GTK::Dialog::About:ver<4> is GTK::Window:ver<4> {
     gtk_about_dialog_set_wrap_license($!gtk-d-a, $w);
   }
 
+}
+
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::Dialog::About;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    %widgets = from-json( .slurp );
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
+}
+
+INIT {
+  my \O = GTK::Dialog::About;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
 }

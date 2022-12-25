@@ -15,7 +15,7 @@ our subset GtkFileDialogAncestry is export of Mu
 
 class GTK::Dialog::File {
   also does GLib::Roles::Object;
-  
+
   has GtkFileDialog $!gtk-d-f is implementor;
 
   submethod BUILD ( :$gtk-file-dialog ) {
@@ -441,4 +441,29 @@ class GTK::Dialog::File {
     gtk_file_dialog_set_title($!gtk-d-f, $title);
   }
 
+}
+
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::Dialog::File;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    %widgets = from-json( .slurp );
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
+}
+
+INIT {
+  my \O = GTK::Dialog::File;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
 }

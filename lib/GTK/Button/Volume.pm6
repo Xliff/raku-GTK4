@@ -99,6 +99,32 @@ class GTK::Button::Volume:ver<4> is GTK::Button::Scale:ver<4> {
 
 }
 
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::Button::Volume;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    my $existing = .slurp;
+    %widgets = try from-json($existing) if $existing.chars;
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
+}
+
+INIT {
+  my \O = GTK::Button::Volume;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
+}
+
 ### /usr/src/gtk4/gtk/gtkvolumebutton.h
 
 sub gtk_volume_button_get_type

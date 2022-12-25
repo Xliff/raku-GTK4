@@ -573,12 +573,27 @@ class GTK::ListBox::Row:ver<4> {
 
 }
 
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::ListBox;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    %widgets = from-json( .slurp );
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
+}
+
 INIT {
-  for GTK::ListBox, GTK::ListBox::Row -> \O {
-    %widget-types{O.get_type} = {
-      name        => O.^name,
-      object      => O,
-      pair        => O.getTypePair
-    }
+  my \O = GTK::ListBox;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
   }
 }

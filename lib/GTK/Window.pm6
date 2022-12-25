@@ -917,9 +917,25 @@ class GTK::Window:ver<4> is GTK::Widget {
 
 }
 
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::Window;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    %widgets = from-json( .slurp );
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
+}
+
 INIT {
   my \O = GTK::Window;
-  %widget-types<GTK::Widget> = %widget-types{O.get_type} = {
+  %widget-types{O.get_type} = {
     name        => O.^name,
     object      => O,
     pair        => O.getTypePair

@@ -287,6 +287,22 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
 
 }
 
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::ScrolledWindow;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    %widgets = from-json( .slurp );
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
+}
+
 INIT {
   my \O = GTK::ScrolledWindow;
   %widget-types{O.get_type} = {

@@ -17,7 +17,7 @@ our subset GtkSearchEntryAncestry is export of Mu
 
 class GTK::SearchEntry:ver<4> is GTK::Widget:ver<4> {
   also does GTK::Roles::Editable;
-  
+
   has GtkSearchEntry $!gtk-se is implementor;
 
   submethod BUILD ( :$gtk-search-entry ) {
@@ -172,6 +172,22 @@ class GTK::SearchEntry:ver<4> is GTK::Widget:ver<4> {
     gtk_search_entry_set_search_delay($!gtk-se, $d);
   }
 
+}
+
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::SearchEntry;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    %widgets = from-json( .slurp );
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
 }
 
 INIT {
