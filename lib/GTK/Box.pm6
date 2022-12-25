@@ -54,7 +54,7 @@ class GTK::Box:ver<4> is GTK::Widget {
   multi method new (
     $gtk-box where $gtk-box ~~ GtkBoxAncestry,
 
-    :$ref is required = True
+    :$ref = True
   ) {
     return unless $gtk-box;
 
