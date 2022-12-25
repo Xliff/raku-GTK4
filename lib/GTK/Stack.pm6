@@ -175,15 +175,21 @@ class GTK::Stack:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GtkStackTransitionType
-  method transition-type is rw  is g-property is also<transition_type> {
-    my $gv = GLib::Value.new( GtkStackTransitionType );
+  method transition-type ( :$enum = True )
+    is rw
+    is g-property
+    is also<transition_type>
+  {
+    my $gv = GLib::Value.new-enum( GtkStackTransitionType );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('transition-type', $gv);
-        $gv.GtkStackTransitionType;
+        my $t = $gv.enum;
+        return $t unless $enum;
+        GtkStackTransitionTypeEnum($t);
       },
-      STORE => -> $,  $val is copy {
-        $gv.GtkStackTransitionType = $val;
+      STORE => -> $, Int() $val is copy {
+        $gv.valueFromEnum(GtkStackTransitionType) = $val;
         self.prop_set('transition-type', $gv);
       }
     );
