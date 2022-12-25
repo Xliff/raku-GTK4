@@ -6,6 +6,8 @@ use GLib::Raw::Definitions;
 use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Structs:ver<4>;
 
+unit package GTK::Raw::Button::Check:ver<4>;
+
 ### /usr/src/gtk4-4.8.1+ds/gtk/gtkcheckbutton.h
 
 sub gtk_check_button_get_active (GtkCheckButton $self)
