@@ -3,7 +3,7 @@ use v6.c;
 need GTK::Box;
 need GTK::Button;
 need GTK::Calendar;
-need GTK::CheckButton;
+need GTK::Button::Check;
 need GTK::DrawingArea;
 need GTK::Entry;
 need GTK::Image;
