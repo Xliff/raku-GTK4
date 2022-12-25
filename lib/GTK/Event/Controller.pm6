@@ -4,7 +4,7 @@ use Method::Also;
 
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::EventController:ver<4>;
+use GTK::Raw::Event::Controller:ver<4>;
 
 use GDK::Device:ver<4>;
 use GDK::Events:ver<4>;
@@ -15,14 +15,13 @@ use GLib::Roles::Object:ver<4>;
 our subset GtkEventControllerAncestry is export of Mu
   where GtkEventController | GObject;
 
-class GTK::EventController:ver<4> {
+class GTK::Event::Controller:ver<4> {
   also does GLib::Roles::Object;
 
   has GtkEventController $!gtk-ec is implementor;
 
   submethod BUILD ( :$gtk-event-control ) {
-    self.setGtkEventController($gtk-event-control)
-      if $gtk-event-control
+    self.setGtkEventController($gtk-event-control) if $gtk-event-control;
   }
 
   method setGtkEventController (GtkEventControllerAncestry $_) {
@@ -42,10 +41,15 @@ class GTK::EventController:ver<4> {
     self!setObject($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkEventController
+  method GTK::Raw::Structs::GtkEventController
+    is also<GtkEventController>
   { $!gtk-ec }
 
-  multi method new (GtkEventControllerAncestry $gtk-event-control, :$ref = True) {
+  multi method new (
+     $gtk-event-control where * ~~ GtkEventControllerAncestry,
+
+    :$ref = True
+  ) {
     return unless $gtk-event-control;
 
     my $o = self.bless( :$gtk-event-control );
@@ -54,16 +58,19 @@ class GTK::EventController:ver<4> {
   }
 
   # Type: GTKWidget
-  method widget ( :$raw = False ) is rw  is g-property {
+  method widget (
+    :$raw           = False,
+    :quick(:$fast)  = False,
+    :slow(:$proper) = $fast.not
+  )
+    is rw
+    is g-property
+  {
     my $gv = GLib::Value.new( ::('GTK::Widget').get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('widget', $gv);
-        propReturnObject(
-          $gv.object,
-          $raw,
-          ::('GTK::Widget').getTypePair
-        );
+        returnProperWidget($gv.object, $raw, $proper);
       },
       STORE => -> $,  $val is copy {
         warn 'widget does not allow writing'
@@ -216,8 +223,8 @@ class GTK::EventController:ver<4> {
   }
 
   method get_widget (
-    :quick(:$fast)  = False,
     :$raw           = False,
+    :quick(:$fast)  = False,
     :slow(:$proper) = $fast.not
   )
     is also<get-widget>

@@ -10,7 +10,7 @@ use GTK::Raw::Enums:ver<4>;
 use GTK::Raw::Structs:ver<4>;
 
 
-unit package GTK::Raw::EventController:ver<4>;
+unit package GTK::Raw::Event::Controller:ver<4>;
 
 ### /usr/src/gtk4-4.8.1+ds/gtk/gtkeventcontroller.h
 
