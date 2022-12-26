@@ -267,7 +267,7 @@ BEGIN {
   given "widget-types.json".IO.open( :rw ) {
     .lock;
     %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.;
+    %widgets{ P.head.^shortname } = P.tail;
     .seek(0, SeekFromBeginning);
     .spurt: to-json(%widgets);
     .close;
