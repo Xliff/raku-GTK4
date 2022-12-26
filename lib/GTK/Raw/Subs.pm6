@@ -50,3 +50,19 @@ sub setGStrV ( $val is copy, $routine = callframe(2).code.name ) is export {
   ).throw unless $val ~~ CArray[Str];
   $val;
 }
+
+proto sub getPodSection (|)
+  is export
+{ * }
+
+multi sub getPodSection ($pod, *@sections) {
+  samewith($pod, @sections);
+}
+multi sub getPodSection ($pod, @sections) {
+  my %sections;
+  for $pod.grep( *.name eq @sections.any ).Array {
+    # This may not always be true. Keep up with POD spec!
+    %sections{ .name } //= $_.contents.map( *.contents[0] ).join("\n");
+  }
+  |%sections{ @sections }
+}
