@@ -95,13 +95,13 @@ role GTK::Roles::Signals::Generic:ver<4> {
     my $hid;
     %!signals-gtk{$signal} //= do {
       my \𝒮 = Supplier.new;
-      $hid = g-connect-ready($obj, $signal,
+      $hid = g-connect-print-context($obj, $signal,
         -> $, $pc, $ud {
           CATCH {
             default { 𝒮.note($_) }
           }
 
-          𝒮.emit( [self, $gpc, $ud] );
+          𝒮.emit( [self, $pc, $ud] );
         },
         Pointer, 0
       );
@@ -109,6 +109,7 @@ role GTK::Roles::Signals::Generic:ver<4> {
     };
     %!signals-gtk{$signal}[0].tap(&handler) with &handler;
     %!signals-gtk{$signal}[0];
+  }
 
 }
 
