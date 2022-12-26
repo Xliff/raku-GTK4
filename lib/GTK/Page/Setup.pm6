@@ -4,6 +4,7 @@ use Method::Also;
 
 use NativeCall;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Page::Setup:ver<4>;
 
@@ -202,6 +203,9 @@ class GTK::Page::Setup {
   method set_left_margin (Num() $margin, Int() $unit)
     is also<set-left-margin>
   {
+    my gdouble $m =  $margin;
+    my GtkUnit $u =  $unit;
+
     gtk_page_setup_set_left_margin($!gtk-ps, $m, $u);
   }
 
@@ -228,12 +232,18 @@ class GTK::Page::Setup {
   method set_right_margin (Num() $margin, Int() $unit)
     is also<set-right-margin>
   {
+    my gdouble $m =  $margin;
+    my GtkUnit $u =  $unit;
+
     gtk_page_setup_set_right_margin($!gtk-ps,  $m, $u);
   }
 
   method set_top_margin (Num() $margin, Int() $unit)
     is also<set-top-margin>
   {
+    my gdouble $m =  $margin;
+    my GtkUnit $u =  $unit;
+
     gtk_page_setup_set_top_margin($!gtk-ps, $m, $u);
   }
 
