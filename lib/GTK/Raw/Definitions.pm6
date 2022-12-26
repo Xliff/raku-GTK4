@@ -80,6 +80,7 @@ class GtkMediaStream           is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkMenuButton            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNativeDialog          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNotebook              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkNoSelection           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNotebookPage          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOrientable            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOverlay               is repr<CPointer> does GLib::Roles::Pointers is export { }
