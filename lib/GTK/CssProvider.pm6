@@ -59,19 +59,13 @@ class GTK::CssProvider:ver<4> {
   }
   multi method new ( :$pod, :$style is copy) {
     $style //= '';
-    
+
     my $gtk-css-provider = gtk_css_provider_new();
 
     return Nil unless $gtk-css-provider;
     my $o = self.bless( :$gtk-css-provider );
     if $pod {
-      my %sections;
-      for $pod.grep( *.name eq 'css' ).Array {
-        # This may not always be true. Keep up with POD spec!
-        %sections{ .name } = .contents.map( *.contents[0] ).join("\n");
-        last when %sections<css>.defined;
-      }
-      $style ~= %sections<css>;
+      $style ~= getPodSection($pod, 'css');
       say "{'-' x 40}\nUsing the following styles:{'-' x 40}\n$style"
         if $DEBUG;
       $o.load_from_data($style);
