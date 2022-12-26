@@ -281,6 +281,15 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
 
 }
 
+class GTK::Dialog::Error {
+  also does GLib::Roles::StaticClass;
+
+  method quark {
+    gtk_dialog_error_quark();
+  }
+}
+
+
 BEGIN {
   use JSON::Fast;
 

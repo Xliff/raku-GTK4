@@ -120,3 +120,11 @@ sub gtk_dialog_set_response_sensitive (
   is      native(gtk4)
   is      export
 { * }
+
+### /usr/src/gtk4/gtk/gtkdialogerror.h
+
+sub gtk_dialog_error_quark
+  returns GQuark
+  is      native(gtk4)
+  is      export
+{ * }
