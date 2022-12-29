@@ -2,6 +2,7 @@ use v6.c;
 
 use NativeCall;
 
+use GLib::Raw::ReturnedValue;
 use GTK::Raw::Types:ver<4>;
 
 role GTK::Roles::Signals::Widget {
