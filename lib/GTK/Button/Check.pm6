@@ -65,6 +65,7 @@ class GTK::Button::Check:ver<4> is GTK::Widget:ver<4> {
   }
 
   proto method new-group (|)
+    is also<new_group>
   { * }
 
   multi method new-group (*@labels) {
@@ -81,6 +82,19 @@ class GTK::Button::Check:ver<4> is GTK::Widget:ver<4> {
     };
 
     @group;
+  }
+
+  proto method new-buttons (|)
+    is also<new_buttons>
+  { * }
+
+  multi method new-buttons (*@labels) {
+    samewith(@labels);
+  }
+  multi method new-buttons (@labels) {
+    do for @labels {
+      ::?CLASS.new($_);
+    }
   }
 
   # Type: boolean
