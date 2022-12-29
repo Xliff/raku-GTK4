@@ -646,39 +646,50 @@ class GTK::Widget:ver<4> {
     );
   }
 
-  method size-request is also<size_request> is rw {
+  method size-request is g-accessor is also<size_request> is rw {
     Proxy.new:
       FETCH => -> $                           { self.get_size_request },
       STORE => -> $, @size where *.elems == 2 { self.set_size_request( |@size ) };
   }
 
+  method expand is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $     {
+        (self.hexpand, self.vexpand)
+      },
+
+      STORE => -> $, $v {
+        (self.hexpand, self.vexpand) = takeIntOrArray($v, &?ROUTINE.name);
+      };
+  }
+
+  method align is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $ {
+        (self.halign, self.valign)
+      },
+
+      STORE => -> $, $v {
+        (self.halign, self.valign) = takeIntOrArray($v, &?ROUTINE.name);
+      }
+  }
+
   method margins is rw {
     Proxy.new:
       FETCH => -> $ {
-        ( .get-margin-left, .get-margin-right,
-          .get-margin-top,  .get-margin-bottom ) given self;
+        ( $.get-margin-left, $.get-margin-right,
+          $.get-margin-top,  $.get-margin-bottom )
       },
 
       STORE => -> $, $val is copy {
-        $val = $val xx 4 if $val ~~ Int;
-        $val .= Array if $val.^can('Array');
-        # cw: We use CArray for its type safety...
-        my $v = ArrayToCArray(uint32, $val) if $val ~~ Array;
-        X::GLib::InvalidSize.new(
-          message => 'margin value must be Array-compatible with 4 elements!'
-        ).throw unless $v.elems == 4;
-        # cw: ...however that means we have to spell out our assignments
-        self.set-margin-left(   $v[0] );
-        self.set-margin-right(  $v[1] );
-        self.set-margin-top(    $v[2] );
-        self.set-margin-bottom( $v[3] );
+        ( $.margin-left, $.margin-right, $.margin-top, $.margin-bottom ) =
+          takeIntOrArray($val, &?ROUTINE.name, size => 4);
       }
   }
 
   method Destroy {
     self.connect($!gtk-w, 'destroy');
   }
-
   method Direction-Changed is also<Direction_Changed> {
     self.connect-uint($!gtk-w, 'direction-changed');
   }
@@ -877,6 +888,10 @@ class GTK::Widget:ver<4> {
 
   method get_allocated_width is also<get-allocated-width> {
     gtk_widget_get_allocated_width($!gtk-w);
+  }
+
+  method getAllocatedSize {
+    ( self.get_allocated_width, self.get_allocated_height );
   }
 
   method get_allocation (GtkAllocation() $allocation)
@@ -1147,13 +1162,19 @@ class GTK::Widget:ver<4> {
     )
   }
 
-  method get_preferred_size (
+  proto method get_preferred_size (|)
+    is also<get-preferred-size>
+  { * }
+
+  multi method get_preferred_size {
+    samewith( GtkRequisition.new, GtkRequisition.new );
+  }
+  multi method get_preferred_size (
     GtkRequisition() $minimum_size,
     GtkRequisition() $natural_size
-  )
-    is also<get-preferred-size>
-  {
+  ) {
     gtk_widget_get_preferred_size($!gtk-w, $minimum_size, $natural_size);
+    ($minimum_size, $natural_size);
   }
 
   method get_prev_sibling (
