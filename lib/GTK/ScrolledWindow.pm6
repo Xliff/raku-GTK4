@@ -185,6 +185,32 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
       );
   }
 
+  method min-content-size is rw {
+    Proxy.new:
+      FETCH => -> $ {
+        ( $.get-min-cointent-width, $.get-min-content-height )
+      },
+
+      STORE => -> $, \v {
+        my $v = takeIntOrArray(v);
+        self.set_min_content_width($v.head);
+        self.set_min_content_height($v.tail);
+      }
+  }
+
+  method max-content-size is rw {
+    Proxy.new:
+      FETCH => -> $ {
+        ( $.get-max-cointent-width, $.get-max-content-height )
+      },
+
+      STORE => -> $, \v {
+        my $v = takeIntOrArray(v);
+        self.set_max_content_width($v.head);
+        self.set_max_content_height($v.tail);
+      }
+  }
+
   method set_child (GtkWidget() $child) is also<set-child> {
     gtk_scrolled_window_set_child($!gtk-sw, $child);
   }
