@@ -66,6 +66,38 @@ role GTK::Roles::Scrollable {
     GtkScrollablePolicyEnum($p);
   }
 
+  method adjustment is rw {
+    Proxy.new:
+      FETCH => -> $ {
+        (self.get_hadjustment, self.get_vadjustment)
+      },
+
+      STORE => -> $, @v {
+        for @v -> $_ is rw {
+          $_ .= GtkAdjustment if .^can('GtkAdjustment')
+        }
+        X::GLib::InvalidArgument.new(
+          message => "Argument passed to .adjustment must be an array of {
+                      '' } GtkAdjustment compatible objects of size 2"
+        ).throw unless @v.all ~~ GtkAdjustment;
+        (self.hadjustment, self.vadjustment) = @v;
+      };
+  }
+
+  method scroll_policy ( :$enum = True ) is rw {
+    Proxy.new:
+      FETCH => -> $ {
+        ( self.get_hscroll_policy(:$enum), self.get_vscroll_policy(:$enum) ),
+      },
+
+      STORE => -> $, $v {
+        (self.hscroll-policy, self.vscroll-policy) = takeIntOrArray($v)
+      }
+  }
+  method scroll-policy (|c) is rw {
+    self.scroll_policy(|c);
+  }
+
   method set_hadjustment (GtkAdjustment() $hadjustment) {
     gtk_scrollable_set_hadjustment($!gtk-scroll, $hadjustment);
   }
@@ -87,7 +119,6 @@ role GTK::Roles::Scrollable {
   }
 
 }
-
 
 our subset GtkScrollableAncestry is export of Mu
   where GtkScrollable | GObject;
