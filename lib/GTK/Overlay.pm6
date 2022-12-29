@@ -9,11 +9,14 @@ use GTK::Raw::Overlay:ver<4>;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
+use GTK::Roles::Signals::Overlay:ver<4>;
 
 our subset GtkOverlayAncestry is export of Mu
   where GtkOverlay | GtkWidgetAncestry;
 
 class GTK::Overlay is GTK::Widget {
+  also does GTK::Roles::Signals::Overlay;
+
   has GtkOverlay $!gtk-o is implementor;
 
   submethod BUILD ( :$gtk-overlay ) {
@@ -58,10 +61,6 @@ class GTK::Overlay is GTK::Widget {
     $gtk-overlay ?? self.bless( :$gtk-overlay ) !! Nil;
   }
 
-  method add_overlay (GtkWidget()  $widget) is also<add-overlay> {
-    gtk_overlay_add_overlay($!gtk-o, $widget);
-  }
-
   # Type: GtkWidget
   method child (
     :$raw           = False,
@@ -82,6 +81,14 @@ class GTK::Overlay is GTK::Widget {
         self.prop_set('child', $gv);
       }
     );
+  }
+
+  method Get-Child-Position {
+    self.connect-get-child-position($!gtk-o);
+  }
+
+  method add_overlay (GtkWidget()  $widget) is also<add-overlay> {
+    gtk_overlay_add_overlay($!gtk-o, $widget);
   }
 
   method get_child (
