@@ -41,7 +41,7 @@ class GTK::Tree::Iter {
 
   method copy ( :$raw = False ) {
     my $o = propReturnObject(
-      gtk_tree_iter_copy($!gtk-tm),
+      gtk_tree_iter_copy($!gtk-ti),
       $raw,
       |self.getTypePair
     );
@@ -50,7 +50,7 @@ class GTK::Tree::Iter {
   }
 
   method free {
-    gtk_tree_iter_free($!gtk-tm);
+    gtk_tree_iter_free($!gtk-ti);
   }
 
   method children (GtkTreeIter() $parent)
