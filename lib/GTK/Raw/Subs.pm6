@@ -17,7 +17,7 @@ multi sub returnProperWidget (
   :$raw           = False,
   :quick(:$fast)  = False,
   :slow(:$proper) = $fast.not,
-  :$base          = GTK::Widget
+  :$base          = ::('GTK::Widget')
 )
   is export
 {
@@ -65,4 +65,25 @@ multi sub getPodSection ($pod, @sections) {
     %sections{ .name } //= $_.contents.map( *.contents[0] ).join("\n");
   }
   |%sections{ @sections }
+}
+
+# cw: Probably better in GLib
+sub takeIntOrArray ($v is copy, $routine, :$size = 2, :$type = Int)
+  is export
+{
+  $v .= Int         if $v.^can('Int')   && $v !~~ Cool;
+  $v  = $v xx $size if $v ~~ Int;
+  $v .= Array       if $v.^can('Array') && ($v ~~ Seq || $v !~~ Cool);
+
+  X::GLib::UnknownType.new(
+    message => "Value is of incorrect type. Contains ({
+      $v.map( *.^name ).sort.unique.join(', ') }) and must be {
+      $type.^name }"
+  ).throw unless $v.all ~~ $type;
+
+  X::GLib::InvalidSize.new(
+    message => "Value passed to .{ $routine } must be Int-compatible or {
+                '' } Array-compatible with only { $size } -elements!"
+  ).throw unless $v.elems == $size;
+  $v;
 }
