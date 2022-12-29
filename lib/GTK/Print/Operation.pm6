@@ -3,7 +3,7 @@ use v6.c;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Print::Operation:ver<4>;
 
-use GTK::PageSetup;
+use GTK::Page::Setup;
 use GTK::Print::Settings;
 
 use GLib::Roles::Implementor;
