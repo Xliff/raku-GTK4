@@ -81,8 +81,7 @@ sub gtk_paned_set_position (GtkPaned $paned, gint $position)
   is      export
 { * }
 
-sub gtk_paned_set_resize_end_child  GtkPaned $paned, gboolean $resize
-)
+sub gtk_paned_set_resize_end_child (GtkPaned $paned, gboolean $resize)
   is      native(gtk4)
   is      export
 { * }
