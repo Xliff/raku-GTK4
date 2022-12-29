@@ -220,6 +220,12 @@ class GTK::Dialog::Alert {
     so gtk_alert_dialog_get_modal($!gtk-d-a);
   }
 
+  # method get_type is also<get-type> {
+  #   state ($n, $t);
+  #
+  #   unstable_get_type( self.^name, &gtk_alert_dialog_get_type, $n, $t );
+  # }
+
   proto method set_buttons (|)
     is also<set-buttons>
   { * }
@@ -263,27 +269,29 @@ class GTK::Dialog::Alert {
 
 }
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Dialog::Alert;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
-
-INIT {
-  my \O = GTK::Dialog::Alert;
-  %widget-types{O.get_type} = {
-    name        => O.^name,
-    object      => O,
-    pair        => O.getTypePair
-  }
-}
+# cw: No gtk_dialog_alert_get_type in GTK 4.10!
+#
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::Dialog::Alert;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     %widgets = from-json( .slurp );
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
+#
+# INIT {
+#   my \O = GTK::Dialog::Alert;
+#   %widget-types{O.get_type} = {
+#     name        => O.^name,
+#     object      => O,
+#     pair        => O.getTypePair
+#   }
+# }
