@@ -20,19 +20,25 @@ sub gtk_event_controller_get_current_event (GtkEventController $controller)
   is      export
 { * }
 
-sub gtk_event_controller_get_current_event_device (GtkEventController $controller)
+sub gtk_event_controller_get_current_event_device (
+  GtkEventController $controller
+)
   returns GdkDevice
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_event_controller_get_current_event_state (GtkEventController $controller)
+sub gtk_event_controller_get_current_event_state (
+  GtkEventController $controller
+)
   returns GdkModifierType
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_event_controller_get_current_event_time (GtkEventController $controller)
+sub gtk_event_controller_get_current_event_time (
+  GtkEventController $controller
+)
   returns guint32
   is      native(gtk4)
   is      export
@@ -44,13 +50,17 @@ sub gtk_event_controller_get_name (GtkEventController $controller)
   is      export
 { * }
 
-sub gtk_event_controller_get_propagation_limit (GtkEventController $controller)
+sub gtk_event_controller_get_propagation_limit (
+  GtkEventController $controller
+)
   returns GtkPropagationLimit
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_event_controller_get_propagation_phase (GtkEventController $controller)
+sub gtk_event_controller_get_propagation_phase (
+  GtkEventController $controller
+)
   returns GtkPropagationPhase
   is      native(gtk4)
   is      export
