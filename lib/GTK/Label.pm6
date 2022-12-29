@@ -66,6 +66,36 @@ class GTK::Label:ver<4> is GTK::Widget {
     $gtk-label ?? self.bless( :$gtk-label ) !! Nil;
   }
 
+  proto method new_labels (|)
+    is also<new-labels>
+  { * }
+
+  multi method new_labels (*@labels) {
+    samewith(@labels);
+  }
+  multi method new_labels (@labels) {
+    do for @labels {
+      self.new($_)
+    }
+  }
+
+  proto method new_mnemonics (|)
+    is also<new-mnemonics>
+  { * }
+
+  multi method new_mnemonics (*@labels) {
+    samewith(@labels);
+  }
+  multi method new_mnemonics (@labels) {
+    do for @labels {
+      self.new_with_mnemonic($_)
+    }
+  }
+
+
+
+
+
   # Type: string
   method label is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_STRING );
