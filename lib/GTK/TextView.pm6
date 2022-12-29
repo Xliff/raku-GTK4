@@ -9,14 +9,17 @@ use GTK::Raw::TextView:ver<4>;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
+use GTK::Roles::Scrollable:ver<4>;
 use GTK::Roles::Signals::Generic:ver<4>;
 use GTK::Roles::Signals::TextView:ver<4>;
 
 our subset GtkTextViewAncestry is export of Mu
-  where GtkTextView | GtkWidgetAncestry;
+  where GtkTextView | GtkScrollable | GtkWidgetAncestry;
 
 class GTK::TextView:ver<4> is GTK::Widget:ver<4> {
+  also does GTK::Roles::Scrollable;
   also does GTK::Roles::Signals::Generic;
+  also does GTK::Roles::Signals::TextView;
 
   has GtkTextView $!gtk-tv is implementor;
 
@@ -33,12 +36,18 @@ class GTK::TextView:ver<4> is GTK::Widget:ver<4> {
         $_;
       }
 
+      when GtkScrollable {
+        $!gtk-scroll = $_;
+        $to-parent   = cast(GtkWidget, $_);
+        cast(GtkTextView, $_);
+      }
       default {
         $to-parent = $_;
         cast(GtkTextView, $_);
       }
     }
     self.setGtkWidget($to-parent);
+    self.roleInit-GtkScrollable;
   }
 
   method GTK::Raw::Definitions::GtkTextView
