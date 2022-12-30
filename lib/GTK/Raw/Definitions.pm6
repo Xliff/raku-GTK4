@@ -78,6 +78,7 @@ class GtkListItemManager       is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkLockButton            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMediaStream           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMenuButton            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkMultiSelection        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNativeDialog          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNotebook              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNoSelection           is repr<CPointer> does GLib::Roles::Pointers is export { }
