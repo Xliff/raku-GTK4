@@ -104,6 +104,7 @@ class GtkScrolledWindow        is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkSelectionModel        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSeparator             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSettings              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSignalListItemFactory is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutController    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutManager       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutsWindow       is repr<CPointer> does GLib::Roles::Pointers is export { }
