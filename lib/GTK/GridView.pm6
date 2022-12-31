@@ -7,6 +7,7 @@ use GTK::Raw::Types:ver<4>;
 use GTK::Raw::GridView:ver<4>;
 
 use GTK::ListBase:ver<4>;
+use GTK::List::Item::Factory:ver<4>;
 
 use GLib::Roles::Implementor;
 
@@ -79,14 +80,14 @@ class GTK::GridView:ver<4> is GTK::ListBase:ver<4> {
 
   # Type: GtkListItemFactory
   method factory ( :$raw = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( Gtk::ListItemFactory.get_type );
+    my $gv = GLib::Value.new( GTK::List::Item::Factory.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('factory', $gv);
         propReturnObject(
           $gv.object,
           $raw,
-          |GTK::ListItemFactory.getTypePair
+          |GTK::List::Item::Factory.getTypePair
         );
       },
       STORE => -> $, GtkListItemFactory() $val is copy {
@@ -176,7 +177,7 @@ class GTK::GridView:ver<4> is GTK::ListBase:ver<4> {
     propReturnObject(
       gtk_grid_view_get_factory($!gtk-gv),
       $raw,
-      |GTK::ListItemFactory.getTypePair
+      |GTK::List::Item::Factory.getTypePair
     );
   }
 
