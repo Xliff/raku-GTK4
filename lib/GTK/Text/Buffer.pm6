@@ -53,6 +53,12 @@ class GTK::Text::Buffer:ver<4> {
     $o.ref if $ref;
     $o;
   }
+  multi method new (GtkTextTagTable() $table = GtkTextTagTable) {
+    my $gtk-text-buffer = gtk_text_buffer_new($table);
+
+    $gtk-text-buffer ?? self.bless( :$gtk-text-buffer ) !! Nil;
+  }
+
 
   # Type: boolean
   method can-redo is rw  is g-property is also<can_redo> {
@@ -126,15 +132,19 @@ class GTK::Text::Buffer:ver<4> {
   }
 
   # Type: GtkTextTagTable
-  method tag-table is rw  is g-property is also<tag_table> {
-    my $gv = GLib::Value.new( GtkTextTagTable );
+  method tag-table ( :$raw = False ) is rw  is g-property is also<tag_table> {
+    my $gv = GLib::Value.new( GTK::Text::Tag::Table.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('tag-table', $gv);
-        $gv.GtkTextTagTable;
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GTK::Text::Tag::Table.getTypePair
+        );
       },
-      STORE => -> $,  $val is copy {
-        $gv.GtkTextTagTable = $val;
+      STORE => -> $, GtkTextTagTable() $val is copy {
+        $gv.object = $val;
         self.prop_set('tag-table', $gv);
       }
     );
@@ -338,9 +348,10 @@ class GTK::Text::Buffer:ver<4> {
 
   proto method get_iter_at_line (|)
     is also<get-iter-at-line>
+  { * }
 
   multi method get_iter_at_line (Int() $line_number, :$raw = False) {
-    samewith(GtkIter.new, $line_number, :$raw);
+    samewith(GtkTextIter.new, $line_number, :$raw);
   }
   multi method get_iter_at_line (
     GtkTextIter()  $iter,
@@ -357,59 +368,96 @@ class GTK::Text::Buffer:ver<4> {
   { * }
 
   multi method get_iter_at_line_index (
-    Int()         $line_number,
-    Int()         $byte_index
+    Int()  $line_number,
+    Int()  $byte_index,
+          :$raw          = False
   ) {
-    samewith(GtkTextIter.new, $line_number, $byte_index);
+    samewith(GtkTextIter.new, $line_number, $byte_index, :$raw);
   }
   multi method get_iter_at_line_index (
-    GtkTextIter() $iter,
-    Int()         $line_number,
-    Int()         $byte_index
+    GtkTextIter()  $iter,
+    Int()          $line_number,
+    Int()          $byte_index,
+                  :$raw          = False
   )
     is also<get-iter-at-line-index>
   {
+    my gint ($l, $b) = ($line_number, $byte_index);
+
     gtk_text_buffer_get_iter_at_line_index($!gtk-tb, $iter, $l, $b);
+    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair);
   }
 
-  method get_iter_at_line_offset (
-    GtkTextIter   $iter,
-    gint          $line_number,
-    gint          $char_offset
+  proto method get_iter_at_line_offset (|)
+  { * }
+
+  multi method get_iter_at_line_offset (
+    Int()  $line_number,
+    Int()  $char_offset,
+          :$raw          = False
+  ) {
+    samewith(GtkTextIter, $line_number, $char_offset);
+  }
+  multi method get_iter_at_line_offset (
+    GtkTextIter()  $iter,
+    Int()          $line_number,
+    Int()          $char_offset,
+                  :$raw          = False
   )
     is also<get-iter-at-line-offset>
   {
-    gtk_text_buffer_get_iter_at_line_offset($!gtk-tb, $iter, $line_number, $char_offset);
+    my gint ($l, $c) = ($line_number, $char_offset);
+
+    gtk_text_buffer_get_iter_at_line_offset($!gtk-tb, $iter, $l, $c);
+    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair);
   }
 
-  method get_iter_at_mark (
-    GtkTextIter   $iter,
-    GtkTextMark   $mark
-  )
+  proto method get_iter_at_mark (|)
     is also<get-iter-at-mark>
-  {
+  { * }
+
+  multi method get_iter_at_mark (GtkTextMark() $mark, :$raw = False) {
+    samewith(GtkTextIter.new, $mark, :$raw);
+  }
+  multi method get_iter_at_mark (
+    GtkTextIter()  $iter,
+    GtkTextMark()  $mark,
+                  :$raw   = False
+  ) {
     gtk_text_buffer_get_iter_at_mark($!gtk-tb, $iter, $mark);
+    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair);
   }
 
-  method get_iter_at_offset (
-    GtkTextIter   $iter,
-    gint          $char_offset
-  )
+  proto method get_iter_at_offset (|)
     is also<get-iter-at-offset>
-  {
+  { * }
+
+  multi method get_iter_at_offset (Int() $char_offset, :$raw = False) {
+    samewith(GtkTextIter.new, $char_offset, :$raw);
+  }
+  multi method get_iter_at_offset (
+    GtkTextIter()  $iter,
+    Int()          $char_offset,
+                  :$raw          = False
+  ) {
+    my gint $c = $char_offset;
+
     gtk_text_buffer_get_iter_at_offset($!gtk-tb, $iter, $char_offset);
+    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair);
   }
 
   method get_line_count is also<get-line-count> {
     gtk_text_buffer_get_line_count($!gtk-tb);
   }
 
-  method get_mark (
-    Str           $name
-  )
+  method get_mark (Str $name, :$raw = False)
     is also<get-mark>
   {
-    gtk_text_buffer_get_mark($!gtk-tb, $name);
+    propReturnObject(
+      gtk_text_buffer_get_mark($!gtk-tb, $name),
+      $raw,
+      |GTK::Text::Mark.getTypePair
+    )
   }
 
   method get_max_undo_levels is also<get-max-undo-levels> {
@@ -417,20 +465,31 @@ class GTK::Text::Buffer:ver<4> {
   }
 
   method get_modified is also<get-modified> {
-    gtk_text_buffer_get_modified($!gtk-tb);
+    so gtk_text_buffer_get_modified($!gtk-tb);
   }
 
   method get_selection_bound is also<get-selection-bound> {
     gtk_text_buffer_get_selection_bound($!gtk-tb);
   }
 
-  method get_selection_bounds (
-    GtkTextIter   $start,
-    GtkTextIter   $end
-  )
+  proto method get_selection_bounds (|)
     is also<get-selection-bounds>
-  {
+  { * }
+
+  multi method get_selection_bounds {
+    samewith(GtkTextIter.new, GtkTextIter.new);
+  }
+  multi method get_selection_bounds (
+    GtkTextIter()  $start,
+    GtkTextIter()  $end,
+                  :$raw    = False
+  ) {
     gtk_text_buffer_get_selection_bounds($!gtk-tb, $start, $end);
+
+    (
+      propReturnObject($start, $raw, |GTK::Text::Iter.getTypePair),
+      propReturnObject(  $end, $raw, |GTK::Text::Iter.getTypePair)
+    )
   }
 
   method get_selection_content is also<get-selection-content> {
@@ -438,101 +497,117 @@ class GTK::Text::Buffer:ver<4> {
   }
 
   method get_slice (
-    GtkTextIter   $start,
-    GtkTextIter   $end,
-    gboolean      $include_hidden_chars
+    GtkTextIter() $start,
+    GtkTextIter() $end,
+    Int()         $include_hidden_chars
   )
     is also<get-slice>
   {
-    gtk_text_buffer_get_slice($!gtk-tb, $start, $end, $include_hidden_chars);
+    my gboolean $i = $include_hidden_chars.so.Int;
+
+    gtk_text_buffer_get_slice($!gtk-tb, $start, $end, $i);
   }
 
-  method get_start_iter (
-    GtkTextIter   $iter
-  )
+  method get_start_iter (GtkTextIter() $iter)
     is also<get-start-iter>
   {
     gtk_text_buffer_get_start_iter($!gtk-tb, $iter);
   }
 
-  method get_tag_table is also<get-tag-table> {
-    gtk_text_buffer_get_tag_table($!gtk-tb);
+  method get_tag_table ( :$raw = False ) is also<get-tag-table> {
+    propReturnObject(
+      gtk_text_buffer_get_tag_table($!gtk-tb),
+      $raw,
+      |GTK::Text::Tag::Table.getTypePair
+    );
   }
 
   method get_text (
-    GtkTextIter   $start,
-    GtkTextIter   $end,
-    gboolean      $include_hidden_chars
+    GtkTextIter() $start,
+    GtkTextIter() $end,
+    Int()         $include_hidden_chars
   )
     is also<get-text>
   {
-    gtk_text_buffer_get_text($!gtk-tb, $start, $end, $include_hidden_chars);
+    my gboolean $i = $include_hidden_chars.so.Int;
+
+    gtk_text_buffer_get_text($!gtk-tb, $start, $end, $i);
   }
 
   method get_type is also<get-type> {
-    gtk_text_buffer_get_type();
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_text_buffer_get_type, $n, $t );
   }
 
   method insert (
-    GtkTextIter   $iter,
-    Str           $text,
-    gint          $len
+    GtkTextIter() $iter,
+    Str()         $text,
+    Int()         $len
   ) {
-    gtk_text_buffer_insert($!gtk-tb, $iter, $text, $len);
+    my gint $l = $len;
+
+    gtk_text_buffer_insert($!gtk-tb, $iter, $text, $l);
   }
 
-  method insert_at_cursor (
-    Str           $text,
-    gint          $len
-  )
+  method insert_at_cursor (Str() $text, Int() $len)
     is also<insert-at-cursor>
   {
-    gtk_text_buffer_insert_at_cursor($!gtk-tb, $text, $len);
+    my gint $l = $len;
+
+    gtk_text_buffer_insert_at_cursor($!gtk-tb, $text, $l);
   }
 
-  method insert_child_anchor (
-    GtkTextIter        $iter,
-    GtkTextChildAnchor $anchor
-  )
+  method insert_child_anchor (GtkTextIter() $iter, Int() $anchor)
     is also<insert-child-anchor>
   {
-    gtk_text_buffer_insert_child_anchor($!gtk-tb, $iter, $anchor);
+    my GtkTextChildAnchor $a = $anchor;
+
+    gtk_text_buffer_insert_child_anchor($!gtk-tb, $iter, $a);
   }
 
   method insert_interactive (
-    GtkTextIter   $iter,
-    Str           $text,
-    gint          $len,
-    gboolean      $default_editable
+    GtkTextIter() $iter,
+    Str()         $text,
+    Int()         $len,
+    Int()         $default_editable
   )
     is also<insert-interactive>
   {
-    gtk_text_buffer_insert_interactive($!gtk-tb, $iter, $text, $len, $default_editable);
+    my gint     $l = $len;
+    my gboolean $d = $default_editable.so.Int;
+
+    gtk_text_buffer_insert_interactive($!gtk-tb, $iter, $text, $l, $d);
   }
 
   method insert_interactive_at_cursor (
-    Str           $text,
-    gint          $len,
-    gboolean      $default_editable
+    Str() $text,
+    Int() $len,
+    Int() $default_editable
   )
     is also<insert-interactive-at-cursor>
   {
-    gtk_text_buffer_insert_interactive_at_cursor($!gtk-tb, $text, $len, $default_editable);
+    my gint     $l = $len;
+    my gboolean $d = $default_editable.so.Int;
+
+    gtk_text_buffer_insert_interactive_at_cursor($!gtk-tb, $text, $l, $d);
   }
 
   method insert_markup (
-    GtkTextIter   $iter,
-    Str           $markup,
-    gint          $len
+    GtkTextIter() $iter,
+    Str()         $markup,
+    Int()         $len
   )
     is also<insert-markup>
   {
-    gtk_text_buffer_insert_markup($!gtk-tb, $iter, $markup, $len);
+    my gint $l = $len;
+
+    gtk_text_buffer_insert_markup($!gtk-tb, $iter, $markup, $l);
   }
 
   method insert_paintable (
-    GtkTextIter   $iter,
-    GdkPaintable  $paintable
+    GtkTextIter()   $iter,
+    GdkPaintable()  $paintable
   )
     is also<insert-paintable>
   {
@@ -540,9 +615,9 @@ class GTK::Text::Buffer:ver<4> {
   }
 
   method insert_range (
-    GtkTextIter   $iter,
-    GtkTextIter   $start,
-    GtkTextIter   $end
+    GtkTextIter()   $iter,
+    GtkTextIter()   $start,
+    GtkTextIter()   $end
   )
     is also<insert-range>
   {
@@ -550,73 +625,86 @@ class GTK::Text::Buffer:ver<4> {
   }
 
   method insert_range_interactive (
-    GtkTextIter   $iter,
-    GtkTextIter   $start,
-    GtkTextIter   $end,
-    gboolean      $default_editable
+    GtkTextIter()  $iter,
+    GtkTextIter()  $start,
+    GtkTextIter()  $end,
+    Int()          $default_editable
   )
     is also<insert-range-interactive>
   {
-    gtk_text_buffer_insert_range_interactive($!gtk-tb, $iter, $start, $end, $default_editable);
+    my gboolean $d = $default_editable.so.Int;
+
+    gtk_text_buffer_insert_range_interactive(
+      $!gtk-tb,
+      $iter,
+      $start,
+      $end,
+      $d
+    );
   }
 
   method insert_with_tags (
-    GtkTextIter   $iter,
-    Str           $text,
-    gint          $len,
-    GtkTextTag    $first_tag
+    GtkTextIter() $iter,
+    Str()         $text,
+    Int()         $len,
+    GtkTextTag()  $first_tag
   )
     is also<insert-with-tags>
   {
-    gtk_text_buffer_insert_with_tags($!gtk-tb, $iter, $text, $len, $first_tag);
+    my gint $l = $len;
+
+    gtk_text_buffer_insert_with_tags($!gtk-tb, $iter, $text, $l, $first_tag);
   }
 
   method insert_with_tags_by_name (
-    GtkTextIter   $iter,
-    Str           $text,
-    gint          $len,
-    Str           $first_tag_name
+    GtkTextIter() $iter,
+    Str()         $text,
+    Int()         $len,
+    Str()         $first_tag_name
   )
     is also<insert-with-tags-by-name>
   {
-    gtk_text_buffer_insert_with_tags_by_name($!gtk-tb, $iter, $text, $len, $first_tag_name);
+    my gint $l = $len;
+
+    gtk_text_buffer_insert_with_tags_by_name(
+      $!gtk-tb,
+      $iter,
+      $text,
+      $l,
+      $first_tag_name
+    );
   }
 
-  method move_mark (
-    GtkTextMark   $mark,
-    GtkTextIter   $where
-  )
+  method move_mark (GtkTextMark() $mark, GtkTextIter() $where)
     is also<move-mark>
   {
     gtk_text_buffer_move_mark($!gtk-tb, $mark, $where);
   }
 
-  method move_mark_by_name (
-    Str           $name,
-    GtkTextIter   $where
-  )
+  method move_mark_by_name (Str() $name, GtkTextIter() $where)
     is also<move-mark-by-name>
   {
     gtk_text_buffer_move_mark_by_name($!gtk-tb, $name, $where);
   }
 
-  method new {
-    gtk_text_buffer_new();
-  }
-
   method paste_clipboard (
-    GdkClipboard  $clipboard,
-    GtkTextIter   $override_location,
-    gboolean      $default_editable
+    GdkClipboard() $clipboard,
+    GtkTextIter()  $override_location,
+    Int()          $default_editable
   )
     is also<paste-clipboard>
   {
-    gtk_text_buffer_paste_clipboard($!gtk-tb, $clipboard, $override_location, $default_editable);
+    my gboolean $d = $default_editable.so.Int;
+
+    gtk_text_buffer_paste_clipboard(
+      $!gtk-tb,
+      $clipboard,
+      $override_location,
+      $d
+    );
   }
 
-  method place_cursor (
-    GtkTextIter   $where
-  )
+  method place_cursor (GtkTextIter() $where)
     is also<place-cursor>
   {
     gtk_text_buffer_place_cursor($!gtk-tb, $where);
@@ -626,27 +714,22 @@ class GTK::Text::Buffer:ver<4> {
     gtk_text_buffer_redo($!gtk-tb);
   }
 
-  method remove_all_tags (
-    GtkTextIter   $start,
-    GtkTextIter   $end
-  )
+  method remove_all_tags (GtkTextIter() $start, GtkTextIter() $end)
     is also<remove-all-tags>
   {
     gtk_text_buffer_remove_all_tags($!gtk-tb, $start, $end);
   }
 
-  method remove_selection_clipboard (
-    GdkClipboard  $clipboard
-  )
+  method remove_selection_clipboard (GdkClipboard() $clipboard)
     is also<remove-selection-clipboard>
   {
     gtk_text_buffer_remove_selection_clipboard($!gtk-tb, $clipboard);
   }
 
   method remove_tag (
-    GtkTextTag    $tag,
-    GtkTextIter   $start,
-    GtkTextIter   $end
+    GtkTextTag()    $tag,
+    GtkTextIter()   $start,
+    GtkTextIter()   $end
   )
     is also<remove-tag>
   {
@@ -654,9 +737,9 @@ class GTK::Text::Buffer:ver<4> {
   }
 
   method remove_tag_by_name (
-    Str           $name,
-    GtkTextIter   $start,
-    GtkTextIter   $end
+    Str()           $name,
+    GtkTextIter()   $start,
+    GtkTextIter()   $end
   )
     is also<remove-tag-by-name>
   {
@@ -664,45 +747,44 @@ class GTK::Text::Buffer:ver<4> {
   }
 
   method select_range (
-    GtkTextIter   $ins,
-    GtkTextIter   $bound
+    GtkTextIter() $ins,
+    GtkTextIter() $bound
   )
     is also<select-range>
   {
     gtk_text_buffer_select_range($!gtk-tb, $ins, $bound);
   }
 
-  method set_enable_undo (
-    gboolean      $enable_undo
-  )
+  method set_enable_undo (Int() $enable_undo)
     is also<set-enable-undo>
   {
-    gtk_text_buffer_set_enable_undo($!gtk-tb, $enable_undo);
+    my gboolean $e = $enable_undo.so.Int;
+
+    gtk_text_buffer_set_enable_undo($!gtk-tb, $e);
   }
 
-  method set_max_undo_levels (
-    guint         $max_undo_levels
-  )
+  method set_max_undo_levels (Int() $max_undo_levels)
     is also<set-max-undo-levels>
   {
+    my guint $m = $max_undo_levels;
+
     gtk_text_buffer_set_max_undo_levels($!gtk-tb, $max_undo_levels);
   }
 
-  method set_modified (
-    gboolean      $setting
-  )
+  method set_modified (Int() $setting)
     is also<set-modified>
   {
-    gtk_text_buffer_set_modified($!gtk-tb, $setting);
+    my gboolean $s = $setting.so.Int;
+
+    gtk_text_buffer_set_modified($!gtk-tb, $s);
   }
 
-  method set_text (
-    Str           $text,
-    gint          $len
-  )
+  method set_text (Str() $text, Int() $len)
     is also<set-text>
   {
-    gtk_text_buffer_set_text($!gtk-tb, $text, $len);
+    my gint $l = $len;
+
+    gtk_text_buffer_set_text($!gtk-tb, $text, $l);
   }
 
   method undo {
