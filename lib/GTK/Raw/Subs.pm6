@@ -17,10 +17,13 @@ multi sub returnProperWidget (
   :$raw           = False,
   :quick(:$fast)  = False,
   :slow(:$proper) = $fast.not,
-  :$base          = ::('GTK::Widget')
+  :$base          = GLib::Object;
 )
   is export
 {
+  say "1 - Obj: { $object // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
+  return Nil unless $object.defined;
+
   my $o = ($object ~~ GObject) ?? $object !! cast(GObject, $object);
 
   if $proper {
@@ -31,7 +34,8 @@ multi sub returnProperWidget (
   propReturnObject($o, $raw, $base.getTypePair);
 }
 
-multi sub returnProper ($object, $raw, $proper) is export {
+multi sub returnProperWidget ($object, $raw, $proper) is export {
+  say "0 - Obj: { $object // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
   returnProperWidget($object, :$raw, :$proper)
 }
 
@@ -68,7 +72,7 @@ multi sub getPodSection ($pod, @sections) {
 }
 
 # cw: Probably better in GLib
-sub takeIntOrArray ($v is copy, $routine, :$size = 2, :$type = Int)
+sub takeIntOrArray ($v is copy, $routine-name, :$size = 2, :$type = Int)
   is export
 {
   $v .= Int         if $v.^can('Int')   && $v !~~ Cool;
@@ -82,7 +86,7 @@ sub takeIntOrArray ($v is copy, $routine, :$size = 2, :$type = Int)
   ).throw unless $v.all ~~ $type;
 
   X::GLib::InvalidSize.new(
-    message => "Value passed to .{ $routine } must be Int-compatible or {
+    message => "Value passed to .{ $routine-name } must be Int-compatible or {
                 '' } Array-compatible with only { $size } -elements!"
   ).throw unless $v.elems == $size;
   $v;

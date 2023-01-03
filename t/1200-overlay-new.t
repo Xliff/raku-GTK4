@@ -1,13 +1,22 @@
-use GTK::Raw::Types;
+use v6;
 
-use GTK::Application;
-use GTK::CssProvider;
-use GTK::Grid;
-use GTK::Label;
-use GTK::Overlay;
-use GTK::ScrolledWindow;
-use GTK::TextView;
-use GTK::Window;
+use GTK::Raw::Types:ver<4>;
+
+use GTK::Application:ver<4>;
+use GTK::Box:ver<4>;
+use GTK::Builder:ver<4>;
+use GTK::Button:ver<4>;
+use GTK::Button::Check:ver<4>;
+use GTK::CssProvider:ver<4>;
+use GTK::Entry:ver<4>;
+use GTK::Event::Controller::Motion:ver<4>;
+use GTK::Grid:ver<4>;
+use GTK::Label:ver<4>;
+use GTK::Overlay:ver<4>;
+use GTK::ScrolledWindow:ver<4>;
+use GTK::Text::View:ver<4>;
+use GTK::Window:ver<4>;
+use GTK::Widget:ver<4>;
 
 my ($css, $buffer);
 
@@ -36,7 +45,7 @@ sub test-nonzerox {
   my $overlay = GTK::Overlay.new;
   $grid.attach($grid, 1, 1);
 
-  (my $text = GTK::TextView.new).set-size-request(200, 200);
+  (my $text = GTK::Text::View.new).set-size-request(200, 200);
   ( .expand, .margins ) = (True, 3) given $text;
   $overlay.child = $text;
 
@@ -78,14 +87,19 @@ sub test-relative {
   my ($grid, @labels) = makeGrid();
 
   my $overlay = GTK::Overlay.new;
-  ($win.child, $overlay.child) = ($overlay, $grid);
 
-   (my $text = GTK::TextView.new).set-size-request(200, 200);
-   ( .expand, .margins ) = (True, 5);
+  say "G: { $grid }      O: { $overlay }";
+  say "W: { $win.get-child // 'NONE' } Oc: { $overlay.get-child // 'NONE' }";
+
+  $win.set-child($overlay);
+  $overlay.set-child($grid);
+
+   (my $text = GTK::Text::View.new).set-size-request(200, 200);
+   ( .expand, .margins ) = (True, 5) given $text;
    $grid.attach($text, 1, 1);
 
    $overlay.Get-Child-Position.tap( -> *@a {
-     get-child-position( $overlay, $grid, @a[2], $text )
+     @a.tail.r = get-child-position( $overlay, $grid, @a[2], $text )
    });
 
    ( my $child  = GTK::Label.new('Top left overlay') ).margins = 1;
@@ -102,13 +116,13 @@ sub test-relative {
 sub test-fullwidth {
   (my $win = GTK::Window.new).title  = 'Full-Width';
 
-  (my $text = GTK::TextView.new).set-size-request(200, 200);
+  (my $text = GTK::Text::View.new).set-size-request(200, 200);
   $text.expand = True;
 
   (my $overlay = GTK::Overlay.new).child = $text;
   $win.child = $overlay;
 
-  my $child = GTK::Label.new('Fullwidth top overlay').margins = 4;
+  ( my $child = GTK::Label.new('Fullwidth top overlay') ).margins = 4;
   $child.align = (GTK_ALIGN_FILL, GTK_ALIGN_START);
 
   $overlay.child = $text;
@@ -128,10 +142,10 @@ sub setupTextOverlay ($title, $halign, $label) {
 
   my $text = $*PROGRAM.slurp // 'Text should go here';
 
-  ( my $tv = GTK::TextView.new( :$text ) ).expand = True;
+  ( my $tv = GTK::Text::View.new( :$text ) ).expand = True;
   $sw.child = $tv;
 
-  my $child = GTK::Label.new($label).margins = 4;
+  ( my $child = GTK::Label.new($label) ).margins = 4;
   $child.align = ($halign, GTK_ALIGN_END);
 
   $overlay.add-overlay($_) for $sw, $child;
@@ -155,7 +169,9 @@ sub test-builder {
     exit 1;
   }
 
-  my $win = $builder<window>.ref;
+  $builder.keys.gist.say;
+
+  ( my $win = $builder<window> ).ref;
   $builder.unref;
 
   $win;
@@ -190,7 +206,7 @@ sub test-stacking {
   my ($label, $child) = GTK::Label.new-labels('Main child', 'Overlay');
   $child.align = GTK_ALIGN_END;
 
-  my @checks = GTK::CheckButton.new-buttons('Show main', 'Show overlay');
+  my @checks = GTK::Button::Check.new-buttons('Show main', 'Show overlay');
 
   $main-child.bind-property('visible', @checks.head, 'active', :dual);
   $child.bind-property('visible', @checks.tail, 'active', :dual);

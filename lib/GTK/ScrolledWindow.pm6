@@ -192,7 +192,7 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
       },
 
       STORE => -> $, \v {
-        my $v = takeIntOrArray(v);
+        my $v = takeIntOrArray(v, &?ROUTINE.name);
         self.set_min_content_width($v.head);
         self.set_min_content_height($v.tail);
       }
@@ -205,7 +205,7 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
       },
 
       STORE => -> $, \v {
-        my $v = takeIntOrArray(v);
+        my $v = takeIntOrArray(v, &?ROUTINE.name);
         self.set_max_content_width($v.head);
         self.set_max_content_height($v.tail);
       }

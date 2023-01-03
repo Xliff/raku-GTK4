@@ -1,22 +1,23 @@
 use v6.c;
 
-use Method::Also;
+ use Method::Also;
 
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::TextView:ver<4>;
+use GTK::Raw::Text::View:ver<4>;
 
+use GTK::Text::Buffer:ver<4>;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
 use GTK::Roles::Scrollable:ver<4>;
 use GTK::Roles::Signals::Generic:ver<4>;
-use GTK::Roles::Signals::TextView:ver<4>;
+use GTK::Roles::Signals::Text::View:ver<4>;
 
 our subset GtkTextViewAncestry is export of Mu
   where GtkTextView | GtkScrollable | GtkWidgetAncestry;
 
-class GTK::TextView:ver<4> is GTK::Widget:ver<4> {
+class GTK::Text::View:ver<4> is GTK::Widget:ver<4> {
   also does GTK::Roles::Scrollable;
   also does GTK::Roles::Signals::Generic;
   also does GTK::Roles::Signals::TextView;
@@ -65,17 +66,20 @@ class GTK::TextView:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new ( :$text is required ) {
-    ::?CLASS.new_with_buffer( GTK::TextBuffer.new($text) );
+  multi method new ( Str() :$text is required ) {
+    ::?CLASS.new_with_buffer( GTK::Text::Buffer.new($text) );
   }
-  multi method new {
+  multi method new ( GtkTextBuffer() :$buffer is required ) {
+    ::?CLASS.new_with_buffer($buffer);
+  }
+  multi method new (*%named where *.elems == 0) {
     my $gtk-text-view = gtk_text_view_new();
 
     $gtk-text-view ?? self.bless( :$gtk-text-view ) !! Nil;
   }
 
   method new_with_buffer (GtkTextBuffer() $buffer) is also<new-with-buffer> {
-    my $gtk-text-view = gtk_text_view_new_with_buffer($!gtk-tv, $buffer);
+    my $gtk-text-view = gtk_text_view_new_with_buffer($buffer);
 
     $gtk-text-view ?? self.bless( :$gtk-text-view ) !! Nil;
   }
@@ -1061,4 +1065,29 @@ class GTK::TextView:ver<4> is GTK::Widget:ver<4> {
     ($buffer_x, $buffer_y) = ($bx, $by);
   }
 
+}
+
+BEGIN {
+  use JSON::Fast;
+
+  my %widgets;
+  my \O = GTK::Text::View;
+  my \P = O.getTypePair;
+  given "widget-types.json".IO.open( :rw ) {
+    .lock;
+    %widgets = from-json( .slurp );
+    %widgets{ P.head.^shortname } = P.tail.^name;
+    .seek(0, SeekFromBeginning);
+    .spurt: to-json(%widgets);
+    .close;
+  }
+}
+
+INIT {
+  my \O = GTK::Text::View;
+  %widget-types{O.get_type} = {
+    name        => O.^name,
+    object      => O,
+    pair        => O.getTypePair
+  }
 }

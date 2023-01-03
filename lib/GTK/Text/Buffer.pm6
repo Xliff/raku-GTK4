@@ -38,7 +38,7 @@ class GTK::Text::Buffer:ver<4> {
     self!setObject($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkTextBuffer
+  method GTK::Raw::Structs::GtkTextBuffer
     is also<GtkTextBuffer>
   { $!gtk-tb }
 
@@ -53,10 +53,29 @@ class GTK::Text::Buffer:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (GtkTextTagTable() $table = GtkTextTagTable) {
+  multi method new (GtkTextTagTable $table) {
     my $gtk-text-buffer = gtk_text_buffer_new($table);
 
     $gtk-text-buffer ?? self.bless( :$gtk-text-buffer ) !! Nil;
+  }
+  multi method new (Str $text) {
+    my $o = samewith(GtkTextTagTable);
+
+    return Nil unless $o;
+    $o.text = $text;
+    $o;
+  }
+  multi method new ($_ is copy) {
+    when .can('Str')             { $_ .= Str            ; proceed }
+    when .can('GtkTextTagTable') { $_ .= GtkTextTagTable; proceed }
+    when GtkTextTagTable | Str   { samewith($_) }
+
+    default {
+      X::GLib::InvalidArgument.new(
+        message => "Argument to .new must be Str or GtkTextTagTable {
+                    ''}compatible"
+      ).throw;
+    }
   }
 
 
