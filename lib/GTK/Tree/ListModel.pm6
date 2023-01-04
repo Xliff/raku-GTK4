@@ -1,5 +1,6 @@
 use v6.c;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Tree::ListModel:ver<4>;
 
@@ -187,7 +188,7 @@ class GTK::Tree::ListModel {
     so gtk_tree_list_model_get_passthrough($!gtk-tlm);
   }
 
-  method get_row (Int() $position) {
+  method get_row (Int() $position, :$raw = False) {
     my guint $p = $position;
 
     propReturnObject(
@@ -195,6 +196,12 @@ class GTK::Tree::ListModel {
       $raw,
       |GTK::Tree::ListModel::Row.getTypePair
     );
+  }
+
+  method set_autoexpand (Int() $autoexpand) {
+    my gboolean $a = $autoexpand.so.Int;
+
+    gtk_tree_list_model_set_autoexpand($!gtk-tlm, $a);
   }
 
 }
@@ -362,12 +369,6 @@ class GTK::Tree::ListModel::Row {
     my gboolean $e = $expanded.so.Int;
 
     gtk_tree_list_row_set_expanded($!gtk-tlr, $e);
-  }
-
-  method set_autoexpand (Int() $autoexpand) {
-    my gboolean $a = $autoexpand.so.Int;
-
-    gtk_tree_list_model_set_autoexpand($!gtk-tlr, $a);
   }
 
 }
