@@ -5,6 +5,8 @@ use Method::Also;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Text::Iter:ver<4>;
 
+use GLib::GSList;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
@@ -37,7 +39,7 @@ class GTK::Text::Iter:ver<4> {
     self!setObject($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkTextIter
+  method GTK::Raw::Structs::GtkTextIter
     is also<GtkTextIter>
   { $!gtk-ti }
 
@@ -95,7 +97,7 @@ class GTK::Text::Iter:ver<4> {
     gpointer      $user_data = gpointer,
     GtkTextIter() $limit     = GtkTextIter
   ) {
-    gtk_text_iter_backward_find_char($!gtk-ti, $pred, $user_data, $limit);
+    gtk_text_iter_backward_find_char($!gtk-ti, &pred, $user_data, $limit);
   }
 
   method backward_line is also<backward-line> {
@@ -114,14 +116,14 @@ class GTK::Text::Iter:ver<4> {
 
   multi method backward_search (
     Str()         $str,
-    Int()         :f(:$flags),               = 0
+    Int()         :f(:$flags)                = 0,
     GtkTextIter() :s(:start(:$match_start))  = GtkTextIter,
     GtkTextIter() :e(:end(:$match_end))      = GtkTextIter,
     GtkTextIter() :l(:$limit)                = GtkTextIter
   ) {
     samewith($str, $flags, $match_start, $match_end, $limit);
   }
-  method backward_search (
+  multi method backward_search (
     Str()         $str,
     Int()         $flags,
     GtkTextIter() $match_start,
@@ -288,7 +290,7 @@ class GTK::Text::Iter:ver<4> {
     gpointer      $user_data = gpointer,
     GtkTextIter() $limit     = GtkTextIter
   ) {
-    gtk_text_iter_forward_find_char($!gtk-ti, $pred, $user_data, $limit);
+    gtk_text_iter_forward_find_char($!gtk-ti, &pred, $user_data, $limit);
   }
 
   method forward_line is also<forward-line> {
@@ -307,7 +309,7 @@ class GTK::Text::Iter:ver<4> {
 
   multi method forward_search (
     Str()         $str,
-    Int()         :f(:$flags),               = 0
+    Int()         :f(:$flags)                = 0,
     GtkTextIter() :s(:start(:$match_start))  = GtkTextIter,
     GtkTextIter() :e(:end(:$match_end))      = GtkTextIter,
     GtkTextIter() :l(:$limit)                = GtkTextIter
@@ -432,7 +434,7 @@ class GTK::Text::Iter:ver<4> {
       gtk_text_iter_get_child_anchor($!gtk-ti),
       $raw,
       |GTK::Text::Child::Anchor.getTypePair
-    }
+    );
   }
 
   method get_language ( :$raw = False ) is also<get-language> {
