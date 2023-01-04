@@ -6,6 +6,10 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Text::Buffer:ver<4>;
 
+use GLib::Value;
+use GTK::Text::Iter:ver<4>;
+use GTK::Text::Tag::Table:ver<4>;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
@@ -77,7 +81,6 @@ class GTK::Text::Buffer:ver<4> {
       ).throw;
     }
   }
-
 
   # Type: boolean
   method can-redo is rw  is g-property is also<can_redo> {
@@ -194,6 +197,39 @@ class GTK::Text::Buffer:ver<4> {
     is also<add-selection-clipboard>
   {
     gtk_text_buffer_add_selection_clipboard($!gtk-tb, $clipboard);
+  }
+
+  multi method applyTagAtIndexes (
+    Str   $name,
+    Int() $start,
+    Int() $end
+  ) {
+    my $tag = self.tag-table.lookup($name);
+
+    X::GLib::InvalidArgument.new(
+      message => "No Text Tag with the name '$name' was found during {
+                  '' }application attempt!"
+    ).throw unless $tag;
+
+    samewith($tag, $start, $end, :tag);
+  }
+  multi method applyTagAtIndexes (
+    GtkTextTag()  $t,
+    Int()         $start,
+    Int()         $end,
+                 :$tag is required
+  ) {
+    my $s = self.get_iter_at_offset($start);
+    my $e = self.get_iter_at_offset($end);
+
+    for [$start, $s], [$end, $e] {
+      X::GLib::InvalidArgument.new(
+        message => "An Invalid offset of '{ .head }' was given while {
+                    '' }attempting to apply a text tag!"
+      ).throw unless .tail.get-char;
+    }
+
+    self.apply_tag($t, $s, $e);
   }
 
   method apply_tag (
@@ -461,7 +497,8 @@ class GTK::Text::Buffer:ver<4> {
   ) {
     my gint $c = $char_offset;
 
-    gtk_text_buffer_get_iter_at_offset($!gtk-tb, $iter, $char_offset);
+    gtk_text_buffer_get_iter_at_offset($!gtk-tb, $iter, $c);
+
     propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair);
   }
 
