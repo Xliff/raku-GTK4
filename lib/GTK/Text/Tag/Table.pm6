@@ -5,6 +5,8 @@ use Method::Also;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Text::Tag::Table:ver<4>;
 
+use GTK::Text::Tag:ver<4>;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 use GTK::Roles::Signals::TextTagTable:ver<4>;
