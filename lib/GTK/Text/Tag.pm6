@@ -43,7 +43,7 @@ class GTK::Text::Tag:ver<4> {
     self!setObject($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkTextTag
+  method GTK::Raw::Structs::GtkTextTag
     is also<GtkTextTag>
   { $!gtk-tt }
 
@@ -143,13 +143,13 @@ class GTK::Text::Tag:ver<4> {
       FETCH => sub ($) {
         self.prop_get('background-rgba', $gv);
         propReturnObject(
-          $gv.pointer,
+          $gv.boxed,
           $raw,
           |GDK::RGBA.getTypePair
         )
       },
       STORE => -> $, GdkRGBA() $val is copy {
-        $gv.pointer = $val;
+        $gv.boxed = $val;
         self.prop_set('background-rgba', $gv);
       }
     );
@@ -292,13 +292,13 @@ class GTK::Text::Tag:ver<4> {
       FETCH => sub ($) {
         self.prop_get('foreground-rgba', $gv);
         propReturnObject(
-          $gv.object,
+          $gv.boxed,
           $raw,
           |GDK::RGBA.getTypePair
         )
       },
       STORE => -> $, GdkRGBA() $val is copy {
-        $gv.object = $val;
+        $gv.boxed = $val;
         self.prop_set('foreground-rgba', $gv);
       }
     );
@@ -468,13 +468,13 @@ class GTK::Text::Tag:ver<4> {
       FETCH => sub ($) {
         self.prop_get('overline-rgba', $gv);
         propReturnObject(
-          $gv.object,
+          $gv.boxed,
           $raw,
           |GDK::RGBA.getTypePair
         );
       },
-      STORE => -> $,  $val is copy {
-        $gv.pointer = $val;
+      STORE => -> $, GdkRGBA() $val is copy {
+        $gv.boxed = $val;
         self.prop_set('overline-rgba', $gv);
       }
     );
@@ -510,14 +510,14 @@ class GTK::Text::Tag:ver<4> {
       FETCH => sub ($) {
         self.prop_get('paragraph-background-rgba', $gv);
         propReturnObject(
-          $gv.object,
+          $gv.boxed,
           $raw,
           |GDK::RGBA.getTypePair
         )
       },
 
       STORE => -> $, GdkRGBA()  $val is copy {
-        $gv.object = $val;
+        $gv.boxed = $val;
         self.prop_set('paragraph-background-rgba', $gv);
       }
     );
@@ -721,13 +721,13 @@ class GTK::Text::Tag:ver<4> {
       FETCH => sub ($) {
         self.prop_get('strikethrough-rgba', $gv);
         propReturnObject(
-          $gv.object,
+          $gv.boxed,
           $raw,
           |GDK::RGBA.getTypePair
         );
       },
-      STORE => -> $,  $val is copy {
-        $gv.GtkRgba = $val;
+      STORE => -> $, GdkRGBA() $val is copy {
+        $gv.boxed = $val;
         self.prop_set('strikethrough-rgba', $gv);
       }
     );
@@ -818,13 +818,13 @@ class GTK::Text::Tag:ver<4> {
       FETCH => sub ($) {
         self.prop_get('underline-rgba', $gv);
         propReturnObject(
-          $gv.object,
+          $gv.boxed,
           $raw,
           |GDK::RGBA.getTypePair
         );
       },
-      STORE => -> $,  $val is copy {
-        $gv.GtkRgba = $val;
+      STORE => -> $, GdkRGBA() $val is copy {
+        $gv.boxed = $val;
         self.prop_set('underline-rgba', $gv);
       }
     );
