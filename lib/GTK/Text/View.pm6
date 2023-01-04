@@ -7,6 +7,8 @@ use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Text::View:ver<4>;
 
 use GTK::Text::Buffer:ver<4>;
+use GTK::Text::Iter:ver<4>;
+use GTK::Text::Mark:ver<4>;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
