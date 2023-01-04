@@ -120,6 +120,8 @@ class GtkStyleProvider         is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkSwitch                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTextTagTable          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTooltip               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkTreeListModel         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkTreeListRow           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeModel             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreePath              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeRowReference      is repr<CPointer> does GLib::Roles::Pointers is export { }
