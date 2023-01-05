@@ -428,6 +428,11 @@ class GTK::Text::View:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
+  # Convenience function
+  method text is rw {
+    self.buffer.text
+  }
+
   method Backspace {
     self.connect($!gtk-tv, 'backspace');
   }
