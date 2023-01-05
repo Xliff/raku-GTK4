@@ -349,10 +349,24 @@ class GTK::Text::Buffer:ver<4> {
     gtk_text_buffer_end_user_action($!gtk-tb);
   }
 
-  method get_bounds (GtkTextIter() $start, GtkTextIter() $end)
+  proto method get_bounds (|
     is also<get-bounds>
-  {
+  { * }
+
+  multi method get_bounds (:$raw = False) {
+    samewith(GtkTextIter.new, GtkTextIter.new, :$raw);
+  }
+  multi method get_bounds (
+    GtkTextIter()  $start,
+    GtkTextIter()  $end,
+                  :$raw    = False
+  ) {
     gtk_text_buffer_get_bounds($!gtk-tb, $start, $end);
+
+    (
+      propReturnObject($start, $raw, |GTK::Text::Iter.getTypePair),
+      propReturnObject($end,   $raw, |GTK::Text::Iter.getTypePair)
+    );
   }
 
   method get_can_redo is also<get-can-redo> {
