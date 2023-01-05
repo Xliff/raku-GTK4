@@ -53,10 +53,10 @@ class GTK::Text::Mark {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Int() $left_gravity) {
+  multi method new (Str() $name, Int() $left_gravity = False) {
     my gboolean $l = $left_gravity.so.Int;
 
-    my $gtk-text-mark = gtk_text_mark_new($!gtk-tm, $left_gravity);
+    my $gtk-text-mark = gtk_text_mark_new($name, $left_gravity);
 
     $gtk-text-mark ?? self.bless( :$gtk-text-mark ) !! Nil;
   }
