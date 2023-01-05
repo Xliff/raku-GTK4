@@ -1,12 +1,12 @@
 use v6.c;
 
-use GTK::Application;
-use GTK::Box;
-use GTK::Button;
-use GTK::Button::Check;
-use GTK::Stack;
-use GTK::Stack::Sidebar;
-# use GTK::TextView;
+use GTK::Application:ver<4>;
+use GTK::Box:ver<4>;
+use GTK::Button:ver<4>;
+use GTK::Button::Check:ver<4>;
+use GTK::Stack:ver<4>;
+use GTK::Stack::Sidebar:ver<4>;
+use GTK::Text::View:ver<4>;
 
 # Converted from:
 # https://github.com/gotk3/gotk3-examples/blob/master/gtk-examples/stack/stack.go
@@ -18,18 +18,17 @@ my $a = GTK::Application.new(
 );
 
 $a.Activate.tap(-> *@a {
-  CATCH { default { .message.say; $a.exit } }
+  CATCH { default { .message.say; .backtrace.concise.say; $a.exit } }
 
-  # sub newBoxText($string) {
-  #   my $box = GTK::Box.new-vbox;
-  #   my $tv = GTK::TextView.new;
-  #   my $b = GTK::Button.new_with_label('Submit');
-  #   $b.clicked.tap({ $tv.text.say; });
-  #   $tv.buffer.set_text($string);
-  #   $box.pack_start($tv, True, True, 0);
-  #   $box.add($b);
-  #   $box;
-  # }
+  sub newBoxText($string) {
+    my $box = GTK::Box.new-vbox;
+    my $tv = GTK::Text::View.new( text => $string );
+    my $b = GTK::Button.new_with_label('Submit');
+    $b.Clicked.tap( -> *@a { $tv.text.say });
+    $box.pack_start($tv, True, True, 0);
+    $box.append($b);
+    $box;
+  }
 
   # All positionals in one place with @group
   sub newBoxRadio(*@group) {
@@ -54,7 +53,7 @@ $a.Activate.tap(-> *@a {
   my $box = GTK::Box.new-hbox;
 
   # Page 1
-  # $stack.add_titled( newBoxText('Hello there!'), 'key1', 'First Page' );
+  $stack.add_titled( newBoxText('Hello there!'), 'key1', 'First Page' );
 
   # Page 2
   $stack.add_titled(
@@ -64,7 +63,7 @@ $a.Activate.tap(-> *@a {
   );
 
   # Page 3
-  # $stack.add_titled( newBoxText('third page'), 'key3', 'Third Page' );
+  $stack.add_titled( newBoxText('third page'), 'key3', 'Third Page' );
   $stack.add_titled(
     newBoxRadio('This', 'That', 'The other thing'),
     'key3',
