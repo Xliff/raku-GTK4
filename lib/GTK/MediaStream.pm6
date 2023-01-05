@@ -300,6 +300,12 @@ class GTK::MediaStream:ver<4> {
     gtk_media_stream_get_timestamp($!gtk-ms);
   }
 
+  method get_type is also<get-type> {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_media_stream_get_type, $n, $t );
+  }
+
   method get_volume is also<get-volume> {
     gtk_media_stream_get_volume($!gtk-ms);
   }
