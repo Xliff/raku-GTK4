@@ -12,7 +12,7 @@ use GDK::Roles::Paintable:ver<4>;
 our subset GtkMediaStreamAncestry is export of Mu
   where GtkMediaStream | GdkPaintable | GObject;
 
-class GTK::Raw::MediaStream {
+class GTK::MediaStream:ver<4> {
   also does GLib::Roles::Object;
   also does GDK::Roles::Paintable;
 
