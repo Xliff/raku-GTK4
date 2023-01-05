@@ -156,8 +156,26 @@ class GTK::Box:ver<4> is GTK::Widget {
         !! $child.vexpand ) = True;
     }
 
+    self.prepend($child);
+  }
+
+  method pack_end ($child, *@a)
+    is also<pack-end>
+  {
+    if @a.head {
+      (self.orientation == GTK_ORIENTATION_HORIZONTAL
+        ?? $child.vexpand
+        !! $child.hexpand ) = True;
+    }
+    if @a.head(2).tail {
+      (self.orientation == GTK_ORIENTATION_HORIZONTAL
+        ?? $child.hexpand
+        !! $child.vexpand ) = True;
+    }
+
     self.append($child);
   }
+
 
   multi method append (@children) {
     samewith( |@children );
