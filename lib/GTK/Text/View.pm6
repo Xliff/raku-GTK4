@@ -412,7 +412,11 @@ class GTK::Text::View:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: PangoWrapMode
-  method wrap-mode ( :$enum = True ) is rw  is g-property {
+  method wrap-mode ( :$enum = True )
+    is also<wrap_mode>
+    is rw
+    is g-property
+  {
     my $gv = GLib::Value.new-enum( PangoWrapMode );
     Proxy.new(
       FETCH => sub ($) {
