@@ -92,6 +92,7 @@ class GtkPageSettings          is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkPaned                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPaperSize             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPasswordEntry         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPasswordEntryBuffer   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPicture               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPrintContext          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPrintSettings         is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -127,5 +128,5 @@ class GtkTreeListRow           is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkTreeModel             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreePath              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeRowReference      is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkVideo                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkWindowControls        is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkPasswordEntryBuffer   is repr<CPointer> does GLib::Roles::Pointers is export { }
