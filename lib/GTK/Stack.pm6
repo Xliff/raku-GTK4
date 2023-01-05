@@ -263,7 +263,9 @@ class GTK::Stack:ver<4> is GTK::Widget:ver<4> {
     gtk_stack_add_named($!gtk-stack, $child, $name);
   }
 
-  method add_titled (GtkWidget() $child, Str() $name, Str() $title) is also<add-titled> {
+  method add_titled (GtkWidget() $child, Str() $name, Str() $title)
+    is also<add-titled>
+  {
     gtk_stack_add_titled($!gtk-stack, $child, $name, $title);
   }
 
