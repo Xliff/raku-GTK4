@@ -48,6 +48,7 @@ class GtkCssNode               is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkCssSection            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkDirectoryList         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkDragIcon              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkDropControllerMotion  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkDropDown              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkDropTarget            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEditable              is repr<CPointer> does GLib::Roles::Pointers is export { }
