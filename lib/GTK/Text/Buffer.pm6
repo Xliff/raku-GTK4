@@ -349,7 +349,7 @@ class GTK::Text::Buffer:ver<4> {
     gtk_text_buffer_end_user_action($!gtk-tb);
   }
 
-  proto method get_bounds (|
+  proto method get_bounds (|)
     is also<get-bounds>
   { * }
 
