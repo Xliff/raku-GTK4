@@ -91,3 +91,18 @@ sub takeIntOrArray ($v is copy, $routine-name, :$size = 2, :$type = Int)
   ).throw unless $v.elems == $size;
   $v;
 }
+
+sub resolveGdkActions (
+  :$ask,
+  :$copy,
+  :$link,
+  :$move,
+  :$all
+) {
+  my $actions = 0;
+  $actions +|= GDK_ACTION_ASK  if $ask  || $all;
+  $actions +|= GDK_ACTION_COPY if $copy || $all;
+  $actions +|= GDK_ACTION_LINK if $link || $all;
+  $actions +|= GDK_ACTION_MOVE if $move || $all;
+  $actions;
+}

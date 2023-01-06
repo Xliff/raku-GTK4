@@ -59,20 +59,6 @@ class GTK::Drop::Target:ver<4> is GTK::Event::Controller:ver<4> {
     $o;
   }
 
-  method !resolveActions (
-    :$ask,
-    :$copy,
-    :$link,
-    :$move,
-    :$all
-  ) {
-    my $actions = 0;
-    $actions +|= GDK_ACTION_ASK  if $ask  || $all;
-    $actions +|= GDK_ACTION_COPY if $copy || $all;
-    $actions +|= GDK_ACTION_LINK if $link || $all;
-    $actions +|= GDK_ACTION_MOVE if $move || $all;
-  }
-
   multi method new (
     Int()  $type,
           :$ask,
@@ -83,7 +69,7 @@ class GTK::Drop::Target:ver<4> is GTK::Event::Controller:ver<4> {
   ) {
     samewith(
       $type,
-      self!resolveActions(:$ask, :$copy, :$link, :$move, :$all)
+      resolveGdkActions(:$ask, :$copy, :$link, :$move, :$all)
     );
   }
   multi method new (Int() $type, Int() $actions) {
@@ -291,7 +277,7 @@ class GTK::Drop::Target:ver<4> is GTK::Event::Controller:ver<4> {
 
   multi method set_actions ( :$ask, :$copy, :$link, :$move, :$all ) {
     samewith(
-      self!resolveActions(:$ask, :$copy, :$link, :$move, :$all)
+      resolveGdkActions(:$ask, :$copy, :$link, :$move, :$all)
     );
   }
   multi method set_actions (Int() $actions) {
