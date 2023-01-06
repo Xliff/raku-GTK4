@@ -49,6 +49,7 @@ class GtkCssSection            is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkDirectoryList         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkDragIcon              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkDropDown              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkDropTarget            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEditable              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEmojiChooser          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEntryCompletion       is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -78,7 +79,7 @@ class GtkListBox               is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkListItem              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkListItemManager       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLockButton            is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkMediaFile             is repr<CPointer> does GLib::Roles::Pointers is export { } 
+class GtkMediaFile             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMediaStream           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMenuButton            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMultiSelection        is repr<CPointer> does GLib::Roles::Pointers is export { }
