@@ -5,20 +5,19 @@ use NativeCall;
 
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::DropTarget:ver<4>;
+use GTK::Raw::Drop::Target:ver<4>;
 
 use GTK::Event::Controller:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
-use GTK::Roles::Signals::DropTarget:ver<4>;
-
+use GTK::Roles::Signals::Drop::Target:ver<4>;
 
 our subset GtkDropTargetAncestry is export of Mu
   where GtkDropTarget | GtkEventControllerAncestry;
 
-class GTK::DropTarget:ver<4> is GTK::Event::Controller:ver<4> {
-  also does GTK::Roles::Signals::DropTarget;
+class GTK::Drop::Target:ver<4> is GTK::Event::Controller:ver<4> {
+  also does GTK::Roles::Signals::Drop::Target;
 
   has GtkDropTarget $!gtk-d-t is implementor;
 

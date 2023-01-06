@@ -5,7 +5,7 @@ use NativeCall;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Subs:ver<4>;
 
-role GTK::Roles::Signals::DropTarget:ver<4> {
+role GTK::Roles::Signals::Drop::Target:ver<4> {
   has %!signals-gtk-dt;
 
   # GtkStatusbar, GdkDrop, gpointer --> gboolean
