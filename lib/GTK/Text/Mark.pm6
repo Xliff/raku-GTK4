@@ -38,7 +38,7 @@ class GTK::Text::Mark {
     self!setObject($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkTextMark
+  method GTK::Raw::Structs::GtkTextMark
     is also<GtkTextMark>
   { $!gtk-tm }
 
@@ -59,6 +59,14 @@ class GTK::Text::Mark {
     my $gtk-text-mark = gtk_text_mark_new($name, $left_gravity);
 
     $gtk-text-mark ?? self.bless( :$gtk-text-mark ) !! Nil;
+  }
+  multi method new (
+    :g(:gravity(:left-gravity(:$left_gravity))) is required
+  ) {
+    ::?CLASS.new(Str, $left_gravity)
+  }
+  multi method new {
+    ::?CLASS.new( g => False );
   }
 
   # Type: boolean
