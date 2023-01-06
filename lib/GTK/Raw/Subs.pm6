@@ -4,6 +4,7 @@ use NativeCall;
 
 use GLib::Raw::Subs;
 use GLib::Raw::Object;
+use GDK::Raw::Enums:ver<4>;
 use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
 use GTK::Raw::Structs:ver<4>;
@@ -105,4 +106,14 @@ sub resolveGdkActions (
   $actions +|= GDK_ACTION_LINK if $link || $all;
   $actions +|= GDK_ACTION_MOVE if $move || $all;
   $actions;
+}
+
+sub hop (@a, Int() $num, Int() :$skip = 0, :$partial) is export {
+  die 'Cannot skip more than the number you are hopping!' if $skip >= $num;
+  return @a if $num == 1;
+  @a.rotor($num, :$partial).map({
+    my $a = $_;
+    $a .= skip($skip) if $skip;
+    $a.head
+  });
 }
