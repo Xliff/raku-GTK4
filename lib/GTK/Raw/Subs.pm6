@@ -99,7 +99,9 @@ sub resolveGdkActions (
   :$link,
   :$move,
   :$all
-) {
+)
+  is export
+{
   my $actions = 0;
   $actions +|= GDK_ACTION_ASK  if $ask  || $all;
   $actions +|= GDK_ACTION_COPY if $copy || $all;
