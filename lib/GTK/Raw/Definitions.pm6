@@ -52,6 +52,7 @@ class GtkDragSource            is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkDropControllerMotion  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkDropDown              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkDropTarget            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkDropTargetAsync       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEditable              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEmojiChooser          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEntryCompletion       is repr<CPointer> does GLib::Roles::Pointers is export { }
