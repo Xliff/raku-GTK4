@@ -138,3 +138,4 @@ class GtkTreePath              is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkTreeRowReference      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkVideo                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkWindowControls        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkWidgetPaintable       is repr<CPointer> does GLib::Roles::Pointers is export { }
