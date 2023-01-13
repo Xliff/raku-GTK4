@@ -63,6 +63,7 @@ class GtkExpander              is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkExpression            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpressionWatch       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFilter                is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkFilterListModel       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFileDialog            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFileFilter            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFlowBox               is repr<CPointer> does GLib::Roles::Pointers is export { }
