@@ -12,7 +12,7 @@ use GTK::Raw::Structs:ver<4>;
 
 unit package GTK::Raw::Tooltip:ver<4>;
 
-### /usr/src/gtk4/gtk/gtktooltip.
+### /usr/src/gtk4/gtk/gtktooltip.h
 
 sub gtk_tooltip_get_type
   returns GType
