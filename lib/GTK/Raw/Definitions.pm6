@@ -72,6 +72,7 @@ class GtkHeaderBar             is repr<CPointer> does GLib::Roles::Pointers is e
 class GtkGridLayout            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkGridLayoutChild       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkGridView              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkIMMultiContext        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconPaintable         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkIconTheme             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkImage                 is repr<CPointer> does GLib::Roles::Pointers is export { }
