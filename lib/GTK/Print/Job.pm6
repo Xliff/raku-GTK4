@@ -9,6 +9,7 @@ use GTK::Raw::Print::Job:ver<4>;
 
 use Cairo;
 #use GTK::Printer:ver<4>;
+use GTK::Page::Setup;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
@@ -47,7 +48,11 @@ class GTK::Print::Job {
     is also<GtkPrintJob>
   { $!gtk-pj }
 
-  multi method new ($gtk-print-job where * ~~ GtkPrintJobAncestry , :$ref = True) {
+  multi method new (
+    $gtk-print-job where * ~~ GtkPrintJobAncestry,
+
+    :$ref = True
+  ) {
     return unless $gtk-print-job;
 
     my $o = self.bless( :$gtk-print-job );
@@ -58,13 +63,98 @@ class GTK::Print::Job {
   multi method new (
     GtkPrinter()       $printer,
     GtkPrintSettings() $settings,
-    Int()              $page_setup
+    GtkPageSetup()     $page_setup
   ) {
-    my GtkPageSetup $p = $page_setup;
-
     my $gtk-print-job = gtk_print_job_new($printer, $settings, $page_setup);
 
     $gtk-print-job ?? self.bless( :$gtk-print-job ) !! Nil;
+  }
+
+  # Type: GtkPageSetup
+  method page-setup ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new-enum( GTK::Page::Setup.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('page-setup', $gv);
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GTK::Page::Setup.getTypePair
+        );
+      },
+      STORE => -> $, GtkPageSetup() $val is copy {
+        $gv.object = $val;
+        self.prop_set('page-setup', $gv);
+      }
+    );
+  }
+
+  # Type: GtkPrinter
+  method printer ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new( GTK::Printer.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('printer', $gv);
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GTK::Printer.getTypePair
+        );
+      },
+      STORE => -> $, GtkPrinter() $val is copy {
+        $gv.object = $val;
+        self.prop_set('printer', $gv);
+      }
+    );
+  }
+
+  # Type: GtkPrintSettings
+  method settings ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new-enum( GTK::Print::Settings.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('settings', $gv);
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GTK::Print::Settings.getTypePair
+        )
+      },
+      STORE => -> $, GtkPrintSettings() $val is copy {
+        $gv.object = $val;
+        self.prop_set('settings', $gv);
+      }
+    );
+  }
+
+  # Type: string
+  method title is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('title', $gv);
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv.string = $val;
+        self.prop_set('title', $gv);
+      }
+    );
+  }
+
+  # Type: boolean
+  method track-print-status is rw  is g-property is also<track_print_status>{
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('track-print-status', $gv);
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv.boolean = $val;
+        self.prop_set('track-print-status', $gv);
+      }
+    );
   }
 
   method collate is rw is g-accessor {
@@ -127,10 +217,8 @@ class GTK::Print::Job {
       STORE => -> $, \v { self.set_scale(v) }
   }
 
-  method track_print_status is rw is g-accessor is also<track-print-status> {
-    Proxy.new:
-      FETCH => -> $     { self.get_track_print_status    },
-      STORE => -> $, \v { self.set_track_print_status(v) }
+  method Status-Changed {
+    self.connect($!gtk-pj, 'status-changed');
   }
 
   method get_collate is also<get-collate> {
