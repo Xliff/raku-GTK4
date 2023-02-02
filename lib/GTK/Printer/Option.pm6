@@ -13,7 +13,7 @@ use GLib::Roles::Object;
 our subset GtkPrinterOptionAncestry is export of Mu
   where GtkPrinterOption | GObject;
 
-class GTK::PrinterOption:ver<4> {
+class GTK::Printer::Option:ver<4> {
   also does GLib::Roles::Object;
 
   has GtkPrinterOption $!gtk-po is implementor;
@@ -39,9 +39,12 @@ class GTK::PrinterOption:ver<4> {
     self!setObject($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkPrinterOption
+  method GTK::Raw::Structs::GtkPrinterOption
     is also<GtkPrinterOption>
   { $!gtk-po }
+
+  proto method new (|)
+  { * }
 
   multi method new (
      $gtk-printer-option where * ~~ GtkPrinterOptionAncestry,
