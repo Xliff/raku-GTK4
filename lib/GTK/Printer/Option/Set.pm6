@@ -11,7 +11,6 @@ use GTK::Printer::Option:ver<4>;
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
-
 our subset GtkPrinterOptionSetAncestry is export of Mu
   where GtkPrinterOptionSet | GObject;
 
