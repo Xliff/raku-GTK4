@@ -107,6 +107,7 @@ class GtkPicture                 is repr<CPointer> does GLib::Roles::Pointers is
 class GtkPrintContext            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPrintJob                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPrintSettings           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPrintUnixDialog         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkProgressBar             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRecentInfo              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRevealer                is repr<CPointer> does GLib::Roles::Pointers is export { }
