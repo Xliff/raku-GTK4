@@ -50,7 +50,7 @@ class GTK::Printer::Option::Widget:ver<4> is GTK::Box:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (GtkPrinterOption() $options) {
+  multi method new (GtkPrinterOption() $options = GtkPrinterOption) {
     my $gtk-printer-option-widget = gtk_printer_option_widget_new($options);
 
     $gtk-printer-option-widget ?? self.bless( :$gtk-printer-option-widget )
