@@ -5,7 +5,7 @@ use Method::Also;
 use NativeCall;
 
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::PrinterOption:ver<4>;
+use GTK::Raw::Printer::Option:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
