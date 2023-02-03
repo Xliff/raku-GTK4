@@ -130,6 +130,7 @@ class GtkStackPage               is repr<CPointer> does GLib::Roles::Pointers is
 class GtkStackSidebar            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStackSwitcher           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStatusbar               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkStringFilter            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStringList              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStringObject            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStyleProvider           is repr<CPointer> does GLib::Roles::Pointers is export { }
