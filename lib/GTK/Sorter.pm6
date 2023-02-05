@@ -1,5 +1,6 @@
 use v6.c;
 
+use Method::Also;
 use NativeCall;
 
 use GTK::Raw::Types:ver<4>;
@@ -7,16 +8,52 @@ use GTK::Raw::Types:ver<4>;
 use GLib::Roles::Object;
 use GLib::Roles::Implementor;
 
+our subset GtkSorterAncestry is export of Mu
+  where GtkSorter | GObject;
+
 class GTK::Sorter {
   also does GLib::Roles::Object;
 
   has GtkSorter $!gtk-sort is implementor;
 
+  submethod BUILD ( :$gtk-s ) {
+    self.setGtkSorter($gtk-s) if $gtk-s
+  }
+
+  method setGtkSorter (GtkSorterAncestry $_) {
+    my $to-parent;
+
+    $!gtk-sort = do {
+      when GtkSorter {
+        $to-parent = cast(GObject, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GtkSorter, $_);
+      }
+    }
+    self!setObject($to-parent);
+  }
+
+  method GTK::Raw::Definitions::GtkSorter
+    is also<GtkSorter>
+  { $!gtk-sort }
+
+  multi method new ($gtk-s where * ~~ GtkSorterAncestry, :$ref = True) {
+    return unless $gtk-s;
+
+    my $o = self.bless( :$gtk-s );
+    $o.ref if $ref;
+    $o;
+  }
+
   method Changed {
     self.connect-uint($!gtk-sort, 'changed');
   }
 
-  method changed () {
+  method changed (Int() $change) {
     my GtkSorterChange $c = $change;
 
     gtk_sorter_changed($!gtk-sort, $c);
@@ -28,10 +65,10 @@ class GTK::Sorter {
     GtkOrderingEnum($o);
   }
 
-  method get_order ( :$enum = True ) {
+  method get_order ( :$enum = True ) is also<get-order> {
     my $o = gtk_sorter_get_order($!gtk-sort);
     return $o unless $enum;
-    GtkSortOrderEnum($o);
+    GtkSorterOrderEnum($o);
   }
 
 }
