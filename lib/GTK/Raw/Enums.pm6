@@ -16,7 +16,6 @@ our enum AtspiComponentLayerEnum is export <
   ATSPI_COMPONENT_LAYER_OVERLAY
   ATSPI_COMPONENT_LAYER_WINDOW
 >;
-
 constant AtspiCoordType is export := guint32;
 our enum AtspiCoordTypeEnum is export <
   ATSPI_COORD_TYPE_SCREEN
@@ -1838,6 +1837,13 @@ our enum GtkStringFilterMatchModeEnum is export <
   GTK_STRING_FILTER_MATCH_MODE_EXACT
   GTK_STRING_FILTER_MATCH_MODE_SUBSTRING
   GTK_STRING_FILTER_MATCH_MODE_PREFIX
+>;
+
+constant GtkCollation is export := guint32;
+our enum GtkCollationEnum is export <
+  GTK_COLLATION_NONE
+  GTK_COLLATION_UNICODE
+  GTK_COLLATION_FILENAME
 >;
 
 constant GtkStyleContextPrintFlags is export := guint32;
