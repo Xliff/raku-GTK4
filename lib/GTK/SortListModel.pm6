@@ -58,7 +58,7 @@ class GTK::SortListModel:ver<4> {
   }
 
   # Type: GtkListModel
-  method model is rw  is g-property {
+  method model ( :$raw = False ) is rw  is g-property {
     my $gv = GLib::Value.new( GIO::ListModel.get_type );
     Proxy.new(
       FETCH => sub ($) {
