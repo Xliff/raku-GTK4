@@ -90,7 +90,7 @@ sub gtk_constant_expression_get_type
   is      export
 { * }
 
-sub gtk_constant_expression_get_value (GtkExpression $expression)
+sub gtk_constant_expression_get_value (GtkConstantExpression $expression)
   returns GValue
   is      native(gtk4)
   is      export
@@ -108,7 +108,7 @@ sub gtk_constant_expression_new_for_value (GValue $value)
   is      export
 { * }
 
-sub gtk_object_expression_get_object (GtkExpression $expression)
+sub gtk_object_expression_get_object (GtkObjectExpression $expression)
   returns GObject
   is      native(gtk4)
   is      export
@@ -143,13 +143,13 @@ sub gtk_param_spec_expression (
   is      export
 { * }
 
-sub gtk_property_expression_get_expression (GtkExpression $expression)
+sub gtk_property_expression_get_expression (GtkPropertyExpression $expression)
   returns GtkExpression
   is      native(gtk4)
   is      export
 { * }
 
-sub gtk_property_expression_get_pspec (GtkExpression $expression)
+sub gtk_property_expression_get_pspec (GtkPropertyExpression $expression)
   returns GParamSpec
   is      native(gtk4)
   is      export

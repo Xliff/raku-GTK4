@@ -43,7 +43,9 @@ class GtkBuilder                 is repr<CPointer> does GLib::Roles::Pointers is
 class GtkBuildableParser         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCalendar                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCenterBox               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkClosureExpression       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkColorDialog             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkConstantExpression      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraint              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraintGuide         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraintLayout        is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -65,6 +67,8 @@ class GtkEventControllerMotion   is repr<CPointer> does GLib::Roles::Pointers is
 class GtkEventControllerScroll   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpander                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpression              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkExpressionCClosure      is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkExpressionValue         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpressionWatch         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFilter                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkFilterListModel         is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -98,6 +102,7 @@ class GtkNativeDialog            is repr<CPointer> does GLib::Roles::Pointers is
 class GtkNotebook                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNoSelection             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNotebookPage            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkObjectExpression        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOrientable              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOverlay                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPageSetup               is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -112,6 +117,7 @@ class GtkPrintJob                is repr<CPointer> does GLib::Roles::Pointers is
 class GtkPrintSettings           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPrintUnixDialog         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkProgressBar             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPropertyExpression      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRecentInfo              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRevealer                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSearchBar               is repr<CPointer> does GLib::Roles::Pointers is export { }

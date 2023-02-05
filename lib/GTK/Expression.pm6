@@ -8,12 +8,13 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Expression:ver<4>;
 
+use GLib::Value;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
-
 our subset GtkExpressionAncestry is export of Mu
-  where GtkExpression | GtkExpressionAncestry;
+  where GtkExpression | GObject;
 
 class GTK::Expression:ver<4> {
   also does GLib::Roles::Object;
@@ -163,7 +164,7 @@ class GTK::Expression::Closure is GTK::Expression:ver<4> {
   { $!gtk-e-c }
 
   multi method new (
-    $gtk-expr-c where * ~~ GtkClosureExpressionAncestry\,
+    $gtk-expr-c where * ~~ GtkClosureExpressionAncestry,
 
     :$ref = True
   ) {
@@ -173,8 +174,7 @@ class GTK::Expression::Closure is GTK::Expression:ver<4> {
     $o.ref if $ref;
     $o;
   }
-
-  method new (
+  multi method new (
     Int()                 $value_type,
     GClosure()            $closure,
     Int()                 $n_params,
@@ -189,6 +189,8 @@ class GTK::Expression::Closure is GTK::Expression:ver<4> {
   }
 
   method get_type ( :$raw = False ) is also<get-type> {
+    state ($n, $t);
+
     unstable_get_type( self.^name, &gtk_closure_expression_get_type, $n, $t );
   }
 
@@ -226,7 +228,7 @@ class GTK::Expression::Closure::C is GTK::Expression:ver<4> {
   { $!gtk-e-cc }
 
   multi method new (
-    $gtk-expr-cc where * ~~ GtkExpressionCClosureAncestry.
+    $gtk-expr-cc where * ~~ GtkExpressionCClosureAncestry,
 
     :$ref = True
   ) {
@@ -240,16 +242,16 @@ class GTK::Expression::Closure::C is GTK::Expression:ver<4> {
   multi method new (
     Int()  $value_type,
            &callback_func,
+           @params              = (),
            $user_data           = gpointer,
           :$marshal             = Callable,
-          :n_params(:$n-params) = 0,
           :$user_destroy        = %DEFAULT-CALLBACKS<GDestroyNotify>
   ) {
     samewith(
       $value_type,
       $marshal,
-      $n_params,
-      $params,
+      @params.elems,
+      ArrayToCArray(GtkExpression, @params),
       &callback_func,
       $user_data,
       $user_destroy
@@ -303,7 +305,7 @@ class GTK::Expression::Constant is GTK::Expression:ver<4> {
   method setGtkExpressionCClosure (GtkExpressionCClosureAncestry $_) {
     my $to-parent;
 
-    $!gtk-e-cc = do {
+    $!gtk-e-c = do {
       when GtkExpressionCClosure {
         $to-parent = cast(GtkExpression, $_);
         $_;
@@ -319,10 +321,10 @@ class GTK::Expression::Constant is GTK::Expression:ver<4> {
 
   method GTK::Raw::Definitions::GtkExpressionCClosure
     is also<GtkExpressionCClosure>
-  { $!gtk-e-cc }
+  { $!gtk-e-c }
 
   multi method new (
-    $gtk-expr-constant where * ~~ GtkExpressionCClosureAncestry.
+    $gtk-expr-constant where * ~~ GtkExpressionCClosureAncestry,
 
     :$ref = True
   ) {
@@ -332,9 +334,9 @@ class GTK::Expression::Constant is GTK::Expression:ver<4> {
     $o.ref if $ref;
     $o;
   }
-
-  method new {
-    $gtk-expr-constant = gtk_constant_expression_new();
+  multi method new (Int() $type) {
+    my GType $t                 = $type;
+    my       $gtk-expr-constant = gtk_constant_expression_new($t);
 
     $gtk-expr-constant ?? self.bless( :$gtk-expr-constant ) !! Nil;
   }
@@ -358,7 +360,7 @@ class GTK::Expression::Constant is GTK::Expression:ver<4> {
 
   method get_value ( :$raw = False ) is also<get-value> {
     propReturnObject(
-      gtk_constant_expression_get_value($!gtk-e),
+      gtk_constant_expression_get_value($!gtk-e-c),
       $raw,
       |GLib::Value.getTypePair
     );
@@ -366,39 +368,39 @@ class GTK::Expression::Constant is GTK::Expression:ver<4> {
 }
 
 
-our subset GtkObjectExpressonAncestry is export of Mu
-  where GtkObjectExpresson | GtkExpressionAncestry;
+our subset GtkObjectExpressionAncestry is export of Mu
+  where GtkObjectExpression | GtkExpressionAncestry;
 
 class GTK::Expression::Object is GTK::Expression:ver<4> {
-  has GtkObjectExpresson $!gtk-e-obj is implementor;
+  has GtkObjectExpression $!gtk-e-o is implementor;
 
   submethod BUILD ( :$gtk-expr-obj ) {
     self.setGtkObjectExpresson($gtk-expr-obj) if $gtk-expr-obj
   }
 
-  method setGtkObjectExpresson (GtkObjectExpressonAncestry $_) {
+  method setGtkObjectExpression (GtkObjectExpressionAncestry $_) {
     my $to-parent;
 
     $!gtk-e-o = do {
-      when GtkObjectExpresson {
+      when GtkObjectExpression {
         $to-parent = cast(GtkExpression, $_);
         $_;
       }
 
       default {
         $to-parent = $_;
-        cast(GtkObjectExpresson, $_);
+        cast(GtkObjectExpression, $_);
       }
     }
     self.setGtkExpression($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkObjectExpresson
+  method GTK::Raw::Definitions::GtkObjectExpression
     is also<GtkObjectExpression>
   { $!gtk-e-o }
 
   multi method new (
-    $gtk-expr-obj where * ~~ GtkObjectExpressonAncestry,
+    $gtk-expr-obj where * ~~ GtkObjectExpressionAncestry,
 
     :$ref = True
   ) {
@@ -408,16 +410,15 @@ class GTK::Expression::Object is GTK::Expression:ver<4> {
     $o.ref if $ref;
     $o;
   }
+  multi method new (GObject() $object) {
+    my $gtk-expr-obj = gtk_object_expression_new($object);
 
-  method new {
-    my $gtk-expr-obj = gtk_object_expression_new();
-
-    $gtk-expr-obj ?? self.bless(: $gtk-expr-obj ) !! Nil
+    $gtk-expr-obj ?? self.bless( :$gtk-expr-obj ) !! Nil
   }
 
   method get_object ( :$raw = False ) is also<get-object> {
     propReturnObject(
-      gtk_object_expression_get_object($!gtk-e),
+      gtk_object_expression_get_object($!gtk-e-o),
       $raw,
       |GLib::Object.getTypePair
     );
@@ -492,167 +493,46 @@ class GTK::Expression::Param is GTK::Expression:ver<4> {
 }
 
 
-our subset GtkPropertyExpressionAncestry is export of Mu
-  where GtkPropertyExpression | GtkExpressionAncestry;
+use MONKEY-TYPING;
 
-class GTK::Expression::Property is GTK::Expression:ver<4> {
-  has GtkPropertyExpression $!gtk-e-p is implementor;
+augment class GLib::Value {
 
-  submethod BUILD ( :$gtk-expr-prop ) {
-    self.setGtkPropertyExpression($gtk-expr-prop) if $gtk-expr-prop
-  }
-
-  method setGtkPropertyExpression (GtkPropertyExpressionAncestry $_) {
-    my $to-parent;
-
-    $!gtk-e-p = do {
-      when GtkPropertyExpression {
-        $to-parent = cast(GtkExpression, $_);
-        $_;
-      }
-
-      default {
-        $to-parent = $_;
-        cast(GtkPropertyExpression, $_);
-      }
-    }
-    self.setGtkExpression($to-parent);
-  }
-
-  method GTK::Raw::Definitions::GtkPropertyExpression
-    is also<GtkPropertyExpression>
-  { $!gtk-e-p }
-
-  multi method new (
-    $gtk-expr-prop where * ~~ GtkPropertyExpressionAncestry,
-
-    :$ref = True
-  ) {
-    return unless $gtk-expr-prop;
-
-    my $o = self.bless( :$gtk-expr-prop );
-    $o.ref if $ref;
-    $o;
-  }
-
-  method new (Int() $this_type, Str() $property_name) {
-    my GType $t = $this_type;
-
-    my $gtk-expr-prop = gtk_property_expression_new(
-      $t,
-      $expression,
-      $property_name
-    );
-
-    $gtk-expr-prop ?? self.bless( :$gtk-expr-prop ) !! Nil
-  }
-
-  method get_expression ( :$raw = False ) is also<get-expression> {
+  method dup_expression ( :$raw = False ) is also<dup-expression> {
     propReturnObject(
-      gtk_property_expression_get_expression($!gtk-e),
+      self.GValue,
       $raw,
       |GTK::Expression.getTypePair
     );
   }
 
-  method get_pspec ( :$raw = False ) is also<get-pspec> {
+  method get_expression ( :$raw = False ) is also<get-expression> {
     propReturnObject(
-      gtk_property_expression_get_pspec($!gtk-e),
+      self.GValue,
       $raw,
-      |GLib::Object::ParamSpec.getTypePair
+      |GTK::Expression.getTypePair
     );
   }
 
-  method get_type is also<get-type> {
-    state ($n, $t);
-
-    unstable_get_type( self.^name, &gtk_property_expression_get_type, $n, $t );
+  method set_expression (GtkExpression() $expression)
+    is also<set-expression>
+  {
+    gtk_value_set_expression(self.GValue, $expression);
   }
 
+  method take_expression (GtkExpression() $expression)
+    is also<take-expression>
+  {
+    gtk_value_take_expression(self.GValue, $expression);
+  }
 }
 
-# BOXED
-
-our subset GtkExpressionValueAncestry is export of Mu
-  where GtkExpressionValue | GtkExpressionAncestry;
-
-class GTK::Expression::Value is GLib::Value:ver<4> {
-  has GtkExpressionValue $!gtk-e-v is implementor;
-
-  submethod BUILD ( :$gtk-expr-val ) {
-    self.setGtkExpressionValue($gtk-expr-val) if $gtk-expr-vel
-  }
-
-  method setGtkExpressionValue (GtkExpressionValueAncestry $_) {
-    my $to-parent;
-
-    $!gtk-e-v = do {
-      when GtkExpressionValue {
-        $to-parent = cast(GtkExpression, $_);
-        $_;
-      }
-
-      default {
-        $to-parent = $_;
-        cast(GtkExpressionValue, $_);
-      }
-    }
-    self.setGtkExpression($to-parent);
-  }
-
-  method GTK::Raw::Definitions::GtkExpressionValue
-    is also<GtkExpressionValue>
-  { $!gtk-e-v }
-
-  multi method new (
-    $gtk-expr-val where * ~~ GtkExpressionValueAncestry,
-
-    :$ref = True
-  ) {
-    return unless $gtk-expr-val;
-
-    my $o = self.bless( :$gtk-expr-val );
-    $o.ref if $ref;
-    $o;
-  }
-
-  method type {
-     state ($n, $t);
-
-     unstable_get_type( self.^name, &gtk_expression_get_value_type, $n, $t );
-   }
-
-   method dup_expression ( :$raw = False ) is also<dup-expression> {
-     propReturnObject(
-       gtk_value_dup_expression($!gtk-e-v),
-       $raw,
-       |GTK::Expression.getTypePair
-     );
-   }
-
-   method get_expression ( :$raw = False ) is also<get-expression> {
-     propReturnObject(
-       gtk_value_get_expression($!gtk-e-v),
-       $raw,
-       |GTK::Expression.getTypePair
-     );
-   }
-
-   method set_expression (GtkExpression() $expression) is also<set-expression> {
-     gtk_value_set_expression($!gtk-e-v, $expression);
-   }
-
-   method take_expression (GtkExpression() $expression) is also<take-expression> {
-     gtk_value_take_expression($!gtk-e-v, $expression);
-   }
-}
 
 # STRUCT
 
 our subset GtkExpressionWatchAncestry is export of Mu
   where GtkExpressionWatch | GtkExpressionAncestry;
 
-class GTK::Expression::Watch {
+class GTK::Expression::Watch:ver<4> is GTK::Expression:ver<4> {
   has GtkExpressionWatch $!gtk-e-w is implementor;
 
   submethod BUILD ( :$gtk-expr-watch ) {
