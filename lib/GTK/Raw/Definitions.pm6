@@ -142,6 +142,7 @@ class GtkStatusbar               is repr<CPointer> does GLib::Roles::Pointers is
 class GtkStringFilter            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStringList              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStringObject            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkStringSorter            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStyleProvider           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSwitch                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTextTagTable            is repr<CPointer> does GLib::Roles::Pointers is export { }
