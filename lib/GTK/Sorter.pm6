@@ -11,7 +11,7 @@ use GLib::Roles::Implementor;
 our subset GtkSorterAncestry is export of Mu
   where GtkSorter | GObject;
 
-class GTK::Sorter {
+class GTK::Sorter:ver<4> {
   also does GLib::Roles::Object;
 
   has GtkSorter $!gtk-sort is implementor;
