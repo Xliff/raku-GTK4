@@ -26,8 +26,9 @@ class GtkLayoutManager           is repr<CPointer> does GLib::Roles::Pointers is
 class GtkNative                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPrintOperationPreview   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkRoot                    is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GtkSnapshot                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcut                is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSnapshot                is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSorter                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 
 class GtkAboutDialog             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkActionable              is repr<CPointer> does GLib::Roles::Pointers is export { }
