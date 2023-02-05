@@ -53,6 +53,32 @@ class GTK::DragIcon is GTK::Widget:ver<4> {
     $o;
   }
 
+  # Type: GtkWidget
+  method child (
+    :$raw           = False,
+    :quick(:$fast)  = False,
+    :slow(:$proper) = $fast.not
+  )
+    is rw
+    is g-property
+  {
+    my $gv = GLib::Value.new( GTK::Widget.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('child', $gv);
+        returnProperWidget(
+          $gv.object,
+          $raw,
+          $proper
+        );
+      },
+      STORE => -> $, GtkWidget() $val is copy {
+        $gv.object = $val;
+        self.prop_set('child', $gv);
+      }
+    );
+  }
+
   method create_widget_for_value (GValue() $value, :$raw = False)
     is also<create-widget-for-value>
     is static

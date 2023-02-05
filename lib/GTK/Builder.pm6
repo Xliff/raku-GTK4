@@ -110,7 +110,7 @@ class GTK::Builder:ver<4> {
   method !processInputByName ( :$base ) {
     say "Definition: { $!definition.^name }";
 
-    my $dom = LibXML.parse(string => $!definition).root;
+    my $dom = LibXML.parse($!definition).root;
 
     my $firstLoop = True;
     my %names;
@@ -226,6 +226,8 @@ class GTK::Builder:ver<4> {
     clear_error;
     my $rv = so gtk_builder_add_from_file($!gtk-build, $filename, $error);
     set_error($error);
+    $!definition ~= $filename.IO.slurp;
+    self!processInputByName;
     $rv;
   }
 
@@ -242,13 +244,14 @@ class GTK::Builder:ver<4> {
       $error
     );
     set_error($error);
+    #self!processInputByName;
     $rv;
   }
 
   # cw: Add multis
   method add_from_string (
     Str()                   $buffer,
-    Int()                   $length,
+    Int()                   $length  = -1,
     CArray[Pointer[GError]] $error   = gerror
   )
     is also<add-from-string>
@@ -258,6 +261,8 @@ class GTK::Builder:ver<4> {
     clear_error;
     my $rv = so gtk_builder_add_from_string($!gtk-build, $buffer, $l, $error);
     set_error($error);
+    $!definition ~= $buffer;
+    self!processInputByName;
     $rv;
   }
 
@@ -276,6 +281,8 @@ class GTK::Builder:ver<4> {
       $error
     );
     set_error($error);
+    $!definition ~= $filename.IO.slurp;
+    self!processInputByName;
     $rv;
   }
 
@@ -294,6 +301,7 @@ class GTK::Builder:ver<4> {
       $error
     );
     set_error($error);
+    #self!processInputByName;
     $rv;
   }
 
@@ -317,6 +325,8 @@ class GTK::Builder:ver<4> {
       $error
     );
     set_error($error);
+    $!definition ~= $buffer;
+    self!processInputByName;
     $rv;
   }
 
@@ -426,16 +436,16 @@ class GTK::Builder:ver<4> {
   method get_current_object (
     :$raw                 = False,
     :quick(:$fast)        = False,
-    :slow(:$proper)       = $fast.not,
-    :$base                = GTK::Widget,
+    :slow(:$proper)       = $fast.not#,
+    #:$base                = GTK::Widget,
   )
     is also<get-current-object>
   {
     returnProperWidget(
       gtk_builder_get_current_object($!gtk-build),
       $raw,
-      $proper,
-      $base
+      $proper#,
+      #$base
     );
   }
 
@@ -443,16 +453,16 @@ class GTK::Builder:ver<4> {
     Str()  $name,
           :$raw           = False,
           :quick(:$fast)  = False,
-          :slow(:$proper) = $fast.not,
-          :$base          = GTK::Widget,
+          :slow(:$proper) = $fast.not#,
+          #:$base          = GTK::Widget,
   )
     is also<get-object>
   {
     returnProperWidget(
       gtk_builder_get_object($!gtk-build, $name),
       $raw,
-      $proper,
-      $base
+      $proper#,
+      #$base
     );
   }
 
@@ -460,8 +470,8 @@ class GTK::Builder:ver<4> {
     :$raw           = False,
     :$gslist        = False,
     :quick(:$fast)  = False,
-    :slow(:$proper) = $fast.not,
-    :$base          = GTK::Widget,
+    :slow(:$proper) = $fast.not#,
+    #:$base          = GTK::Widget,
   )
     is also<get-objects>
   {
@@ -473,7 +483,12 @@ class GTK::Builder:ver<4> {
     return $l if $raw && $gslist;
 
     $l.Array.map({
-      returnProperWidget($_, $raw, $proper, $base)
+      returnProperWidget(
+        $_,
+        $raw,
+        $proper#,
+        #$base
+      )
     });
   }
 

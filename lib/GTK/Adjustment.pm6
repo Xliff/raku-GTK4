@@ -179,6 +179,17 @@ class GTK::Adjustment:ver<4> {
     );
   }
 
+  method range is g-accessor {
+    Proxy.new:
+      FETCH => -> $ {
+        (self.lower, self.upper)
+      },
+
+      STORE => -> $, \v {
+         (self.lower, self.upper) = takeIntOrArray(Num, v)
+      };
+  }
+
   method clamp_page (Num() $lower, Num() $upper) is also<clamp-page> {
     my gdouble ($l, $u) = ($lower, $upper);
 

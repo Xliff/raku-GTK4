@@ -26,7 +26,9 @@ role GTK::Roles::Signals::Overlay {
           # cw: Consider reassigning $st to another lexical
           my $r = ReturnedValue.new;
           $s.emit( [self, $w, $a, $ud, $r] );
-          $r.r
+
+          my gboolean $ret = $r.r ?? $r.r.Int !! 1;
+          $ret;
         },
         Pointer, 0
       );

@@ -93,7 +93,7 @@ class GTK::Button::Check:ver<4> is GTK::Widget:ver<4> {
   }
   multi method new-buttons (@labels) {
     do for @labels {
-      ::?CLASS.new($_);
+      ::?CLASS.new_with_label($_);
     }
   }
 

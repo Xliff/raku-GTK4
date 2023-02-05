@@ -237,8 +237,26 @@ class GTK::Expression::Closure::C is GTK::Expression:ver<4> {
     $o;
   }
 
-  method new (
-    GType                 $value_type,
+  multi method new (
+    Int()  $value_type,
+           &callback_func,
+           $user_data           = gpointer,
+          :$marshal             = Callable,
+          :n_params(:$n-params) = 0,
+          :$user_destroy        = %DEFAULT-CALLBACKS<GDestroyNotify>
+  ) {
+    samewith(
+      $value_type,
+      $marshal,
+      $n_params,
+      $params,
+      &callback_func,
+      $user_data,
+      $user_destroy
+    );
+  }
+  multi method new (
+    Int()                 $value_type,
                           &marshal,
     Int()                 $n_params,
     CArray[GtkExpression] $params,
@@ -260,7 +278,6 @@ class GTK::Expression::Closure::C is GTK::Expression:ver<4> {
     );
 
     $gtk-expr-cc ?? self.bless( :$gtk-expr-cc ) !! Nil;
-
   }
 
   method get_type is also<get-type> {

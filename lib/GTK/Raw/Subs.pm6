@@ -4,6 +4,7 @@ use NativeCall;
 
 use GLib::Raw::Subs;
 use GLib::Raw::Object;
+use GDK::Raw::Enums:ver<4>;
 use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
 use GTK::Raw::Structs:ver<4>;
@@ -17,10 +18,13 @@ multi sub returnProperWidget (
   :$raw           = False,
   :quick(:$fast)  = False,
   :slow(:$proper) = $fast.not,
-  :$base          = ::('GTK::Widget')
+  :$base          = GLib::Object;
 )
   is export
 {
+  say "1 - Obj: { $object // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
+  return Nil unless $object.defined;
+
   my $o = ($object ~~ GObject) ?? $object !! cast(GObject, $object);
 
   if $proper {
@@ -31,7 +35,8 @@ multi sub returnProperWidget (
   propReturnObject($o, $raw, $base.getTypePair);
 }
 
-multi sub returnProper ($object, $raw, $proper) is export {
+multi sub returnProperWidget ($object, $raw, $proper) is export {
+  say "0 - Obj: { $object // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
   returnProperWidget($object, :$raw, :$proper)
 }
 
@@ -68,7 +73,7 @@ multi sub getPodSection ($pod, @sections) {
 }
 
 # cw: Probably better in GLib
-sub takeIntOrArray ($v is copy, $routine, :$size = 2, :$type = Int)
+sub takeIntOrArray ($v is copy, $routine-name, :$size = 2, :$type = Int)
   is export
 {
   $v .= Int         if $v.^can('Int')   && $v !~~ Cool;
@@ -82,8 +87,35 @@ sub takeIntOrArray ($v is copy, $routine, :$size = 2, :$type = Int)
   ).throw unless $v.all ~~ $type;
 
   X::GLib::InvalidSize.new(
-    message => "Value passed to .{ $routine } must be Int-compatible or {
+    message => "Value passed to .{ $routine-name } must be Int-compatible or {
                 '' } Array-compatible with only { $size } -elements!"
   ).throw unless $v.elems == $size;
   $v;
+}
+
+sub resolveGdkActions (
+  :$ask,
+  :$copy,
+  :$link,
+  :$move,
+  :$all
+)
+  is export
+{
+  my $actions = 0;
+  $actions +|= GDK_ACTION_ASK  if $ask  || $all;
+  $actions +|= GDK_ACTION_COPY if $copy || $all;
+  $actions +|= GDK_ACTION_LINK if $link || $all;
+  $actions +|= GDK_ACTION_MOVE if $move || $all;
+  $actions;
+}
+
+sub hop (@a, Int() $num, Int() :$skip = 0, :$partial) is export {
+  die 'Cannot skip more than the number you are hopping!' if $skip >= $num;
+  return @a if $num == 1;
+  @a.rotor($num, :$partial).map({
+    my $a = $_;
+    $a .= skip($skip) if $skip;
+    $a.head
+  });
 }

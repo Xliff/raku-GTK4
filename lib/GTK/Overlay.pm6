@@ -98,11 +98,11 @@ class GTK::Overlay is GTK::Widget {
   )
     is also<get-child>
   {
-    returnProperWidget(
-      gtk_overlay_get_child($!gtk-o),
-      $raw,
-      $proper
-    );
+    my $child = gtk_overlay_get_child($!gtk-o);
+
+    say "Overlay child: { $child // 'NONE' }";
+
+    returnProperWidget($child, $raw, $proper);
   }
 
   method get_clip_overlay (GtkWidget() $widget) is also<get-clip-overlay> {

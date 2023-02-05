@@ -235,3 +235,9 @@ sub gtk_media_stream_update (
   is      native(gtk4)
   is      export
 { * }
+
+sub gtk_media_stream_get_type ()
+  returns GType
+  is      native(gtk4)
+  is      export
+{ * }

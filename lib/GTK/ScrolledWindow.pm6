@@ -77,6 +77,126 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
     );
   }
 
+  method child is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get_child    },
+      STORE => -> $, \v { self.set_child(v) }
+  }
+
+  method hadjustment is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get_hadjustment    },
+      STORE => -> $, \v { self.set_hadjustment(v) }
+  }
+
+  method has_frame
+    is also<has-frame>
+    is rw
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => -> $     { self.get_has_frame    },
+      STORE => -> $, \v { self.set_has_frame(v) }
+  }
+
+  method kinetic_scrolling
+    is also<kinetic-scrolling>
+    is rw
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => -> $     { self.get_kinetic_scrolling    },
+      STORE => -> $, \v { self.set_kinetic_scrolling(v) }
+  }
+
+  method max_content_height
+    is also<max-content-height>
+    is rw
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => -> $     { self.get_max_content_height    },
+      STORE => -> $, \v { self.set_max_content_height(v) }
+  }
+
+  method max_content_width
+    is also<max-content-width>
+    is rw
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => -> $     { self.get_max_content_width    },
+      STORE => -> $, \v { self.set_max_content_width(v) }
+  }
+
+  method min_content_height
+    is also<min-content-height>
+    is rw
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => -> $     { self.get_min_content_height    },
+      STORE => -> $, \v { self.set_min_content_height(v) }
+  }
+
+  method min_content_width
+    is also<min-content-width>
+    is rw
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => -> $     { self.get_min_content_width    },
+      STORE => -> $, \v { self.set_min_content_width(v) }
+  }
+
+  method overlay_scrolling
+    is also<overlay-scrolling>
+    is rw
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => -> $     { self.get_overlay_scrolling    },
+      STORE => -> $, \v { self.set_overlay_scrolling(v) }
+  }
+
+  method placement is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get_placement    },
+      STORE => -> $, \v { self.set_placement(v) }
+  }
+
+  method policy is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get_policy    },
+      STORE => -> $, \v { self.set_policy(v) }
+  }
+
+  method propagate_natural_height
+    is also<propagate-natural-height>
+    is rw
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => -> $     { self.get_propagate_natural_height    },
+      STORE => -> $, \v { self.set_propagate_natural_height(v) }
+  }
+
+  method propagate_natural_width
+    is also<propagate-natural-width>
+    is rw
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => -> $     { self.get_propagate_natural_width    },
+      STORE => -> $, \v { self.set_propagate_natural_width(v) }
+  }
+
+  method vadjustment is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get_vadjustment    },
+      STORE => -> $, \v { self.set_vadjustment(v) }
+  }
+
   method get_child (
     :$raw           = False,
     :quick(:$fast)  = False,
@@ -185,27 +305,27 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
       );
   }
 
-  method min-content-size is rw {
+  method min-content-size is also<min_content_size> is rw {
     Proxy.new:
       FETCH => -> $ {
         ( $.get-min-cointent-width, $.get-min-content-height )
       },
 
       STORE => -> $, \v {
-        my $v = takeIntOrArray(v);
+        my $v = takeIntOrArray(v, &?ROUTINE.name);
         self.set_min_content_width($v.head);
         self.set_min_content_height($v.tail);
       }
   }
 
-  method max-content-size is rw {
+  method max-content-size is also<max_content_size> is rw {
     Proxy.new:
       FETCH => -> $ {
         ( $.get-max-cointent-width, $.get-max-content-height )
       },
 
       STORE => -> $, \v {
-        my $v = takeIntOrArray(v);
+        my $v = takeIntOrArray(v, &?ROUTINE.name);
         self.set_max_content_width($v.head);
         self.set_max_content_height($v.tail);
       }

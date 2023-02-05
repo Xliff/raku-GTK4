@@ -70,6 +70,20 @@ class GTK::Button:ver<4> is GTK::Widget:ver<4> {
     $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
   }
 
+  proto method new_buttons (|)
+    is also<new-buttons>
+  { * }
+
+  multi method new_buttons ( *@labels, :m(:$mnemonic) ) {
+    samewith(@labels, :$mnemonic);
+  }
+  multi method new_buttons ( @labels, :m(:$mnemonic) ) {
+    do for @labels {
+      $mnemonic ?? ::?CLASS.new_with_mnemonic($_)
+                !! ::?CLASS.new_with_label($_);
+    }
+  }
+
   # Type: string
   method label is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_STRING );

@@ -11,7 +11,7 @@ use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
 use GTK::Raw::Structs:ver<4>;
 
-unit package GTK::Raw::TextView:ver<4>;
+unit package GTK::Raw::Text::View:ver<4>;
 
 ### /usr/src/gtk4/gtk/gtktextview.h
 

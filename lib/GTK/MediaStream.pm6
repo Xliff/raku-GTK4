@@ -12,7 +12,7 @@ use GDK::Roles::Paintable:ver<4>;
 our subset GtkMediaStreamAncestry is export of Mu
   where GtkMediaStream | GdkPaintable | GObject;
 
-class GTK::Raw::MediaStream {
+class GTK::MediaStream:ver<4> {
   also does GLib::Roles::Object;
   also does GDK::Roles::Paintable;
 
@@ -298,6 +298,12 @@ class GTK::Raw::MediaStream {
 
   method get_timestamp is also<get-timestamp> {
     gtk_media_stream_get_timestamp($!gtk-ms);
+  }
+
+  method get_type is also<get-type> {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_media_stream_get_type, $n, $t );
   }
 
   method get_volume is also<get-volume> {

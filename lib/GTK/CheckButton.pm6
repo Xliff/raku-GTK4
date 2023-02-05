@@ -2,6 +2,10 @@ use v6.c;
 
 use GTK::Button::Check;
 
+# cw: When using smartmatching, do NOT use GTK::CheckButton.
+#     All GTK::CheckButtons are GTK::Button::Check. The converse
+#     is NOT true.
+
 class GTK::CheckButton:ver<4> is GTK::Button::Check:ver<4> {
   # cw: TIMTWODI
   #

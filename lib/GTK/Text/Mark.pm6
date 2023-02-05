@@ -12,6 +12,8 @@ use GLib::Roles::Object;
 our subset GtkTextMarkAncestry is export of Mu
   where GtkTextMark | GObject;
 
+my %properties;
+
 class GTK::Text::Mark {
   also does GLib::Roles::Object;
 
@@ -38,7 +40,7 @@ class GTK::Text::Mark {
     self!setObject($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkTextMark
+  method GTK::Raw::Structs::GtkTextMark
     is also<GtkTextMark>
   { $!gtk-tm }
 
@@ -53,12 +55,25 @@ class GTK::Text::Mark {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Int() $left_gravity) {
+  multi method new (Str() $name, Int() $left_gravity = False) {
     my gboolean $l = $left_gravity.so.Int;
 
-    my $gtk-text-mark = gtk_text_mark_new($!gtk-tm, $left_gravity);
+    my $gtk-text-mark = gtk_text_mark_new($name, $left_gravity);
 
     $gtk-text-mark ?? self.bless( :$gtk-text-mark ) !! Nil;
+  }
+  multi method new ( $name, *%attributes ) {
+    ::?CLASS.new($name, %attributes);
+  }
+  multi method new ($name, %attributes) {
+    my $o = ::?CLASS.new($name, %attributes<left-gravity>);
+    %attributes<left-gravity>:delete;
+
+    %properties = self.getClass.list_properties unless %properties;
+    for %attributes.keys.map( *.subst('_', :g) ).unique {
+      $o."$_"() = %attributes{$_} if %properties{$_}
+    }
+    $o;
   }
 
   # Type: boolean
