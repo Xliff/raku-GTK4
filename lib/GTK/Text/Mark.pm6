@@ -12,6 +12,8 @@ use GLib::Roles::Object;
 our subset GtkTextMarkAncestry is export of Mu
   where GtkTextMark | GObject;
 
+my %properties;
+
 class GTK::Text::Mark {
   also does GLib::Roles::Object;
 
@@ -60,13 +62,18 @@ class GTK::Text::Mark {
 
     $gtk-text-mark ?? self.bless( :$gtk-text-mark ) !! Nil;
   }
-  multi method new (
-    :g(:gravity(:left-gravity(:$left_gravity))) is required
-  ) {
-    ::?CLASS.new(Str, $left_gravity)
+  multi method new ( $name, *%attributes ) {
+    ::?CLASS.new($name, %attributes);
   }
-  multi method new {
-    ::?CLASS.new( g => False );
+  multi method new ($name, %attributes) {
+    my $o = ::?CLASS.new($name, %attributes<left-gravity>);
+    %attributes<left-gravity>:delete;
+
+    %properties = self.getClass.list_properties unless %properties;
+    for %attributes.keys.map( *.subst('_', :g) ).unique {
+      $o."$_"() = %attributes{$_} if %properties{$_}
+    }
+    $o;
   }
 
   # Type: boolean
