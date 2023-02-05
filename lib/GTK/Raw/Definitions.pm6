@@ -58,6 +58,7 @@ class GtkDropTargetAsync         is repr<CPointer> does GLib::Roles::Pointers is
 class GtkEditable                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEmojiChooser            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEntryCompletion         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkEventControllerFocus    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEventControllerMotion   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEventControllerScroll   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpander                is repr<CPointer> does GLib::Roles::Pointers is export { }
