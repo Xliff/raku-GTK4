@@ -46,6 +46,8 @@ class GtkCalendar                is repr<CPointer> does GLib::Roles::Pointers is
 class GtkCenterBox               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkClosureExpression       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkColorDialog             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkColumnView              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkColumnViewColumn        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstantExpression      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraint              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraintGuide         is repr<CPointer> does GLib::Roles::Pointers is export { }
