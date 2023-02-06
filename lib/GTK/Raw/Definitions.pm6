@@ -38,6 +38,7 @@ class GtkActionBar               is repr<CPointer> does GLib::Roles::Pointers is
 class GtkAssistant               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAssistantPage           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBitset                  is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkBookmarkList            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBoxLayout               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBuilder                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBuildableParser         is repr<CPointer> does GLib::Roles::Pointers is export { }
