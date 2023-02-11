@@ -52,7 +52,7 @@ class GTK::Inscription:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Str() $text) {
+  multi method new (Str() $text = Str) {
     my $gtk-inscription = gtk_inscription_new($text);
 
     $gtk-inscription ?? self.bless( :$gtk-inscription ) !! Nil;
