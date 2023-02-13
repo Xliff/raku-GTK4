@@ -35,6 +35,7 @@ class GtkSortListModel           is repr<CPointer> does GLib::Roles::Pointers is
 class GtkAboutDialog             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkActionable              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAlertDialog             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkAlternativeTrigger      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkActionBar               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAssistant               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAssistantPage           is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -92,6 +93,7 @@ class GtkImage                   is repr<CPointer> does GLib::Roles::Pointers is
 class GtkInfoBar                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkInscription             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkInspectorOverlay        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkKeyvalTrigger           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLabel                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLayoutChild             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLevelBar                is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -104,9 +106,11 @@ class GtkMediaFile               is repr<CPointer> does GLib::Roles::Pointers is
 class GtkMediaStream             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMenuButton              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMnemonicAction          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkMnemonicTrigger         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMultiSelection          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNamedAction             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNativeDialog            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkNeverTrigger            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNotebook                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNothingAction           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNoSelection             is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -140,6 +144,7 @@ class GtkSettings                is repr<CPointer> does GLib::Roles::Pointers is
 class GtkShortcutAction          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutController      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutManager         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkShortcutTrigger         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutsWindow         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSignalAction            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSignalListItemFactory   is repr<CPointer> does GLib::Roles::Pointers is export { }
