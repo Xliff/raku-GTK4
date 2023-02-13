@@ -143,6 +143,7 @@ class GtkSeparator               is repr<CPointer> does GLib::Roles::Pointers is
 class GtkSettings                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutAction          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutController      is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkShortcutLabel           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutManager         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutTrigger         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutsWindow         is repr<CPointer> does GLib::Roles::Pointers is export { }
