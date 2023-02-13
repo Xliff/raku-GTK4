@@ -3,3 +3,5 @@
 ### /usr/src/gtk4/gtk/gtkfontdialogbutton.h
 ### /usr/src/gtk4/gtk/gtkcssstyle.h
 ### /usr/src/gtk4/gtk/gtkcolordialogbutton.h
+### /usr/src/gtk4/gtk/gtkshortcutsshortcut.h
+### /usr/src/gtk4/gtk/gtkshortcutmanager.h
