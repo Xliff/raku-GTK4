@@ -6,15 +6,16 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Shortcut::Controller:ver<4>;
 
+use GTK::Event::Controller:ver<4>;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
+
 our subset GtkShortcutControllerAncestry is export of Mu
-  where GtkShortcutController | GObject;
+  where GtkShortcutController | GtkEventControllerAncestry;
 
-class GTK::Shortcut::Controller:ver<4> {
-  also does GLib::Roles::Object;
-
+class GTK::Shortcut::Controller:ver<4> is GTK::Event::Controller:ver<4> {
   has GtkShortcutController $!gtk-sc is implementor;
 
   submethod BUILD ( :$gtk-shortcut-controller ) {
@@ -27,7 +28,7 @@ class GTK::Shortcut::Controller:ver<4> {
 
     $!gtk-sc = do {
       when GtkShortcutController {
-        $to-parent = cast(GObject, $_);
+        $to-parent = cast(GtkEventController, $_);
         $_;
       }
 
@@ -36,7 +37,7 @@ class GTK::Shortcut::Controller:ver<4> {
         cast(GtkShortcutController, $_);
       }
     }
-    self!setObject($to-parent);
+    self.setGtkEventController($to-parent);
   }
 
   method GTK::Raw::Definitions::GtkShortcutController
@@ -54,6 +55,7 @@ class GTK::Shortcut::Controller:ver<4> {
     $o.ref if $ref;
     $o;
   }
+
   multi method new {
     my $gtk-shortcut-controller = gtk_shortcut_controller_new();
 
