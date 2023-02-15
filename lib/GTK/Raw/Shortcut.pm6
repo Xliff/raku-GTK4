@@ -42,7 +42,8 @@ sub gtk_shortcut_new (
 sub gtk_shortcut_new_with_arguments (
   GtkShortcutTrigger $trigger,
   GtkShortcutAction  $action,
-  Str                $format_string
+  Str                $format_string,
+  Str
 )
   returns GtkShortcut
   is      native(gtk4)
