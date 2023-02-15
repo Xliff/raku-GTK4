@@ -148,6 +148,7 @@ class GtkShortcutLabel           is repr<CPointer> does GLib::Roles::Pointers is
 class GtkShortcutManager         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutTrigger         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutsSection        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkShortcutsShortcut       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkShortcutsWindow         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSignalAction            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSignalListItemFactory   is repr<CPointer> does GLib::Roles::Pointers is export { }
