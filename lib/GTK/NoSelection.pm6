@@ -8,12 +8,14 @@ use GTK::Raw::Types:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GTK::Roles::SelectionModel:ver<4>;
 
 our subset GtkNoSelectionAncestry is export of Mu
-  where GtkNoSelection | GObject;
+  where GtkNoSelection | GtkSelectionModel | GObject;
 
 class GTK::NoSelection {
   also does GLib::Roles::Object;
+  also does GTK::Roles::SelectionModel;
 
   has GtkNoSelection $!gtk-no-s is implementor;
 
@@ -30,12 +32,19 @@ class GTK::NoSelection {
         $_;
       }
 
+      when GtkSelectionModel {
+        $to-parent = cast(GObject, $_);
+        $!gtk-sm   = $_
+        cast(GtkNoSelection, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkNoSelection, $_);
       }
     }
     self!setObject($to-parent);
+    self!roleInit-GtkSelectionModel;
   }
 
   method GTK::Raw::Definitions::GtkNoSelection
