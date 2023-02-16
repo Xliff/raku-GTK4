@@ -235,3 +235,6 @@ class GTK::Shortcut::Shortcut:ver<4> is GTK::Widget:ver<4> {
   }
 
 }
+
+# No raws, so source tag goes here.
+### /usr/src/gtk4/gtk/gtkshortcutsshortcut.h
