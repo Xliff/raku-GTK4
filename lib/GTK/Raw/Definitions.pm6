@@ -153,6 +153,7 @@ class GtkShortcutsShortcut       is repr<CPointer> does GLib::Roles::Pointers is
 class GtkShortcutsWindow         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSignalAction            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSignalListItemFactory   is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSingleSelection         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSpinner                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSpinButton              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkStack                   is repr<CPointer> does GLib::Roles::Pointers is export { }
