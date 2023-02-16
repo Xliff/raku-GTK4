@@ -60,6 +60,36 @@ class GTK::Shortcut::Label:ver<4> is GTK::Widget:ver<4> {
     $gtk-shortcut-label ?? self.bless( :$gtk-shortcut-label ) !! Nil;
   }
 
+  # Type: string
+  method accelerator is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('accelerator', $gv);
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv.string = $val;
+        self.prop_set('accelerator', $gv);
+      }
+    );
+  }
+
+  # Type: string
+  method disabled-text is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('disabled-text', $gv);
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv.string = $val;
+        self.prop_set('disabled-text', $gv);
+      }
+    );
+  }
+
   method get_accelerator is also<get-accelerator> {
     gtk_shortcut_label_get_accelerator($!gtk-sl);
   }
