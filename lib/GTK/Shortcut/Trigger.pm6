@@ -57,8 +57,7 @@ class GTK::Shortcut::Trigger:ver<4> {
         when 'never'        { ::('GTK::Shortcut::Trigger::Never')       }
         when .contains('_') { ::('GTK::Shortcut::Trigger::Mnemonic')    }
         when .contains('|') { ::('GTK::Shortcut::Trigger::Alternative') }
-
-        default             { ::?CLASS }
+        default             { ::('GTK::Shortcut::Trigger::Keyval')      }
       }
     ).new( gtk_shortcut_trigger_parse_string($string) )
   }
