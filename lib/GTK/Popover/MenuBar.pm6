@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Popover::MenuBar:ver<4>;
@@ -51,14 +53,18 @@ class GTK::Popover::MenuBar:ver<4> is GTK::Widget:ver<4> {
     $o;
   }
 
-  method new_from_model (GMenuModel() $model) {
+  method new_from_model (GMenuModel() $model) is also<new-from-model> {
      my $gtk-popover-menubar = gtk_popover_menu_bar_new_from_model($model);
 
     $gtk-popover-menubar ?? self.bless( :$gtk-popover-menubar ) !! Nil
   }
 
   # Type: GMenuModel
-  method menu-model is rw  is g-property {
+  method menu-model ( :$raw = False )
+    is rw
+    is g-property
+    is also<menu_model>
+  {
     my $gv = GLib::Value.new( GIO::MenuModel.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -77,7 +83,7 @@ class GTK::Popover::MenuBar:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: string
-  method visible-submenu is rw  is g-property {
+  method visible-submenu is rw  is g-property is also<visible_submenu> {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -91,11 +97,11 @@ class GTK::Popover::MenuBar:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
-  method add_child (GtkWidget() $child, Str() $id) {
+  method add_child (GtkWidget() $child, Str() $id) is also<add-child> {
     gtk_popover_menu_bar_add_child($!gtk-pmb, $child, $id);
   }
 
-  method get_menu_model ( :$raw = False ) {
+  method get_menu_model ( :$raw = False ) is also<get-menu-model> {
     propReturnObject(
       gtk_popover_menu_bar_get_menu_model($!gtk-pmb),
       $raw,
@@ -103,17 +109,17 @@ class GTK::Popover::MenuBar:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_popover_menu_bar_get_type, $n, $t );
   }
 
-  method remove_child (GtkWidget() $child) {
+  method remove_child (GtkWidget() $child) is also<remove-child> {
     gtk_popover_menu_bar_remove_child($!gtk-pmb, $child);
   }
 
-  method set_menu_model (GMenuModel() $model) {
+  method set_menu_model (GMenuModel() $model) is also<set-menu-model> {
     gtk_popover_menu_bar_set_menu_model($!gtk-pmb, $model);
   }
 
