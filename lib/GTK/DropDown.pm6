@@ -43,7 +43,11 @@ class GTK::DropDown:ver<4> is GTK::Widget:ver<4> {
     is also<GtkDropDown>
   { $!gtk-dd }
 
-  multi method new ($gtk-drop-down where * ~~ GtkDropDownAncestry , :$ref = True) {
+  multi method new (
+    $gtk-drop-down where * ~~ GtkDropDownAncestry,
+    
+    :$ref = True
+  ) {
     return unless $gtk-drop-down;
 
     my $o = self.bless( :$gtk-drop-down );
