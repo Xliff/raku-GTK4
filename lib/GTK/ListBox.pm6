@@ -276,6 +276,9 @@ class GTK::ListBox:ver<4> is GTK::Widget:ver<4> {
   method insert (GtkWidget() $child, Int() $position = -1) {
     my gint $p = $position;
 
+    $position == -1 ?? @!children.push($child);
+                    !! @!children.&arrayInsert($child, $position);
+
     gtk_list_box_insert($!gtk-lb, $child, $p);
   }
 
@@ -292,10 +295,12 @@ class GTK::ListBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   method prepend (GtkWidget() $child) {
+    @!children.unshift($child);
     gtk_list_box_prepend($!gtk-lb, $child);
   }
 
   method remove (GtkWidget() $child) {
+    @!children.&arrayDelete(item => $child);
     gtk_list_box_remove($!gtk-lb, $child);
   }
 
@@ -558,6 +563,7 @@ class GTK::ListBox::Row:ver<4> {
   }
 
   method set_child (GtkWidget() $child) is also<set-child> {
+    @!children[0] = $child;
     gtk_list_box_row_set_child($!gtk-lbr, $child);
   }
 

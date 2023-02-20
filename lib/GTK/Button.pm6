@@ -180,6 +180,7 @@ class GTK::Button:ver<4> is GTK::Widget:ver<4> {
 
   # cw: Backwards compatibility
   method add (GtkWidget() $child) {
+    @!children.push: $child;
     self.child = $child;
   }
 

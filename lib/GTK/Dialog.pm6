@@ -146,6 +146,7 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
   {
     my gint $r = $response_id;
 
+    @!children.push: $child;
     gtk_dialog_add_action_widget($!gtk-d, $child, $r);
   }
 
@@ -170,6 +171,7 @@ class GTK::Dialog:ver<4> is GTK::Window:ver<4> {
     my gint $r = $response_id;
 
     my $b = gtk_dialog_add_button($!gtk-d, $button_text, $r);
+    @!children.push: $b;
     return Nil unless $allow-return-value;
     returnProperWidget($b, :$raw, :$proper);
   }

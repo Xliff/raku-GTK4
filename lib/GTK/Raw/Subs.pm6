@@ -119,3 +119,19 @@ sub hop (@a, Int() $num, Int() :$skip = 0, :$partial) is export {
     $a.head
   });
 }
+
+multi sub arrayInsert (@a, $v, :$before, :$after) {
+  my $i = @a.first( $before // $after, :k );
+  $i++ if $after;
+  arrayInsert(@a, $i, $v);
+}
+multi sub arrayInsert (@a, $k, $i) {
+  @a.splice($k, $i.elems, $i);
+}
+
+multi sub arrayDelete (@a, :$item) {
+  arrayDelete( @a, @a.first( *.WHERE == $item.WHERE, :k ) );
+}
+multi sub arrayDelete (@a, $k) {
+  @a.splice($k, 1);
+}

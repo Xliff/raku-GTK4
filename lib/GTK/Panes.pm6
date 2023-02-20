@@ -302,7 +302,7 @@ class GTK::Panes:ver<4> is GTK::Widget:ver<4> {
   )
     is also<get-end-child>
   {
-    returnProperObject(
+    returnProperWidget(
       gtk_paned_get_end_child($!gtk-p),
       :$raw,
       :$proper
@@ -336,7 +336,7 @@ class GTK::Panes:ver<4> is GTK::Widget:ver<4> {
   )
     is also<get-start-child>
   {
-    returnProperObject(
+    returnProperWidget(
       gtk_paned_get_start_child($!gtk-p),
       :$raw,
       :$proper
@@ -356,6 +356,7 @@ class GTK::Panes:ver<4> is GTK::Widget:ver<4> {
   method set_end_child (GtkWidget() $child)
     is also<set-end-child>
   {
+    @!children[1] = $child;
     gtk_paned_set_end_child($!gtk-p, $child);
   }
 
@@ -394,6 +395,7 @@ class GTK::Panes:ver<4> is GTK::Widget:ver<4> {
   }
 
   method set_start_child (GtkWidget() $child) is also<set-start-child> {
+    @!children[0] = $child;
     gtk_paned_set_start_child($!gtk-p, $child);
   }
 

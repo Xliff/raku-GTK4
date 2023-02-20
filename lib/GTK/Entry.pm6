@@ -293,7 +293,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GTKPaintable
-  method secondary-icon-paintable ( :$raw = False ) is rw  is g-property is also<secondary_icon_paintable> {
+  method secondary-icon-paintable ( :$raw = False )
+    is rw
+    is g-property
+    is also<secondary_icon_paintable>
+  {
     my $gv = GLib::Value.new( GTK::Paintable.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -327,7 +331,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: string
-  method secondary-icon-name is rw  is g-property is also<secondary_icon_name> {
+  method secondary-icon-name
+    is rw
+    is g-property
+    is also<secondary_icon_name>
+  {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -342,7 +350,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GIcon
-  method primary-icon-gicon ( :$raw = False ) is rw is g-property is also<primary_icon_gicon> {
+  method primary-icon-gicon ( :$raw = False )
+    is rw
+    is g-property
+    is also<primary_icon_gicon>
+  {
     my $gv = GLib::Value.new( GIO::Icon.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -361,7 +373,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GIcon
-  method secondary-icon-gicon ( :$raw = False ) is rw  is g-property is also<secondary_icon_gicon> {
+  method secondary-icon-gicon ( :$raw = False )
+    is rw
+    is g-property
+    is also<secondary_icon_gicon>
+  {
     my $gv = GLib::Value.new( GIO::Icon.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -380,7 +396,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GTKImageType
-  method primary-icon-storage-type ( :$enum = True ) is rw  is g-property is also<primary_icon_storage_type> {
+  method primary-icon-storage-type ( :$enum = True )
+    is rw
+    is g-property
+    is also<primary_icon_storage_type>
+  {
     my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkImageType) );
     Proxy.new(
       FETCH => sub ($) {
@@ -396,7 +416,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GTKImageType
-  method secondary-icon-storage-type ( :$enum = True ) is rw  is g-property is also<secondary_icon_storage_type> {
+  method secondary-icon-storage-type ( :$enum = True )
+    is rw
+    is g-property
+    is also<secondary_icon_storage_type>
+  {
     my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkImageType) );
     Proxy.new(
       FETCH => sub ($) {
@@ -412,7 +436,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method primary-icon-activatable is rw  is g-property is also<primary_icon_activatable> {
+  method primary-icon-activatable
+    is rw
+    is g-property
+    is also<primary_icon_activatable>
+  {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -427,7 +455,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method secondary-icon-activatable is rw  is g-property is also<secondary_icon_activatable> {
+  method secondary-icon-activatable
+    is rw
+    is g-property
+    is also<secondary_icon_activatable>
+  {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -442,7 +474,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method primary-icon-sensitive is rw  is g-property is also<primary_icon_sensitive> {
+  method primary-icon-sensitive
+    is rw
+    is g-property
+    is also<primary_icon_sensitive>
+  {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -457,7 +493,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method secondary-icon-sensitive is rw  is g-property is also<secondary_icon_sensitive> {
+  method secondary-icon-sensitive
+    is rw
+    is g-property
+    is also<secondary_icon_sensitive>
+  {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -472,7 +512,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: string
-  method primary-icon-tooltip-text is rw  is g-property is also<primary_icon_tooltip_text> {
+  method primary-icon-tooltip-text
+    is rw
+    is g-property
+    is also<primary_icon_tooltip_text>
+  {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -487,7 +531,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: string
-  method secondary-icon-tooltip-text is rw  is g-property is also<secondary_icon_tooltip_text> {
+  method secondary-icon-tooltip-text
+    is rw
+    is g-property
+    is also<secondary_icon_tooltip_text>
+  {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -502,7 +550,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: string
-  method primary-icon-tooltip-markup is rw  is g-property is also<primary_icon_tooltip_markup> {
+  method primary-icon-tooltip-markup
+    is rw
+    is g-property
+    is also<primary_icon_tooltip_markup>
+  {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -517,7 +569,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: string
-  method secondary-icon-tooltip-markup is rw  is g-property is also<secondary_icon_tooltip_markup> {
+  method secondary-icon-tooltip-markup
+    is rw
+    is g-property
+    is also<secondary_icon_tooltip_markup>
+  {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -566,7 +622,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GTKInputPurpose
-  method input-purpose ( :$enum = True ) is rw  is g-property is also<input_purpose> {
+  method input-purpose ( :$enum = True )
+    is rw
+    is g-property
+    is also<input_purpose>
+  {
     my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkInputPurpose) );
     Proxy.new(
       FETCH => sub ($) {
@@ -583,7 +643,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GTKInputHints
-  method input-hints ( :set(:$flags) = True ) is rw  is g-property is also<input_hints> {
+  method input-hints ( :set(:$flags) = True )
+    is rw
+    is g-property
+    is also<input_hints>
+  {
     my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GtkInputHints) );
     Proxy.new(
       FETCH => sub ($) {
@@ -653,7 +717,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GMenuModel
-  method extra-menu ( :$raw = False ) is rw  is g-property is also<extra_menu> {
+  method extra-menu ( :$raw = False )
+    is rw
+    is g-property
+    is also<extra_menu>
+  {
     my $gv = GLib::Value.new( GIO::MenuModel.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -672,7 +740,11 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: boolean
-  method enable-emoji-completion is rw  is g-property is also<enable_emoji_completion> {
+  method enable-emoji-completion
+    is rw
+    is g-property
+    is also<enable_emoji_completion>
+  {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -758,7 +830,12 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_get_icon_activatable($!gtk-e, $i);
   }
 
-  method get_icon_area (Int() $icon_pos, GdkRectangle() $icon_area) is also<get-icon-area> {
+  method get_icon_area (
+    Int()          $icon_pos,
+    GdkRectangle() $icon_area
+  )
+    is also<get-icon-area>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
 
     gtk_entry_get_icon_area($!gtk-e, $icon_pos, $icon_area);
@@ -770,7 +847,9 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_get_icon_at_pos($!gtk-e, $xx, $yy);
   }
 
-  method get_icon_gicon (Int() $icon_pos, :$raw = False) is also<get-icon-gicon> {
+  method get_icon_gicon (Int() $icon_pos, :$raw = False)
+    is also<get-icon-gicon>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
 
     propReturnObject(
@@ -786,7 +865,9 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_get_icon_name($!gtk-e, $icon_pos);
   }
 
-  method get_icon_paintable (Int() $icon_pos, :$raw = False) is also<get-icon-paintable> {
+  method get_icon_paintable (Int() $icon_pos, :$raw = False)
+    is also<get-icon-paintable>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
 
     propReturnObject(
@@ -802,7 +883,9 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     so gtk_entry_get_icon_sensitive($!gtk-e, $icon_pos);
   }
 
-  method get_icon_storage_type (Int() $icon_pos, :$enum = True) is also<get-icon-storage-type> {
+  method get_icon_storage_type (Int() $icon_pos, :$enum = True)
+    is also<get-icon-storage-type>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
 
     my $t = gtk_entry_get_icon_storage_type($!gtk-e, $icon_pos);
@@ -810,13 +893,17 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     GtkImageTypeEnum($t);
   }
 
-  method get_icon_tooltip_markup (Int() $icon_pos) is also<get-icon-tooltip-markup> {
+  method get_icon_tooltip_markup (Int() $icon_pos)
+    is also<get-icon-tooltip-markup>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
 
     gtk_entry_get_icon_tooltip_markup($!gtk-e, $icon_pos);
   }
 
-  method get_icon_tooltip_text (Int() $icon_pos) is also<get-icon-tooltip-text> {
+  method get_icon_tooltip_text (Int() $icon_pos)
+    is also<get-icon-tooltip-text>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
 
     gtk_entry_get_icon_tooltip_text($!gtk-e, $icon_pos);
@@ -892,7 +979,9 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_reset_im_context($!gtk-e);
   }
 
-  method set_activates_default (Int() $setting) is also<set-activates-default> {
+  method set_activates_default (Int() $setting)
+    is also<set-activates-default>
+  {
     my gboolean $s = $setting.so.Int;
 
     gtk_entry_set_activates_default($!gtk-e, $s);
@@ -912,7 +1001,9 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_set_buffer($!gtk-e, $buffer);
   }
 
-  method set_completion (GtkEntryCompletion() $completion) is also<set-completion> {
+  method set_completion (GtkEntryCompletion() $completion)
+    is also<set-completion>
+  {
     gtk_entry_set_completion($!gtk-e, $completion);
   }
 
@@ -926,7 +1017,9 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_set_has_frame($!gtk-e, $s);
   }
 
-  method set_icon_activatable (Int() $icon_pos, Int() $activatable) is also<set-icon-activatable> {
+  method set_icon_activatable (Int() $icon_pos, Int() $activatable)
+    is also<set-icon-activatable>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
     my gboolean             $a = $activatable;
 
@@ -946,13 +1039,17 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_set_icon_drag_source($!gtk-e, $i, $provider, $a);
   }
 
-  method set_icon_from_gicon (Int() $icon_pos, GIcon() $icon) is also<set-icon-from-gicon> {
+  method set_icon_from_gicon (Int() $icon_pos, GIcon() $icon)
+    is also<set-icon-from-gicon>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
 
     gtk_entry_set_icon_from_gicon($!gtk-e, $i, $icon);
   }
 
-  method set_icon_from_icon_name (Int() $icon_pos, Str() $icon_name) is also<set-icon-from-icon-name> {
+  method set_icon_from_icon_name (Int() $icon_pos, Str() $icon_name)
+    is also<set-icon-from-icon-name>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
 
     gtk_entry_set_icon_from_icon_name($!gtk-e, $i, $icon_name);
@@ -969,7 +1066,9 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_set_icon_from_paintable($!gtk-e, $i, $paintable);
   }
 
-  method set_icon_sensitive (Int() $icon_pos, Int() $sensitive) is also<set-icon-sensitive> {
+  method set_icon_sensitive (Int() $icon_pos, Int() $sensitive)
+    is also<set-icon-sensitive>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
     my gboolean             $s = $sensitive.so.Int;
 
@@ -986,7 +1085,9 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_set_icon_tooltip_markup($!gtk-e, $i, $tooltip);
   }
 
-  method set_icon_tooltip_text (Int() $icon_pos, Str() $tooltip) is also<set-icon-tooltip-text> {
+  method set_icon_tooltip_text (Int() $icon_pos, Str() $tooltip)
+    is also<set-icon-tooltip-text>
+  {
     my GtkEntryIconPosition $i = $icon_pos;
 
     gtk_entry_set_icon_tooltip_text($!gtk-e, $i, $tooltip);
@@ -1026,13 +1127,17 @@ class GTK::Entry:ver<4> is GTK::Widget:ver<4> {
     gtk_entry_set_placeholder_text($!gtk-e, $text);
   }
 
-  method set_progress_fraction (Num() $fraction) is also<set-progress-fraction> {
+  method set_progress_fraction (Num() $fraction)
+    is also<set-progress-fraction>
+  {
     my gdouble $f = $fraction;
 
     gtk_entry_set_progress_fraction($!gtk-e, $f);
   }
 
-  method set_progress_pulse_step (Num() $fraction) is also<set-progress-pulse-step> {
+  method set_progress_pulse_step (Num() $fraction)
+    is also<set-progress-pulse-step>
+  {
     my gdouble $f = $fraction;
 
     gtk_entry_set_progress_pulse_step($!gtk-e, $f);

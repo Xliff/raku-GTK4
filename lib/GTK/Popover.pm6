@@ -327,6 +327,7 @@ class GTK::Popover:ver<4> is GTK::Widget:ver<4> {
   }
 
   method set_child (GtkWidget() $child) is also<set-child> {
+    @!children[0] = $child;
     gtk_popover_set_child($!gtk-pop, $child);
   }
 

@@ -155,6 +155,7 @@ class GTK::Box:ver<4> is GTK::Widget {
         ?? $child.hexpand
         !! $child.vexpand ) = True;
     }
+    @!children.unshift($child);
 
     self.prepend($child);
   }
@@ -172,6 +173,7 @@ class GTK::Box:ver<4> is GTK::Widget {
         ?? $child.hexpand
         !! $child.vexpand ) = True;
     }
+    @!children.push($child);
 
     self.append($child);
   }
@@ -186,6 +188,7 @@ class GTK::Box:ver<4> is GTK::Widget {
   multi method append ($child is copy) {
      $child = $child.GtkWidget if $child.^can('GtkWidget');
     gtk_box_append($!gtk-box, $child);
+    @!children.push($chilkd);
   }
 
   method get_baseline_position ( :$enum = True )
@@ -214,6 +217,7 @@ class GTK::Box:ver<4> is GTK::Widget {
     is also<insert-child-after>
   {
     gtk_box_insert_child_after($!gtk-box, $child, $sibling);
+    @!children.&arrayInsert($child, after => $sibling);
   }
 
   multi method prepend (@children) {
@@ -224,10 +228,12 @@ class GTK::Box:ver<4> is GTK::Widget {
   }
   multi method prepend (GtkWidget() $child) {
     gtk_box_prepend($!gtk-box, $child);
+    @!children.unshift($child);
   }
 
   method remove (GtkWidget() $child) {
     gtk_box_remove($!gtk-box, $child);
+    @!childred.&arrayDelete(item => $child);
   }
 
   method reorder_child_after (GtkWidget() $child, GtkWidget() $sibling)

@@ -13,6 +13,8 @@ use GLib::Roles::Object;
 role GTK::Roles::Buildable:ver<4> {
   has GtkBuildable $!gtk-b is implementor;
 
+  has @!children;
+
   method roleInit-GtkBuildable is also<roleInit_GtkBuildable> {
     return if $!gtk-b;
 
@@ -39,6 +41,45 @@ role GTK::Roles::Buildable:ver<4> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_buildable_get_type, $n, $t );
+  }
+
+  method addBuildableChild (GLib::Roles::Object $w) {
+    @!children.push: $w;
+  }
+
+  method toBuilderString ($i = 0) {
+    my $children = '';
+    if +@!children {
+      $children = "\n" ~ @!children.map({
+        next unless $_;
+        .toBuilderString($i++)
+      }).join("\n").&indent($i.succ * 2);
+    }
+
+    my @properties = gather for self.listProperties {
+      my $p = self."$_"();
+      return unless $p;
+      take [~](
+        $p ~~ Str ?? "<property name=\"{ $_ }\" translatable=\"yes\">"
+                  !! "<property name=\"{ $_ }\">",
+        "{ $p }</property>"
+      );
+    }
+
+    my $intro = '';
+    $intro = q«<?xml version="1.0" encoding="UTF-8"?>\n<interface>» unless $i;
+
+    my $outtro = '';
+    $outtro = "\n</interface>";
+
+    qq:to/OBJECT/;
+      { $intro
+      }<object class="{ self.getClass.name }">
+        { @properties.join("\n").&indent($i.succ * 2) }{
+          $children }
+      </object>{
+      $outtro }
+      OBJECT
   }
 
 }

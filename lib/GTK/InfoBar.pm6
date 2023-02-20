@@ -148,6 +148,7 @@ class GTK::InfoBar:ver<4> is GTK::Widget:ver<4> {
   {
     my gint $r = $response_id;
 
+    @!children.push:$child;
     gtk_info_bar_add_action_widget($!gtk-info, $child, $r);
   }
 
@@ -156,6 +157,7 @@ class GTK::InfoBar:ver<4> is GTK::Widget:ver<4> {
   {
     my gint $r = $response_id;
 
+    @!children.push: $child;
     gtk_info_bar_add_button($!gtk-info, $button_text, $r);
   }
 
@@ -178,6 +180,7 @@ class GTK::InfoBar:ver<4> is GTK::Widget:ver<4> {
   }
 
   method add_child (GtkWidget() $widget) is also<add-child> {
+    @!children.push: $child;
     gtk_info_bar_add_child($!gtk-info, $widget);
   }
 
@@ -204,10 +207,12 @@ class GTK::InfoBar:ver<4> is GTK::Widget:ver<4> {
   method remove_action_widget (GtkWidget() $widget)
     is also<remove-action-widget>
   {
+    @!children.arrayDelete( item => $widget );
     gtk_info_bar_remove_action_widget($!gtk-info, $widget);
   }
 
   method remove_child (GtkWidget() $widget) is also<remove-child> {
+    @!children.arrayDelete( item => $widget );
     gtk_info_bar_remove_child($!gtk-info, $widget);
   }
 

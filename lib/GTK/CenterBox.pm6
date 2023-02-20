@@ -246,14 +246,17 @@ class GTK::CenterBox is GTK::Widget:ver<4> {
 
   method set_center_widget (GtkWidget() $child) is also<set-center-widget> {
     gtk_center_box_set_center_widget($!gtk-c, $child);
+    @!children[1] = $child;
   }
 
   method set_end_widget (GtkWidget() $child) is also<set-end-widget> {
     gtk_center_box_set_end_widget($!gtk-c, $child);
+    @!children[2] = $child;
   }
 
   method set_start_widget (GtkWidget() $child) is also<set-start-widget> {
     gtk_center_box_set_start_widget($!gtk-c, $child);
+    @!children[0] = $child;
   }
 
 }

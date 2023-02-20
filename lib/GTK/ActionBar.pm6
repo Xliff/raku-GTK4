@@ -102,14 +102,17 @@ class GTK::ActionBar:ver<4> is GTK::Widget:ver<4> {
 
   method pack_end (GtkWidget() $child) is also<pack-end> {
     gtk_action_bar_pack_end($!gtk-ab, $child);
+    @!children.push($child);
   }
 
   method pack_start (GtkWidget() $child) is also<pack-start> {
     gtk_action_bar_pack_start($!gtk-ab, $child);
+    @!children.unshift($child);
   }
 
   method remove (GtkWidget() $child) {
     gtk_action_bar_remove($!gtk-ab, $child);
+    @!children .= grep({ +$_ != +$child });
   }
 
   method set_center_widget (GtkWidget() $center_widget)

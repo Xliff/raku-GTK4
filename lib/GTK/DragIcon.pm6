@@ -116,6 +116,7 @@ class GTK::DragIcon is GTK::Widget:ver<4> {
   }
 
   method set_child (GtkWidget() $child) is also<set-child> {
+    @!children.push: $child;
     gtk_drag_icon_set_child($!gtk-d-icon, $child);
   }
 

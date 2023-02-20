@@ -126,6 +126,7 @@ class GTK::Overlay is GTK::Widget {
   }
 
   method set_child (GtkWidget() $child) is also<set-child> {
+    @!children[0] = $child;
     gtk_overlay_set_child($!gtk-o, $child);
   }
 
