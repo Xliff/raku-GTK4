@@ -15,7 +15,7 @@ use GTK::Roles::Scrollable:ver<4>;
 our subset GtkListBaseAncestry is export of Mu
   where GtkListBase | GtkOrientable | GtkScrollable | GtkWidgetAncestry;
 
-class GTK::ListBase:ver<4> is GTK::Widget:ver<4> {
+class GTK::List::Base:ver<4> is GTK::Widget:ver<4> {
   also does GTK::Roles::Orientable;
   also does GTK::Roles::Scrollable;
 
@@ -48,7 +48,11 @@ class GTK::ListBase:ver<4> is GTK::Widget:ver<4> {
     is also<GtkListBase>
   { $!gtk-lb }
 
-  multi method new ($gtk-list-base where * ~~ GtkListBaseAncestry , :$ref = True) {
+  multi method new (
+    $gtk-list-base where * ~~ GtkListBaseAncestry,
+
+    :$ref = True
+  ) {
     return unless $gtk-list-base;
 
     my $o = self.bless( :$gtk-list-base );
@@ -68,7 +72,7 @@ BEGIN {
   use JSON::Fast;
 
   my %widgets;
-  my \O = GTK::ListBase;
+  my \O = GTK::List::Base;
   my \P = O.getTypePair;
   given "widget-types.json".IO.open( :rw ) {
     .lock;
@@ -81,7 +85,7 @@ BEGIN {
 }
 
 INIT {
-  my \O = GTK::ListBase;
+  my \O = GTK::List::Base;
   %widget-types{O.get_type} = {
     name        => O.^name,
     object      => O,
