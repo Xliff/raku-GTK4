@@ -19,8 +19,7 @@ class GTK::Layout::Grid:ver<4> is GTK::LayoutManager:ver<4> {
   has GtkGridLayout $!gtk-gl is implementor;
 
   submethod BUILD ( :$gtk-grid-layout ) {
-    self.setGtkGridLayout($gtk-grid-layout)
-      if $gtk-grid-layout
+    self.setGtkGridLayout($gtk-grid-layout) if $gtk-grid-layout
   }
 
   method setGtkGridLayout (GtkGridLayoutAncestry $_) {
