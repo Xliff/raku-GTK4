@@ -43,10 +43,6 @@ role GTK::Roles::Buildable:ver<4> {
     unstable_get_type( self.^name, &gtk_buildable_get_type, $n, $t );
   }
 
-  method addBuildableChild (GLib::Roles::Object $w) {
-    @!children.push: $w;
-  }
-
   method toBuilderString ($i = 0) {
     my $children = '';
     if +@!children {
@@ -80,6 +76,30 @@ role GTK::Roles::Buildable:ver<4> {
       </object>{
       $outtro }
       OBJECT
+  }
+
+  method addBuildableChild (GTK::Widget $child) {
+    @!children.push: $child;
+  }
+
+  method indexOfBuildableChild (GTK::Widget $child) {
+    @!children.first( +* == +$child, :k );
+  }
+
+  method removeBuildableChild (GTK::Widget $child) {
+    @!children.splice( self.indexOfBuildableChild($child), 1 );
+  }
+
+  method insertBuildableChild (GTK::Widget $child, Int() $pos) {
+    @!children.splice($pos, 1, $child);
+  }
+
+  method prependBuildableChild (GTK::Widget $child) {
+    @!children.unshift($child);
+  }
+
+  method reorderBuildableChild (GTK::Widget $child, Int() $pos) {
+    self.insertBuildableChild(self.removeBuildableChild($child), $pos);
   }
 
 }
