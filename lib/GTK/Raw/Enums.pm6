@@ -1,7 +1,14 @@
 use v6.c;
 
+use NativeCall;
+use Method::Also;
+
 use GLib::Raw::Definitions;
 use GLib::Raw::Enums;
+use GLib::Raw::Subs;
+use GTK::Raw::Definitions;
+
+use GLib::Roles::StaticClass;
 
 unit package GTK::Raw::Enums:ver<4>;
 
@@ -1305,6 +1312,22 @@ our enum GtkLicenseEnum is export <
   GTK_LICENSE_MPL_2_0
 >;
 
+sub gtk_license_get_type
+  returns GType
+  is export
+  is native(gtk4)
+{ * }
+
+class GTK::License {
+  also does GLib::Roles::StaticClass;
+
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_license_get_type, $n, $t );
+  }
+}
+
 constant GtkMenuTrackerItemRole is export := guint32;
 our enum GtkMenuTrackerItemRoleEnum is export <
   GTK_MENU_TRACKER_ITEM_ROLE_NORMAL
@@ -1372,6 +1395,22 @@ our enum GtkOrientationEnum is export <
   GTK_ORIENTATION_HORIZONTAL
   GTK_ORIENTATION_VERTICAL
 >;
+
+sub gtk_orientation_get_type
+  returns GType
+  is native(gtk4)
+  is export
+{ * }
+
+class GTK::Orientation is export {
+  also does GLib::Roles::StaticClass;
+
+  method get_type is also<get-type> {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_orientation_get_type, $n, $t );
+  }
+}
 
 constant GtkOverflow is export := guint32;
 our enum GtkOverflowEnum is export <
