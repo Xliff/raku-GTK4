@@ -54,10 +54,12 @@ class GTK::Label:ver<4> is GTK::Widget {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Str() $label = Str) {
+  multi method new (Str() $label = Str, *%a) {
     my $gtk-label = gtk_label_new($label);
 
-    $gtk-label ?? self.bless( :$gtk-label ) !! Nil;
+    my $o = $gtk-label ?? self.bless( :$gtk-label ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   method new_with_mnemonic (Str() $label = Str) is also<new-with-mnemonic> {

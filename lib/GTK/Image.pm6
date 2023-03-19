@@ -60,10 +60,12 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new (*%a) {
     my $gtk-image = gtk_image_new();
 
-    $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
+    my $o = $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   method new_from_file (Str() $filename) is also<new-from-file> {

@@ -9,6 +9,7 @@ use GTK::Raw::Stack:ver<4>;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Object;
+use GTK::Roles::SelectionModel:ver<4>;
 
 our subset GtkStackAncestry is export of Mu
   where GtkStack | GtkWidgetAncestry;
@@ -52,10 +53,12 @@ class GTK::Stack:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-stack = gtk_stack_new();
 
-    $gtk-stack ?? self.bless( :$gtk-stack ) !! Nil;
+    my $o = $gtk-stack ?? self.bless( :$gtk-stack ) !! Nil;
+    $o.setAttributes(%a);
+    $o;
   }
 
   # Type: boolean
@@ -132,12 +135,16 @@ class GTK::Stack:ver<4> is GTK::Widget:ver<4> {
   }
 
   # Type: GtkSelectionModel
-  method pages is rw  is g-property {
-    my $gv = GLib::Value.new( GtkSelectionModel );
+  method pages ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new( GTK::Selection::Model.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('pages', $gv);
-        $gv.GtkSelectionModel;
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GTK::Selection::Model.getTypePair
+        );
       },
       STORE => -> $,  $val is copy {
         warn 'pages does not allow writing'
@@ -302,8 +309,12 @@ class GTK::Stack:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
-  method get_pages is also<get-pages> {
-    gtk_stack_get_pages($!gtk-stack);
+  method get_pages ( :$raw = False ) is also<get-pages> {
+    propReturnObject(
+      gtk_stack_get_pages($!gtk-stack),
+      $raw,
+      |GTK::Selection::Model.getTypePair
+    );
   }
 
   method get_transition_duration is also<get-transition-duration> {
@@ -348,41 +359,55 @@ class GTK::Stack:ver<4> is GTK::Widget:ver<4> {
     gtk_stack_set_hhomogeneous($!gtk-stack, $h);
   }
 
-  method set_interpolate_size (Int() $interpolate_size) is also<set-interpolate-size> {
+  method set_interpolate_size (Int() $interpolate_size)
+    is also<set-interpolate-size>
+  {
     my gboolean $i = $interpolate_size.so.Int;
 
     gtk_stack_set_interpolate_size($!gtk-stack, $i);
   }
 
-  method set_transition_duration (Int() $duration) is also<set-transition-duration> {
+  method set_transition_duration (Int() $duration)
+    is also<set-transition-duration>
+  {
     my guint $d = $duration;
 
     gtk_stack_set_transition_duration($!gtk-stack, $d);
   }
 
-  method set_transition_type (Int() $transition) is also<set-transition-type> {
+  method set_transition_type (Int() $transition)
+    is also<set-transition-type>
+  {
     my GtkStackTransitionType $t = $transition;
 
     gtk_stack_set_transition_type($!gtk-stack, $t);
   }
 
-  method set_vhomogeneous (Int() $vhomogeneous) is also<set-vhomogeneous> {
+  method set_vhomogeneous (Int() $vhomogeneous)
+    is also<set-vhomogeneous>
+  {
     my gboolean $v = $vhomogeneous.so.Int;
 
     gtk_stack_set_vhomogeneous($!gtk-stack, $v);
   }
 
-  method set_visible_child (GtkWidget() $child) is also<set-visible-child> {
+  method set_visible_child (GtkWidget() $child)
+    is also<set-visible-child>
+  {
     gtk_stack_set_visible_child($!gtk-stack, $child);
   }
 
-  method set_visible_child_full (Str() $name, Int() $transition) is also<set-visible-child-full> {
+  method set_visible_child_full (Str() $name, Int() $transition)
+    is also<set-visible-child-full>
+  {
     my GtkStackTransitionType $t = $transition;
 
     gtk_stack_set_visible_child_full($!gtk-stack, $name, $t);
   }
 
-  method set_visible_child_name (Str() $name) is also<set-visible-child-name> {
+  method set_visible_child_name (Str() $name)
+    is also<set-visible-child-name>
+  {
     gtk_stack_set_visible_child_name($!gtk-stack, $name);
   }
 
@@ -422,7 +447,7 @@ class GTK::Stack::Page:ver<4> {
     is also<GtkStackPage>
   { $!gtk-stack-page }
 
-  method new (
+  multi method new (
      $gtk-stack-page where * ~~ GtkStackPageAncestry,
 
     :$ref = True
@@ -433,6 +458,13 @@ class GTK::Stack::Page:ver<4> {
     $o.ref if $ref;
     $o;
   }
+  multi method new ( *%a ) {
+    my $gtk-stack-page = GLib::Object.new-object-ptr( ::?CLASS.get_type );
+
+    my $o = $gtk-stack-page ?? self.bless( :$gtk-stack-page ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
+ }
 
   # Type: GtkWidget
   method child (
@@ -603,12 +635,16 @@ BEGIN {
   for GTK::Stack, GTK::Stack::Page -> \O {
     my \P = O.getTypePair;
     given "widget-types.json".IO.open( :rw ) {
-      .lock;
-      %widgets = from-json( .slurp );
-      %widgets{ P.head.^shortname } = P.tail.^name;
-      .seek(0, SeekFromBeginning);
-      .spurt: to-json(%widgets);
-      .close;
+      if .slurp -> $j {
+        if +$j.lines {
+          .lock;
+          %widgets = from-json( $j );
+          %widgets{ P.head.^shortname } = P.tail.^name;
+          .seek(0, SeekFromBeginning);
+          .spurt: to-json(%widgets);
+          .close;
+        }
+      }
     }
   }
 }

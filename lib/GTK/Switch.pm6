@@ -52,10 +52,12 @@ class GTK::Switch:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-switch = gtk_switch_new();
 
-    $gtk-switch ?? self.bless( :$gtk-switch ) !! Nil;
+    my $o = $gtk-switch ?? self.bless( :$gtk-switch ) !! Nil;
+    $o.setAttributes(%a);
+    $o;
   }
 
   # Type: boolean
@@ -131,12 +133,16 @@ BEGIN {
   my \O = GTK::Switch;
   my \P = O.getTypePair;
   given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
+    if .slurp -> $j {
+      if +$j.lines {
+        .lock;
+        %widgets = from-json( $j );
+        %widgets{ P.head.^shortname } = P.tail.^name;
+        .seek(0, SeekFromBeginning);
+        .spurt: to-json(%widgets);
+        .close;
+      }
+    }
   }
 }
 

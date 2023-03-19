@@ -50,10 +50,12 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-grid = gtk_grid_new();
 
-    $gtk-grid ?? self.bless( :$gtk-grid ) !! Nil;
+    my $o = $gtk-grid ?? self.bless( :$gtk-grid ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: int
@@ -130,6 +132,33 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
       }
     );
   }
+
+  method spacing is rw {
+    Proxy.new:
+      FETCH => sub ($)  { min(self.row-spacing, self.column-spacing) },
+
+      STORE => -> $, $_ {
+        (self.row-spacing, self.column-spacing) = do {
+          when Array {
+            when .elems == 0 { 0     xx 2 }
+            when .elems == 1 { .head xx 2 }
+
+            default {
+              warn "Only using first two elements to set spacing!";
+              $_;
+            }
+          }
+
+          when Int { $_ xx 2 }
+
+          default {
+            die "Do not know how to handle { .^name } when setting spacing!";
+          }
+        }
+      }
+  }
+
+
 
   multi method attach (
     GtkWidget()     $child,

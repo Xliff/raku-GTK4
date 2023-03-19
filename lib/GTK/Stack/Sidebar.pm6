@@ -41,6 +41,9 @@ class GTK::Stack::Sidebar:ver<4> is GTK::Widget:ver<4> {
     is also<GtkStackSidebar>
   { $!gtk-ssb }
 
+  proto method new (|)
+  { * }
+
   multi method new (
      $gtk-stack-sidebar where * ~~ GtkStackSidebarAncestry,
 
@@ -52,10 +55,12 @@ class GTK::Stack::Sidebar:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-stack-sidebar = gtk_stack_sidebar_new();
 
-    $gtk-stack-sidebar ?? self.bless( :$gtk-stack-sidebar ) !! Nil;
+    my $o = $gtk-stack-sidebar ?? self.bless( :$gtk-stack-sidebar ) !! Nil;
+    $o.setAttributes(%a);
+    $o;
   }
 
   method stack ( :$raw = False ) is rw is g-property {

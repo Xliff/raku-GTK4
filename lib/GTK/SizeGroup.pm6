@@ -12,10 +12,11 @@ use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
 our subset GtkSizeGroupAncestry is export of Mu
-  where GtkSizeGroup | GObject;
+  where GtkSizeGroup | GtkBuildable | GObject;
 
 class GTK::SizeGroup:ver<4> {
   also does GLib::Roles::Object;
+  also does GTK::Roles::Buildable;
 
   has GtkSizeGroup $!gtk-sg is implementor;
 
@@ -32,12 +33,19 @@ class GTK::SizeGroup:ver<4> {
         $_;
       }
 
+      when GtkBuildable {
+        $to-parent = cast(GObject, $_);
+        $gtk-b     = $_;
+        cast(GtkSizeGroup, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkSizeGroup, $_);
       }
     }
     self!setObject($to-parent);
+    self.roleInit-GtkBuildable;
   }
 
   method GTK::Raw::Definitions::GtkSizeGroup
@@ -51,12 +59,14 @@ class GTK::SizeGroup:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Int() $mode) {
+  multi method new (Int() $mode, *%a) {
     my GtkSizeGroupMode $m = $mode;
 
     my $gtk-size-group = gtk_size_group_new($m);
 
-    $gtk-size-group ?? self.bless( :$gtk-size-group ) !! Nil;
+    my $o = $gtk-size-group ?? self.bless( :$gtk-size-group ) !! Nil;
+    $o.setAtributes(%a);
+    $o;
   }
 
   # Type: GTKSizeGroupMode
@@ -76,7 +86,13 @@ class GTK::SizeGroup:ver<4> {
     );
   }
 
-  method add_widget (GtkWidget()  $widget) is also<add-widget> {
+  method add_widget (GtkWidget() $widget)
+    is also<
+      add-widget
+      add
+    >
+  {
+    #self.addBuildableChild($widget)
     gtk_size_group_add_widget($!gtk-sg, $widget);
   }
 
@@ -107,7 +123,13 @@ class GTK::SizeGroup:ver<4> {
     $wl.map({ returnProperWidget($_, $raw, $proper) });
   }
 
-  method remove_widget (GtkWidget() $widget) is also<remove-widget> {
+  method remove_widget (GtkWidget() $widget)
+    is also<
+      remove-widget
+      remove
+    >
+  {
+    #self.removeBuildableChild($widget);
     gtk_size_group_remove_widget($!gtk-sg, $widget);
   }
 

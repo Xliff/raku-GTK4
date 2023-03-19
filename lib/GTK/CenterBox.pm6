@@ -10,11 +10,14 @@ use GLib::Value;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
+use GTK::Roles::Orientable;
 
 our subset GtkCenterBoxAncestry is export of Mu
-  where GtkCenterBox | GtkWidgetAncestry;
+  where GtkCenterBox | GtkOrientable | GtkWidgetAncestry;
 
 class GTK::CenterBox is GTK::Widget:ver<4> {
+  also does GTK::Roles::Orientable;
+
   has GtkCenterBox $!gtk-c is implementor;
 
   submethod BUILD ( :$gtk-center-box ) {
@@ -30,12 +33,19 @@ class GTK::CenterBox is GTK::Widget:ver<4> {
         $_;
       }
 
+      when GtkOrientable {
+        $to-parent = cast(GtkWidget, $_);
+        $!gtk-o    = $_;
+        cast(GtkCenterBox, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkCenterBox, $_);
       }
     }
     self.setGtkWidget($to-parent);
+    self.roleInit-GtkOrientable;
   }
 
   method GTK::Raw::Definitions::GtkCenterBox
@@ -53,10 +63,12 @@ class GTK::CenterBox is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-center-box = gtk_center_box_new();
 
-    $gtk-center-box ?? self.bless( :$gtk-center-box ) !! Nil;
+    my $o = $gtk-center-box ?? self.bless( :$gtk-center-box ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: GtkBaselinePosition
@@ -88,8 +100,10 @@ class GTK::CenterBox is GTK::Widget:ver<4> {
   )
     is rw
     is g-property
-
-    is also<center_widget>
+    is also<
+      center_widget
+      center
+    >
   {
     my $gv = GLib::Value.new( GTK::Widget.get_type );
     Proxy.new(
@@ -114,8 +128,10 @@ class GTK::CenterBox is GTK::Widget:ver<4> {
   )
     is rw
     is g-property
-
-    is also<end_widget>
+    is also<
+      end_widget
+      end
+    >
   {
     my $gv = GLib::Value.new( GTK::Widget.get_type );
     Proxy.new(
@@ -141,7 +157,10 @@ class GTK::CenterBox is GTK::Widget:ver<4> {
     is rw
     is g-property
 
-    is also<start_widget>
+    is also<
+      start_widget
+      start
+    >
   {
     my $gv = GLib::Value.new( GTK::Widget.get_type );
     Proxy.new(
@@ -266,7 +285,9 @@ BEGIN {
   my \P = O.getTypePair;
   given "widget-types.json".IO.open( :rw ) {
     .lock;
-    %widgets = from-json( .slurp );
+    if .slurp -> $j {
+      %widgets = try from-json($j) if +$j.lines;
+    }
     %widgets{ P.head.^shortname } = P.tail;
     .seek(0, SeekFromBeginning);
     .spurt: to-json(%widgets);

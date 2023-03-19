@@ -35,6 +35,7 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
         cast(GtkScrolledWindow, $_);
       }
     }
+
     self.setGtkWindow($to-parent);
   }
 
@@ -52,10 +53,13 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-scrolled-window = gtk_scrolled_window_new();
 
-    $gtk-scrolled-window ?? self.bless( :$gtk-scrolled-window ) !! Nil;
+    my $o = $gtk-scrolled-window ?? self.bless( :$gtk-scrolled-window )
+                                 !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: GTKAdjustment
@@ -171,6 +175,18 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
       STORE => -> $, \v { self.set_policy(v) }
   }
 
+  method hscrollbar-policy is also<hscrollbar_policy> is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get_policy[0]    },
+      STORE => -> $, \v { self.set_policy( v, self.get_policy[1] ) }
+  }
+
+  method vscrollbar-policy is also<vscrollbar_policy> is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get_policy[1]    },
+      STORE => -> $, \v { self.set_policy( self.get_policy[0], v ) }
+  }
+
   method propagate_natural_height
     is also<propagate-natural-height>
     is rw
@@ -261,12 +277,22 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
     gtk_scrolled_window_get_placement($!gtk-sw);
   }
 
-  method get_policy (Int() $hscrollbar_policy, Int() $vscrollbar_policy)
+  proto method get_policy (|)
+  { * }
+
+  multi method get_policy {
+    samewith($, $);
+  }
+  multi method get_policy (
+    $hscrollbar_policy is rw,
+    $vscrollbar_policy is rw
+  )
     is also<get-policy>
   {
-    my GtkPolicyType ($hp, $vp) = ($hscrollbar_policy, $vscrollbar_policy);
+    my GtkPolicyType ($hp, $vp) = 0 xx 2;
 
     gtk_scrolled_window_get_policy($!gtk-sw, $hp, $vp);
+    ($hscrollbar_policy, $vscrollbar_policy) = ($hp, $vp);
   }
 
   method get_propagate_natural_height is also<get-propagate-natural-height> {
@@ -331,7 +357,13 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
       }
   }
 
-  method set_child (GtkWidget() $child) is also<set-child> {
+  method set_child (GtkWidget() $child)
+    is also<
+      set-child
+      add_child
+      add-child
+    >
+  {
     gtk_scrolled_window_set_child($!gtk-sw, $child);
   }
 
@@ -434,19 +466,7 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
 }
 
 BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::ScrolledWindow;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
+  writeTypeToManifest(GTK::ScrolledWindow, $?FILE);
 }
 
 INIT {

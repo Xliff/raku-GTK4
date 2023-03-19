@@ -68,13 +68,12 @@ class GTK::Adjustment:ver<4> {
 
     $gtk-adjustment ?? self.bless( :$gtk-adjustment ) !! Nil;
   }
-  multi method new (
-            $range where { $_ ~~ Range || .^can('Range') },
-            :v(:$value)              =  $range.min,
-            :step_increment(:$step)  = ($range.max - $range.min) / 20,
-            :page_increment(:$page)  = ($range.max - $range.min) / 4
-  ) {
-    samewith($value, $range.min, $range.max, $step, $page)
+  multi method new ( *%a ) {
+    my $gtk-adjustment = ::?CLASS.new-object-ptr( ::?CLASS.get_type );
+
+    my $o = $gtk-adjustment ?? self.bless( :$gtk-adjustment ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: double
@@ -173,8 +172,10 @@ class GTK::Adjustment:ver<4> {
         $gv.double;
       },
       STORE => -> $, Num() $val is copy {
+        say "Adjustment value: { $val }";
         $gv.double = $val;
         self.prop_set('value', $gv);
+        say "Value confirmation: { self.value }";
       }
     );
   }
@@ -308,8 +309,9 @@ BEGIN {
   my \P = O.getTypePair;
   given "widget-types.json".IO.open( :rw ) {
     .lock;
-    my $existing = .slurp;
-    %widgets = try from-json($existing) if $existing.chars;
+    if .slurp -> $j {
+      %widgets = try from-json($j) if +$j.lines;
+    }
     %widgets{ P.head.^shortname } = P.tail.^name;
     .seek(0, SeekFromBeginning);
     .spurt: to-json(%widgets);

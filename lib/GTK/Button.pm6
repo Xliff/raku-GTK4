@@ -46,28 +46,56 @@ class GTK::Button:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
-    my $gtk-button = gtk_button_new();
+  multi method new ( *%a ) {
+    my $gtk-button = do {
+      given %a<label> {
+        when .defined {
+          my $l = %a<label>:delete;
 
-    $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
+          when $l.contains('_') {
+            return ::?CLASS.new_with_mnemonic($l, |%a);
+          }
+
+          default {
+            return ::?CLASS.new_with_label($l, |%a);
+          }
+        }
+
+        default {
+          gtk_button_new()
+        }
+      }
+    }
+
+    my $o = $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_from_icon_name (Str() $icon_name) is also<new-from-icon-name> {
+  method new_from_icon_name (Str() $icon_name, *%a)
+    is also<new-from-icon-name>
+  {
     my $gtk-button = gtk_button_new_from_icon_name($icon_name);
 
-    $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
+    my $o = $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_with_label (Str() $label) is also<new-with-label> {
+  method new_with_label (Str() $label, *%a) is also<new-with-label> {
     my $gtk-button = gtk_button_new_with_label($label);
 
-    $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
+    my $o = $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_with_mnemonic (Str() $label) is also<new-with-mnemonic> {
+  method new_with_mnemonic (Str() $label, *%a) is also<new-with-mnemonic> {
     my $gtk-button = gtk_button_new_with_mnemonic($label);
 
-    $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
+    my $o = $gtk-button ?? self.bless( :$gtk-button ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   proto method new_buttons (|)
@@ -164,6 +192,7 @@ class GTK::Button:ver<4> is GTK::Widget:ver<4> {
         );
       },
       STORE => -> $, GtkWidget() $val is copy {
+        #self.setBuildableChild(0, $val);
         $gv.object = $val;
         self.prop_set('child', $gv);
       }
@@ -179,7 +208,12 @@ class GTK::Button:ver<4> is GTK::Widget:ver<4> {
   }
 
   # cw: Backwards compatibility
-  method add (GtkWidget() $child) {
+  method add (GtkWidget() $child)
+    is also<
+      add-child
+      add_child
+    >
+  {
     self.child = $child;
   }
 
@@ -219,7 +253,12 @@ class GTK::Button:ver<4> is GTK::Widget:ver<4> {
     so gtk_button_get_use_underline($!gtk-b);
   }
 
+  method unsetChild {
+    self.set_child(GtkWidget);
+  }
+
   method set_child (GtkWidget() $child) is also<set-child> {
+    #self.setBuildableChild(0, $child)
     gtk_button_set_child($!gtk-b, $child);
   }
 
@@ -248,20 +287,7 @@ class GTK::Button:ver<4> is GTK::Widget:ver<4> {
 }
 
 BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Button;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    my $existing = .slurp;
-    %widgets = try from-json($existing) if $existing.chars;
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
+  writeTypeToManifest( GTK::Button );
 }
 
 INIT {

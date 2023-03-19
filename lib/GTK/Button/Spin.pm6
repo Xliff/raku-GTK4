@@ -123,6 +123,13 @@ class GTK::Button::Spin:ver<4> is GTK::Widget:ver<4> {
                                !! GTK_ORIENTATION_HORIZONTAL;
     $o;
   }
+  multi method new (*%a) {
+    my $gtk-spin-button = ::?CLASS.new-object-ptr( ::?CLASS.get_type );
+
+    my $o = $gtk-spin-button ?? self.bless( :$gtk-spin-button ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
+  }
   multi method new (|c) {
     die "Invalid arguments { |c.gist }";
   }
@@ -455,20 +462,7 @@ class GTK::Button::Spin:ver<4> is GTK::Widget:ver<4> {
 }
 
 BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Button::Spin;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    my $existing = .slurp;
-    %widgets = try from-json($existing) if $existing.chars;
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
+  writeTypeToManifest(GTK::Button::Spin);
 }
 
 INIT {

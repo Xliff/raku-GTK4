@@ -52,10 +52,12 @@ class GTK::Button::Toggle:ver<4> is GTK::Button:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-toggle-button = gtk_toggle_button_new();
 
-    $gtk-toggle-button ?? self.bless( :$gtk-toggle-button ) !! Nil;
+    my $o = $gtk-toggle-button ?? self.bless( :$gtk-toggle-button ) !! Nil;
+    $o.setAttributes(%a);
+    $o;
   }
 
   method new_with_label (Str() $label) is also<new-with-label> {
@@ -87,14 +89,14 @@ class GTK::Button::Toggle:ver<4> is GTK::Button:ver<4> {
 
   # Type: GtkToggleButton
   method group is rw  is g-property {
-    my $gv = GLib::Value.new( GtkToggleButton );
+    my $gv = GLib::Value.new( self.get_type );
     Proxy.new(
       FETCH => sub ($) {
         warn 'group does not allow reading' if $DEBUG;
         0;
       },
-      STORE => -> $,  $val is copy {
-        $gv.GtkToggleButton = $val;
+      STORE => -> $, GtkToggleButton() $val is copy {
+        $gv.object = $val;
         self.prop_set('group', $gv);
       }
     );
@@ -138,7 +140,9 @@ BEGIN {
   my \P = O.getTypePair;
   given "widget-types.json".IO.open( :rw ) {
     .lock;
-    %widgets = from-json( .slurp );
+    if .slurp -> $j {
+      %widgets = try from-json($j) if +$j.lines;
+    }
     %widgets{ P.head.^shortname } = P.tail.^name;
     .seek(0, SeekFromBeginning);
     .spurt: to-json(%widgets);

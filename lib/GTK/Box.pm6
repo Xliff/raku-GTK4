@@ -62,33 +62,38 @@ class GTK::Box:ver<4> is GTK::Widget {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Int() $orientation, Int() $spacing = 0) {
+  multi method new (Int() $orientation, Int() $spacing = 0, *%a) {
     my GtkOrientation $o = $orientation;
     my gint           $s = $spacing;
 
     my $gtk-box = gtk_box_new($o, $s);
 
-    $gtk-box ?? self.bless( :$gtk-box ) !! Nil;
+    my $obj = $gtk-box ?? self.bless( :$gtk-box ) !! Nil;
+    $obj.setAttributes(%a) if +%a;
+    $obj;
+  }
+  multi method new ( *%a ) {
+    my $o = ::?CLASS.new(GTK_ORIENTATION_HORIZONTAL, |%a);
   }
 
-  method new-h-box (Int() $spacing = 0)
+  method new-h-box (Int() $spacing = 0, *%a)
     is also<
       new_h_box
       new_hbox
       new-hbox
     >
   {
-    ::?CLASS.new(GTK_ORIENTATION_HORIZONTAL, $spacing);
+    ::?CLASS.new(GTK_ORIENTATION_HORIZONTAL, $spacing, |%a);
   }
 
-  method new-v-box (Int() $spacing = 0)
+  method new-v-box (Int() $spacing = 0, *%a)
     is also<
       new_v_box
       new_vbox
       new-vbox
     >
   {
-    ::?CLASS.new(GTK_ORIENTATION_VERTICAL, $spacing);
+    ::?CLASS.new(GTK_ORIENTATION_VERTICAL, $spacing, |%a);
   }
 
   # Type: int
@@ -159,8 +164,7 @@ class GTK::Box:ver<4> is GTK::Widget {
     self.prepend($child);
   }
 
-  method pack_end ($child, *@a)
-    is also<pack-end>
+  method pack_end ($child, *@a)is also<pack-end>
   {
     if @a.head {
       (self.orientation == GTK_ORIENTATION_HORIZONTAL
@@ -177,6 +181,14 @@ class GTK::Box:ver<4> is GTK::Widget {
   }
 
 
+  proto method append (|)
+    is also<
+      add
+      add_child
+      add-child
+    >
+  { * }
+
   multi method append (@children) {
     samewith( |@children );
   }
@@ -184,6 +196,7 @@ class GTK::Box:ver<4> is GTK::Widget {
     self.append($_) for @children;
   }
   multi method append ($child is copy) {
+    #self.addBuildableChild($child);
      $child = $child.GtkWidget if $child.^can('GtkWidget');
     gtk_box_append($!gtk-box, $child);
   }
@@ -223,16 +236,19 @@ class GTK::Box:ver<4> is GTK::Widget {
     self.append($_) for @children;
   }
   multi method prepend (GtkWidget() $child) {
+    #self.prependBuildableChild($child);
     gtk_box_prepend($!gtk-box, $child);
   }
 
   method remove (GtkWidget() $child) {
+    #self.removeBuildableChild($child)
     gtk_box_remove($!gtk-box, $child);
   }
 
   method reorder_child_after (GtkWidget() $child, GtkWidget() $sibling)
     is also<reorder-child-after>
   {
+    #self.reorderBuildableChild($child, after => $sibling);
     gtk_box_reorder_child_after($!gtk-box, $child, $sibling);
   }
 
@@ -256,6 +272,10 @@ class GTK::Box:ver<4> is GTK::Widget {
     gtk_box_set_spacing($!gtk-box, $s);
   }
 
+}
+
+BEGIN {
+  writeTypeToManifest(GTK::Box);
 }
 
 INIT {
