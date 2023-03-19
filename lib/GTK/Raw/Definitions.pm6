@@ -11,10 +11,15 @@ use GLib::Roles::Pointers;
 unit package GTK::Raw::Definitions:ver<4>;
 
 #constant gtk4 is export = '/usr/src/gtk4/build/gtk/gtk-4',v1;
-constant gtk4 is export = 'gtk-4',v1;
+constant gtk4       is export = 'gtk-4',v1;
+constant gtk-prefix is export = 'Gtk';
 
 constant GtkAllocation is export := GdkRectangle;
 constant GtkCssChange  is export := guint64;
+
+our %WIDGETS is export;
+
+constant W   is export = %WIDGETS;
 
 class GtkAccessible              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAccessibleRange         is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -22,6 +27,7 @@ class GtkActivateAction          is repr<CPointer> does GLib::Roles::Pointers is
 class GtkBuildable               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkBuilderScope            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraintTarget        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkCustomLayout            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCssValue                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkLayoutManager           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNative                  is repr<CPointer> does GLib::Roles::Pointers is export { }
