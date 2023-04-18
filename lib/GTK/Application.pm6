@@ -279,6 +279,7 @@ class GTK::Application:ver<4> is GIO::Application {
 
   method init is static {
     gtk_init();
+    self.postInit;
   }
 
   # method init_abi_check is static (
