@@ -1,0 +1,4 @@
+- Add a hash to GTK::Roles::Buildable to represent an arbitrary list of widgets.
+  The time for @!children has passed since some widgets may use two or more
+  lists, and each one of them may have their own set of <child> elements.
+  
