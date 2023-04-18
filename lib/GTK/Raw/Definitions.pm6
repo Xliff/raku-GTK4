@@ -133,6 +133,7 @@ class GtkOverlayLayout           is repr<CPointer> does GLib::Roles::Pointers is
 class GtkOverlayLayoutChild      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPadController           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPageSetup               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkPageSetupUnixDialog     is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPageSettings            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPaned                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkPaperSize               is repr<CPointer> does GLib::Roles::Pointers is export { }
