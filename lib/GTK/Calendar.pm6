@@ -243,20 +243,7 @@ class GTK::Calendar:ver<4> is GTK::Widget:ver<4> {
 }
 
 BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Calendar;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    my $existing = .slurp;
-    %widgets = try from-json($existing) if $existing.chars;
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
+  writeTypeToManifest( GTK::Calendar );
 }
 
 INIT {
