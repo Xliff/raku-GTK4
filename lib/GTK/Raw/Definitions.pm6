@@ -127,6 +127,7 @@ class GtkNotebook                is repr<CPointer> does GLib::Roles::Pointers is
 class GtkNothingAction           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNoSelection             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNotebookPage            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkNumericSorter           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkObjectExpression        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOrientable              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkOverlay                 is repr<CPointer> does GLib::Roles::Pointers is export { }
