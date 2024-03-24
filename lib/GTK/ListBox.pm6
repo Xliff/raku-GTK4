@@ -61,10 +61,12 @@ class GTK::ListBox:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new (*%a) {
     my $gtk-list-box = gtk_list_box_new();
 
-    $gtk-list-box ?? self.bless( :$gtk-list-box ) !! Nil;
+    my $o = $gtk-list-box ?? self.bless( :$gtk-list-box ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: boolean
@@ -174,6 +176,7 @@ class GTK::ListBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   method append (GtkWidget() $child) {
+    #self.addBuildableChild($child)
     gtk_list_box_append($!gtk-lb, $child);
   }
 
@@ -292,10 +295,12 @@ class GTK::ListBox:ver<4> is GTK::Widget:ver<4> {
   }
 
   method prepend (GtkWidget() $child) {
+    #self.prependBuildableChild($child)
     gtk_list_box_prepend($!gtk-lb, $child);
   }
 
   method remove (GtkWidget() $child) {
+    #self.removeBuildableChild($child);
     gtk_list_box_remove($!gtk-lb, $child);
   }
 
@@ -435,10 +440,12 @@ class GTK::ListBox::Row:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new (*%a) {
     my $gtk-list-box-row = gtk_list_box_row_new();
 
-    $gtk-list-box-row ?? self.bless( :$gtk-list-box-row ) !! Nil;
+    my $o = $gtk-list-box-row ?? self.bless( :$gtk-list-box-row ) !! Nil;
+    $o.setAttributes(%a);
+    $o;
   }
 
   # Type: boolean
@@ -472,6 +479,7 @@ class GTK::ListBox::Row:ver<4> {
         returnProperWidget($gv.object, $raw, $proper)
       },
       STORE => -> $, GtkWidget() $val is copy {
+        #self.setBuildableChild(0, $val);
         $gv.object = $val;
         self.prop_set('child', $gv);
       }
@@ -558,6 +566,7 @@ class GTK::ListBox::Row:ver<4> {
   }
 
   method set_child (GtkWidget() $child) is also<set-child> {
+    #self.setBuildableChild(0, $child);
     gtk_list_box_row_set_child($!gtk-lbr, $child);
   }
 
@@ -571,23 +580,15 @@ class GTK::ListBox::Row:ver<4> {
     gtk_list_box_row_set_selectable($!gtk-lbr, $s);
   }
 
-}
-
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::ListBox;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
+  method unsetChild {
+    self.set_child(GtkWidget);
   }
+
 }
+
+# BEGIN {
+#   writeTypeToManifest(GTK::ListBox, $?FILE);
+# }
 
 INIT {
   my \O = GTK::ListBox;
