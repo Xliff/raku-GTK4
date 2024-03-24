@@ -8,6 +8,7 @@ use LibXML;
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Builder:ver<4>;
+use GTK::Raw::Builder::Subs:ver<4>;
 
 use GLib::GList;
 use GTK::Widget:ver<4>;
@@ -79,14 +80,42 @@ class GTK::Builder:ver<4> {
     $gtk-builder ?? self.bless( :$gtk-builder ) !! Nil
   }
   multi method new ( :$pod is required ) {
-    ::?CLASS.new_from_string(
+    my $pod-str = (
       getPodSection($pod, 'ui') // getPodSection($pod, 'glade')
-    );
+    ).join("\n");
+
+    ::?CLASS.new_from_string($pod-str)
   }
 
-  method new_from_file (Str() $filename, :$base, :$process = True)
+  proto method new_from_file (|)
     is also<new-from-file>
-  {
+  { * }
+
+  multi method new_from_file ($_ is copy, :$base, :$process, :$template) {
+    when .^can('IO::Path') { $_ .= IO;  proceed }
+    when .^can('Str')      { $_ .= Str; proceed }
+
+    when IO::Path { samewith( .absolute, :$base, :$process, :$template ) }
+    when Str      { samewith($_, :$base, :$process, :$template)          }
+
+    default {
+      # cw: Replace with a typed exception!
+      die "Do not know how to handle { .^name } for .new_from-filename()";
+    }
+  }
+  multi method new_from_file (
+    Str  $filename,
+        :$base,
+        :$template,
+        :$process    = True
+  ) {
+    return self.new_from_string(
+       $filename.IO.slurp,
+      :$base,
+      :$template,
+      :$process
+    ) if $template;
+
     my $gtk-builder = gtk_builder_new_from_file($filename);
 
     $gtk-builder ?? self.bless( :$gtk-builder, :$process, :$base ) !! Nil
@@ -160,15 +189,17 @@ class GTK::Builder:ver<4> {
   multi method new_from_string (
     Str  $string,
         :$encoding = 'utf8',
+        :$template = False,
         :$length   = $string.chars,
         :$base,
         :$process  = True
   ) {
     samewith(
-      $string.encode($encoding),
-      $length,
+       $string.encode($encoding),
+       $length,
       :$base,
       :$process,
+      :$template,
 
       definition => $string
     );
@@ -177,6 +208,7 @@ class GTK::Builder:ver<4> {
     Blob   $string,
     Int()  $length,
           :$base,
+          :$template    = False,
           :$process     = True,
           :$definition
   ) {
@@ -185,6 +217,7 @@ class GTK::Builder:ver<4> {
        $length,
       :$base,
       :$process,
+      :$template,
 
       definition => $definition // $string
     )
@@ -193,19 +226,42 @@ class GTK::Builder:ver<4> {
            @data,
     Int()  $length,
           :$base,
-          :$process = True
+          :$process  = True,
+          :$template = False
   ) {
-    samewith( CArray[uint8].new(@data), $length, :$base, :$process );
+    samewith(
+       CArray[uint8].new(@data),
+       $length,
+      :$base,
+      :$process,
+      :$template
+    );
   }
   multi method new_from_string (
     CArray[uint8]  $string,
     Int()          $length,
                   :$base,
                   :$process     = True,
+                  :$template    = False,
                   :$definition
   ) {
     my gssize $l           = $length;
-    my        $gtk-builder = gtk_builder_new_from_string($string, $l);
+    my        $str-to-use;
+
+    if $template {
+      # cw: This is VERY bad. We do a lot of converting in the earlier
+      #     multis only to convert BACK if we have to process it as
+      #     a template! In this situation, we should make the
+      #     meat-and-potatoes multi a Str instead of a CArray[uint8]
+      #     and have all other options convert to it!
+      $str-to-use = CArray[uint8].new(
+        prepTemplate( cast(Str, $string) ).Str.encode
+      );
+    } else {
+      $str-to-use = $string;
+    }
+
+    my $gtk-builder = gtk_builder_new_from_string($str-to-use, $l);
 
     return Nil unless $gtk-builder;
 
