@@ -49,12 +49,25 @@ class GTK::Query:ver<4> {
     $o.ref if $ref;
     $o;
   }
-
-  method new {
+  multi method new ( *%a ) {
     my $gtk-query = gtk_query_new();
 
-    $gtk-query ?? self.bless( :$gtk-query ) !! Nil;
+    my $o = $gtk-query ?? self.bless( :$gtk-query ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
+
+  method location is rw is g-pseudo-property {
+   Proxy.new:
+     FETCH => -> $     { self.get_location    },
+     STORE => -> $, \v { self.set_location(v) }
+ }
+
+ method text is rw is g-pseudo-property {
+   Proxy.new:
+     FETCH => -> $     { self.get_text    },
+     STORE => -> $, \v { self.set_text(v) }
+ }
 
   method get_location is also<get-location> {
     gtk_query_get_location($!gtk-q);
