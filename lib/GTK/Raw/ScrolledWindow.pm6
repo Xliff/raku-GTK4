@@ -135,7 +135,7 @@ sub gtk_scrolled_window_get_vscrollbar (GtkScrolledWindow $scrolled_window)
 { * }
 
 sub gtk_scrolled_window_new
-  returns GtkWidget
+  returns GtkScrolledWindow
   is      native(gtk4)
   is      export
 { * }
