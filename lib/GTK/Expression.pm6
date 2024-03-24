@@ -22,7 +22,7 @@ class GTK::Expression:ver<4> {
   has GtkExpression $!gtk-e is implementor;
 
   submethod BUILD ( :$gtk-expr ) {
-    self.setGtkExpression($gtk-expr) if $gtk-expr
+    self.setGtkExpression($gtk-expr) if $gtk-expr;
   }
 
   method setGtkExpression (GtkExpressionAncestry $_) {
@@ -30,7 +30,7 @@ class GTK::Expression:ver<4> {
 
     $!gtk-e = do {
       when GtkExpression {
-        $to-parent = cast(GtkExpression, $_);
+        $to-parent = cast(GObject, $_);
         $_;
       }
 
@@ -39,7 +39,7 @@ class GTK::Expression:ver<4> {
         cast(GtkExpression, $_);
       }
     }
-    self.setGtkExpression($to-parent);
+    self!setObject($to-parent);
   }
 
   method GTK::Raw::Definitions::GtkExpression
@@ -97,21 +97,6 @@ class GTK::Expression:ver<4> {
     so gtk_expression_is_static($!gtk-e);
   }
 
-  # cw: GtkExpressionPspec factory. Not a constructor.
-  method new_for_pspec (GParamSpec() $pspec, :$raw = False)
-    is also<
-      new-for-pspec
-      create_pspec
-      create-pspec
-    >
-  {
-    propReturnObject(
-      gtk_property_expression_new_for_pspec($!gtk-e, $pspec),
-      $raw,
-      |GTK::Expression::PSpec
-    )
-  }
-
   method ref {
     gtk_expression_ref($!gtk-e);
     self;
@@ -157,28 +142,56 @@ class GTK::Expression::Closure is GTK::Expression:ver<4> {
         cast(GtkClosureExpression, $_);
       }
     }
+
     self.setGtkExpression($to-parent);
   }
 
   method GTK::Raw::Definitions::GtkClosureExpression
+    is also<GtkClosureExpression>
   { $!gtk-e-c }
+
+  proto method new (|)
+  { * }
 
   multi method new (
     $gtk-expr-c where * ~~ GtkClosureExpressionAncestry,
 
     :$ref = True
   ) {
-    return unless $gtk-expr-c;
 
     my $o = self.bless( :$gtk-expr-c );
     $o.ref if $ref;
     $o;
   }
   multi method new (
+    &closure,
+    :$type!,
+    :$params
+  ) {
+    samewith(
+      $type,
+      GLib::Closure.new( &closure ),
+      $params ?? $params.elems !! 0,
+      $params ?? newCArray(GtkExpression, $params) !! CArray[GtkExpression]
+    )
+  }
+  multi method new (
+    GClosure()  $closure,
+               :$type!,
+               :$params
+  ) {
+    samewith(
+      $type,
+      $closure,
+      $params ?? $params.elems !! 0,
+      $params ?? ArrayToCArray(GtkExpression, $params) !! CArray[GtkExpression]
+    )
+  }
+  multi method new (
     Int()                 $value_type,
     GClosure()            $closure,
-    Int()                 $n_params,
-    CArray[GtkExpression] $params
+    Int()                 $n_params    = 0,
+    CArray[GtkExpression] $params      = CArray[GtkExpression]
   ) {
     my GType $v = $value_type;
     my guint $n = $n_params;
@@ -225,7 +238,11 @@ class GTK::Expression::Closure::C is GTK::Expression:ver<4> {
   }
 
   method GTK::Raw::Definitions::GtkExpressionCClosure
+    is also<GtkExpressionCClosure>
   { $!gtk-e-cc }
+
+  proto method new (|)
+  { * }
 
   multi method new (
     $gtk-expr-cc where * ~~ GtkExpressionCClosureAncestry,
@@ -244,17 +261,23 @@ class GTK::Expression::Closure::C is GTK::Expression:ver<4> {
            &callback_func,
            @params              = (),
            $user_data           = gpointer,
-          :$marshal             = Callable,
-          :$user_destroy        = %DEFAULT-CALLBACKS<GDestroyNotify>
+          :&marshal             = Callable,
+          :&user_destroy        = %DEFAULT-CALLBACKS<GDestroyNotify>
   ) {
+    # my $m = $marshal;
+    # $m = ( sub (*@a) { } ) unless $m;
+    #
+    # say "M: { $m.gist }";
+    # say "M-Sig: { $m.signature.gist }:";
+
     samewith(
       $value_type,
-      $marshal,
+      &marshal,
       @params.elems,
       ArrayToCArray(GtkExpression, @params),
       &callback_func,
       $user_data,
-      $user_destroy
+      &user_destroy
     );
   }
   multi method new (
@@ -264,17 +287,72 @@ class GTK::Expression::Closure::C is GTK::Expression:ver<4> {
     CArray[GtkExpression] $params,
                           &callback_func,
     gpointer              $user_data,
-                          &user_destroy   = %DEFAULT-CALLBACKS<GDestroyNotify>
+                          &user_destroy   = %DEFAULT-CALLBACKS<GDestroyNotify>,
+                          :$encoding = 'utf8'
   ) {
     my GType $v = $value_type;
     my guint $n = $n_params;
+
+    my &cb = do given $value_type {
+      when G_TYPE_STRING {
+        sub ($a --> gpointer) {
+          CATCH {
+            default { .message.say; .backtrace.concise.say }
+          }
+
+          my $ret = &callback_func($a);
+
+          say "R: { $ret }" if checkDEBUG(3);
+
+          if $ret ~~ Str {
+            $ret = $ret.encode($encoding);
+            say "B: { $ret.gist }" if checkDEBUG(3);
+          }
+
+          if $ret ~~ Blob {
+            $ret = CArray[uint8].new( |$ret, 0 );
+            say "C: { $ret.gist }" if checkDEBUG(3);
+          }
+
+          if $ret ~~ CArray[uint8] {
+            $ret = cast(gpointer, $ret);
+            say "P: { $ret.gist  }" if checkDEBUG(3);
+          }
+
+          # cw: So why doesn't this work?
+          # do given $ret {
+          #   when Str           { $_ = .encode($encoding);          proceed }
+          #   when Buf           { $_ = CArray[uint8].new( |$_, 0 ); proceed }
+          #   when CArray[uint8] { $_ = cast(gpointer, $_);          proceed }
+          #   when gpointer      { $_                                        }
+          # }
+
+          $ret
+        }
+      }
+
+      # -YYY- cw: Handle integer and floating point!
+
+      # cw: Fallback is for pointers/objects
+      default {
+        sub ($a --> gpointer) {
+          my $ret = &callback_func($a);
+
+          do given $ret {
+            when GLib::Roles::Object   { $ret.GObject.p }
+            when GLib::Roles::Pointers { $ret.p         }
+            when .^can('p')            { $ret.p         }
+          }
+        }
+      }
+    }
 
     my $gtk-expr-cc = gtk_cclosure_expression_new(
       $v,
       &marshal,
       $n,
       $params,
-      &callback_func,
+      &cb,
       $user_data,
       &user_destroy
     );
@@ -295,36 +373,39 @@ class GTK::Expression::Closure::C is GTK::Expression:ver<4> {
 
 }
 
+our subset GtkConstantExpressionAncestry is export of Mu
+  where GtkConstantExpression | GtkExpressionAncestry;
+
 class GTK::Expression::Constant is GTK::Expression:ver<4> {
   has GtkConstantExpression $!gtk-e-c is implementor;
 
   submethod BUILD ( :$gtk-expr-constant ) {
-    self.setGtkExpressionCClosure($gtk-expr-constant) if $gtk-expr-constant
+    self.setGtkConstantExpression($gtk-expr-constant) if $gtk-expr-constant
   }
 
-  method setGtkExpressionCClosure (GtkExpressionCClosureAncestry $_) {
+  method setGtkConstantExpression (GtkConstantExpressionAncestry $_) {
     my $to-parent;
 
     $!gtk-e-c = do {
-      when GtkExpressionCClosure {
+      when GtkConstantExpression {
         $to-parent = cast(GtkExpression, $_);
         $_;
       }
 
       default {
         $to-parent = $_;
-        cast(GtkExpressionCClosure, $_);
+        cast(GtkConstantExpression, $_);
       }
     }
     self.setGtkExpression($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkExpressionCClosure
-    is also<GtkExpressionCClosure>
+  method GTK::Raw::Definitions::GtkConstantExpression
+    is also<GtkExpressionConstant>
   { $!gtk-e-c }
 
   multi method new (
-    $gtk-expr-constant where * ~~ GtkExpressionCClosureAncestry,
+    $gtk-expr-constant where * ~~ GtkConstantExpressionAncestry,
 
     :$ref = True
   ) {
@@ -334,7 +415,7 @@ class GTK::Expression::Constant is GTK::Expression:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Int() $type) {
+  multi method new (Int $type) {
     my GType $t                 = $type;
     my       $gtk-expr-constant = gtk_constant_expression_new($t);
 
@@ -365,6 +446,76 @@ class GTK::Expression::Constant is GTK::Expression:ver<4> {
       |GLib::Value.getTypePair
     );
   }
+}
+
+our subset GtkPropertyExpressionAncestry is export of Mu
+  where GtkPropertyExpression | GtkExpressionAncestry;
+
+class GTK::Expression::Property:ver<4> is GTK::Expression:ver<4> {
+  has GtkPropertyExpression $!gtk-e-p is implementor;
+
+  submethod BUILD ( :$gtk-expr-property ) {
+    self.setGtkPropertyExpression($gtk-expr-property) if $gtk-expr-property;
+  }
+
+  method setGtkPropertyExpression (GtkPropertyExpressionAncestry $_) {
+    my $to-parent;
+
+    $!gtk-e-p = do {
+      when GtkPropertyExpression {
+        $to-parent = cast(GtkExpression, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GtkPropertyExpression, $_);
+      }
+    }
+    self.setGtkExpression($to-parent);
+  }
+
+  method GTK::Raw::Definitions::GtkPropertyExpression
+    is also<GtkPropertyExpression>
+  { $!gtk-e-p }
+
+  multi method new (Int() $type, Str() $prop-name) {
+    samewith($type, GtkExpression, $prop-name);
+  }
+  multi method new (Int() $type, GtkExpression() $expr, Str() $prop-name) {
+    my GType $t = $type;
+
+    my $gtk-expr-property = gtk_property_expression_new($t, $expr, $prop-name);
+
+    $gtk-expr-property ?? self.bless( :$gtk-expr-property ) !! Nil;
+  }
+
+  # cw: GtkExpressionPspec factory. Not a constructor.
+  method new_for_pspec (
+    GtkExpression() $expr,
+    GParamSpec()    $pspec,
+                   :$raw = False
+  )
+    is also<
+      new-for-pspec
+      create_pspec
+      create-pspec
+    >
+  {
+    my $gtk-property-expr  = gtk_property_expression_new_for_pspec(
+      $expr,
+      $pspec
+    );
+
+    $gtk-property-expr ?? self.bless( :$gtk-property-expr ) !! Nil;
+  }
+
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_property_expression_get_type, $n, $t );
+  }
+
 }
 
 
@@ -511,6 +662,12 @@ augment class GLib::Value {
       $raw,
       |GTK::Expression.getTypePair
     );
+  }
+
+  method expression ( :$raw = False ) is rw {
+    Proxy.new:
+      FETCH => -> $                     { self.get_expression( :$raw ) },
+      STORE => -> $, GtkExpression() \v { self.set_expression(v)       };
   }
 
   method set_expression (GtkExpression() $expression)
