@@ -47,7 +47,7 @@ class GTK::MultiSelect:ver<4> {
 
   multi method new (
      $gtk_multi-select where * ~~ GtkMultiSelectionAncestry,
-     
+
     :$ref = True
   ) {
     return unless $gtk_multi-select;
@@ -56,11 +56,19 @@ class GTK::MultiSelect:ver<4> {
     $o.ref if $ref;
     $o;
   }
-
-  method new (GListModel() $model) {
+  multi method new (GListModel() $model) {
     my $gtk-multi-select = gtk_multi_selection_new($model);
 
     $gtk-multi-select ?? self.bless( :$gtk-multi-select ) !! Nil;
+  }
+  multi method new ( *%a ) {
+    # cw: Type this!!
+    die 'Must specify <model> when creeating a GTK::MultiSelection via .new!'
+      unless %a<model>;
+
+    my $o = samewith( %a<model>:delete );
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: GObject
