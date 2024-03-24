@@ -212,3 +212,9 @@ sub gtk_file_dialog_set_title (
   is      native(gtk4)
   is      export
 { * }
+
+# sub gtk_file_dialog_get_type
+#   returns GType
+#   is      native(gtk4)
+#   is      export
+# { * }
