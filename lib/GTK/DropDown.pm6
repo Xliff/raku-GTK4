@@ -45,7 +45,7 @@ class GTK::DropDown:ver<4> is GTK::Widget:ver<4> {
 
   multi method new (
     $gtk-drop-down where * ~~ GtkDropDownAncestry,
-    
+
     :$ref = True
   ) {
     return unless $gtk-drop-down;
@@ -55,7 +55,7 @@ class GTK::DropDown:ver<4> is GTK::Widget:ver<4> {
     $o;
   }
   multi method new (
-    GListModel()    $model,
+    GListModel()    $model      = GListModel,
     GtkExpression() $expression = GtkExpression
   ) {
     my $gtk-drop-down = gtk_drop_down_new($model, $expression);
@@ -207,6 +207,13 @@ class GTK::DropDown:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
+
+  method expression ( :$raw = False ) is rw is g-pseudo-property {
+    Proxy.new:
+      FETCH => -> $     { self.get-expression( :$raw ) },
+      STORE => -> $, \v { self.set-expression(v)       }
+  }
+
   method Activate {
     self.connect($!gtk-dd, 'Activate');
   }
@@ -301,21 +308,21 @@ class GTK::DropDown:ver<4> is GTK::Widget:ver<4> {
 
 }
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::DropDown;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::DropDown;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     %widgets = from-json( .slurp );
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::DropDown;
