@@ -1,5 +1,6 @@
 use v6.c;
 
+use NativeCall;
 use Method::Also;
 
 use GLib::Raw::Traits;
@@ -20,7 +21,7 @@ our subset GtkWindowAncestry is export of Mu
   where GtkWindow          | GtkNative | GtkRoot | GtkShortcutManager |
         GtkWidgetAncestry;
 
-class GTK::Window:ver<4> is GTK::Widget {
+class GTK::Window:ver<4> is GTK::Widget:ver<4> {
   also does GTK::Roles::Native;
   also does GTK::Roles::Root;
   also does GTK::Roles::ShortcutManager;
@@ -496,6 +497,7 @@ class GTK::Window:ver<4> is GTK::Widget {
          );
        },
        STORE => -> $, GtkWidget() $val is copy {
+         #self.setBuildableWidget(0, $val);
          $gv.object = $val;
          self.prop_set('child', $gv);
        }
@@ -680,6 +682,12 @@ class GTK::Window:ver<4> is GTK::Widget {
     so gtk_window_get_modal($!gtk-win);
   }
 
+  method getMousePosition {
+    self.get_window.get_device_position(
+      GDK::Display.default-seat( GDK::Display.default ).pointer
+    );
+  }
+
   method get_resizable is also<get-resizable> {
     so gtk_window_get_resizable($!gtk-win);
   }
@@ -784,12 +792,20 @@ class GTK::Window:ver<4> is GTK::Widget {
     gtk_window_set_auto_startup_notification($!gtk-win);
   }
 
+  method unsetChild {
+    self.set_child(GtkWidget);
+  }
+
   method set_child (GtkWidget() $child)
     is also<
       set-child
       add
+      add-child
+      add_child
+      append
     >
   {
+    #self.setBuildableChild(0, $child);
     gtk_window_set_child($!gtk-win, $child);
   }
 
@@ -915,23 +931,137 @@ class GTK::Window:ver<4> is GTK::Widget {
     gtk_window_unminimize($!gtk-win);
   }
 
-}
+  method show_uri (Str() $uri, Int() $timestamp = 0) {
+    my guint32 $t = $timestamp;
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Window;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
+    gtk_show_uri($!gtk-win, $uri, $t);
   }
+
+  proto method show_uri_full (|)
+  { * }
+
+  multi method show_uri_full (
+    Str()           $uri,
+                    &callback,
+    gpointer        $user_data    = gpointer,
+    Int()          :$timestamp    = 0,            # 0 = GDK_CURRENT_TIME
+    GCancellable() :$cancellable  = GCancellable
+  ) {
+    samewith(
+      $uri,
+      $timestamp,
+      $cancellable,
+      &callback,
+      $user_data
+    );
+  }
+  multi method show_uri_full (
+    Str()          $uri,
+    Int()          $timestamp,
+    GCancellable() $cancellable,
+                   &callback,
+    gpointer       $user_data     = gpointer
+  ) {
+    my guint32 $t = $timestamp;
+
+    gtk_show_uri_full(
+      $!gtk-win,
+      $uri,
+      $t,
+      $cancellable,
+      &callback,
+      $user_data
+    );
+  }
+
+  method show_uri_full_finish (
+    GAsyncResult()          $result,
+    CArray[Pointer[GError]] $error   = gerror
+  ) {
+    clear_error;
+    my $rv = gtk_show_uri_full_finish($!gtk-win, $result, $error);
+    set_error($error);
+    $rv;
+  }
+
+#   use GDK::Raw::Cairo;
+#   use GDK::Raw::Screen;
+#   use GLib::Raw::Signal;
+#   use GTK::Raw::Widget;
+#
+#   use GTK::Roles::Signals::Widget;
+#
+#   method makeTransparent ( :$button-press ) {
+#     my $win-obj := self.GObject;
+#     g-connect-draw(
+#       cast(Pointer, $win-obj),
+#       'draw',
+#       -> *@a {
+#         CATCH { default { .message.say; .backtrace.concise.say } }
+#
+#         my $c = gdk_cairo_create( gtk_widget_get_window( @a[0] ) );
+#         $c.set_source_rgba(1.0.Num, 1.0.Num, 1.0.Num, 0.0.Num);
+#         $c.set_operator(OPERATOR_SOURCE.Int);
+#         $c.paint;
+#         $c.destroy;
+#
+#         0;
+#       },
+#       gpointer,
+#       0
+#     );
+#
+#     my $screen-changed = -> *@a {
+#       CATCH { default { .message.say; .backtrace.concise.say } }
+#
+#       my $s = gtk_widget_get_screen( @a[0] );
+#       my $v = gdk_screen_get_rgba_visual($s);
+#       $v ?? gtk_widget_set_visual( @a[0], $v)
+#          !! say 'No visual!';
+#     }
+#
+#     g-connect-screen-changed(
+#       cast(Pointer, $win-obj),
+#       'screen-changed',
+#       -> *@a {
+#         $screen-changed( |@a );
+#       },
+#       gpointer,
+#       0
+#     );
+#
+#     self.decorated = 0;
+#     self.add_events(GDK_BUTTON_PRESS_MASK);
+#
+#     g-connect-widget-event(
+#       cast(Pointer, $win-obj),
+#       'button-press-event',
+#       -> *@a {
+#         CATCH { default { .message.say; .backtrace.concise.say } }
+#
+#         if $button-press -> &p {
+#           if &p( |@a ) {
+#             self.decorated = self.decorated.not;
+#             0
+#           }
+#         } else {
+#           self.decorated = self.decorated.not;
+#           0
+#         }
+#       },
+#       gpointer,
+#       0
+#     );
+#
+#     $screen-changed(self.GtkWindow);
+#   }
+
+
 }
+
+# BEGIN {
+#   GTK-writeTypeToManifest(GTK::Window, $?FILE);
+# }
 
 INIT {
   my \O = GTK::Window;
