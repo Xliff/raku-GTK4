@@ -74,10 +74,12 @@ class GTK::Text::View:ver<4> is GTK::Widget:ver<4> {
   multi method new ( GtkTextBuffer() :$buffer is required ) {
     ::?CLASS.new_with_buffer($buffer);
   }
-  multi method new (*%named where *.elems == 0) {
+  multi method new ( *%a ) {
     my $gtk-text-view = gtk_text_view_new();
 
-    $gtk-text-view ?? self.bless( :$gtk-text-view ) !! Nil;
+    my $o = $gtk-text-view ?? self.bless( :$gtk-text-view ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   method new_with_buffer (GtkTextBuffer() $buffer) is also<new-with-buffer> {
@@ -85,7 +87,6 @@ class GTK::Text::View:ver<4> is GTK::Widget:ver<4> {
 
     $gtk-text-view ?? self.bless( :$gtk-text-view ) !! Nil;
   }
-
 
   # Type: boolean
   method accepts-tab is rw  is g-property is also<accepts_tab> {
@@ -183,6 +184,12 @@ class GTK::Text::View:ver<4> is GTK::Widget:ver<4> {
         self.prop_set('extra-menu', $gv);
       }
     );
+  }
+
+  method gutter is rw is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get_gutter    },
+      STORE => -> $, \v { self.set_gutter(v) }
   }
 
   # Type: string
@@ -1078,21 +1085,21 @@ class GTK::Text::View:ver<4> is GTK::Widget:ver<4> {
 
 }
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Text::View;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::Text::View;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     %widgets = from-json( .slurp );
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::Text::View;
