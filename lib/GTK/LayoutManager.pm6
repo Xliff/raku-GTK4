@@ -80,6 +80,12 @@ class GTK::LayoutManager:ver<4> {
     GtkSizeRequestModeEnum($m);
   }
 
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_layout_manager_get_type, $n, $t );
+  }
+
   method get_widget (
     :$raw           = False,
     :quick(:$fast)  = False,
