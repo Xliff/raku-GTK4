@@ -58,8 +58,8 @@ sub gtk_cclosure_expression_new (
                         &marshal (
                           GClosure,
                           GValue,
-                          guint
-                          GValue,
+                          guint,
+                          Pointer, # Array of GValues!
                           gpointer,
                           gpointer
                           --> gpointer
