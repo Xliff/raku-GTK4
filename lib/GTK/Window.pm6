@@ -403,23 +403,23 @@ class GTK::Window:ver<4> is GTK::Widget:ver<4> {
   }
 
   method Activate-Default is also<Activate_Default> {
-    self.connect($!gtk-win, 'Activate-Default');
+    self.connect($!gtk-win, 'activate-default');
   }
 
   method Activate-Focus is also<Activate_Focus> {
-    self.connect($!gtk-win, 'Activate-Focus');
+    self.connect($!gtk-win, 'activate-focus');
   }
 
   method Close-Request is also<Close_Request> {
-    self.connect-ruint($!gtk-win, 'Close-Request');
+    self.connect-ruint($!gtk-win, 'close-request');
   }
 
   method Enable-Debugging is also<Enable_Debugging> {
-    self.connect-uint-ruint($!gtk-win, 'Enable-Debugging');
+    self.connect-uint-ruint($!gtk-win, 'enable-debugging');
   }
 
   method Keys-Changed is also<Keys_Changed> {
-    self.connect($!gtk-win, 'Keys-Changed');
+    self.connect($!gtk-win, 'keys-changed');
   }
 
   # Type: GTKWidget
