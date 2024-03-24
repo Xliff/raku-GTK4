@@ -34,7 +34,7 @@ class GTK::NoSelection {
 
       when GtkSelectionModel {
         $to-parent = cast(GObject, $_);
-        $!gtk-sm   = $_
+        $!gtk-sm   = $_;
         cast(GtkNoSelection, $_);
       }
 
@@ -44,7 +44,7 @@ class GTK::NoSelection {
       }
     }
     self!setObject($to-parent);
-    self!roleInit-GtkSelectionModel;
+    self.roleInit-GtkSelectionModel;
   }
 
   method GTK::Raw::Definitions::GtkNoSelection
