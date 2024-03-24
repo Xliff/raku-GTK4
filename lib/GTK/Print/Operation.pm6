@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Print::Operation:ver<4>;
 
@@ -463,24 +465,24 @@ class GTK::Print::Operation:ver<4> {
 }
 
 
-
-class GTK::Print::Run {
-
-  method error_quark is static {
-    gtk_print_error_quark();
-  }
-
-  method dialog (GtkPageSetup() $page_setup, GtkPrintSettings() $settings) {
-    setup_dialog($!gtk-po, $page_setup, $settings);
-  }
-
-  method dialog_async (
-    GtkPageSetup()     $page_setup,
-    GtkPrintSettings() $settings,
-                       &done_cb,
-    gpointer           $data        = gpointer
-  ) {
-    setup_dialog_async($!gtk-po, $page_setup, $settings, &done_cb, $data);
-  }
-
-}
+# cw: What was the intended purpose of this class?
+# class GTK::Print::Run {
+#
+#   method error_quark is static {
+#     gtk_print_error_quark();
+#   }
+#
+#   method dialog (GtkPageSetup() $page_setup, GtkPrintSettings() $settings) {
+#     setup_dialog($!gtk-po, $page_setup, $settings);
+#   }
+#
+#   method dialog_async (
+#     GtkPageSetup()     $page_setup,
+#     GtkPrintSettings() $settings,
+#                        &done_cb,
+#     gpointer           $data        = gpointer
+#   ) {
+#     setup_dialog_async($!gtk-po, $page_setup, $settings, &done_cb, $data);
+#   }
+#
+# }
