@@ -1,11 +1,15 @@
 use v6.c;
 
+use Method::Also;
+
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Tree::ListModel:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+
+class GTK::Tree::List::Row { ... }
 
 our subset GtkTreeListModelAncestry is export of Mu
   where GtkTreeListModel | GObject;
@@ -37,6 +41,7 @@ class GTK::Tree::ListModel {
   }
 
   method GTK::Raw::Definitions::GtkTreeListModel
+    is also<GtkTreeListModel>
   { $!gtk-tlm }
 
   multi method new (
@@ -102,7 +107,7 @@ class GTK::Tree::ListModel {
   }
 
   # Type: GtkObject
-  method item-type is rw  is g-property {
+  method item-type is rw  is g-property is also<item_type> {
     my $gv = GLib::Value.new-enum( G_TYPE_UINT64 );
     Proxy.new(
       FETCH => sub ($) {
@@ -134,7 +139,7 @@ class GTK::Tree::ListModel {
   }
 
   # Type: uint
-  method n-items is rw  is g-property {
+  method n-items is rw  is g-property is also<n_items> {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -162,21 +167,23 @@ class GTK::Tree::ListModel {
     );
   }
 
-  method get_autoexpand {
+  method get_autoexpand is also<get-autoexpand> {
     so gtk_tree_list_model_get_autoexpand($!gtk-tlm);
   }
 
-  method get_child_row (Int() $position, :$raw = False) {
+  method get_child_row (Int() $position, :$raw = False)
+    is also<get-child-row>
+  {
     my guint $p = $position;
 
     propReturnObject(
       gtk_tree_list_model_get_child_row($!gtk-tlm, $p),
       $raw,
-      |GTK::Tree::ListModel::Row.getTypePair
+      |GTK::Tree::List::Row.getTypePair
     )
   }
 
-  method get_model ( :$raw = False ) {
+  method get_model ( :$raw = False ) is also<get-model> {
     propReturnObject(
       gtk_tree_list_model_get_model($!gtk-tlm),
       $raw,
@@ -184,21 +191,21 @@ class GTK::Tree::ListModel {
     );
   }
 
-  method get_passthrough {
+  method get_passthrough is also<get-passthrough> {
     so gtk_tree_list_model_get_passthrough($!gtk-tlm);
   }
 
-  method get_row (Int() $position, :$raw = False) {
+  method get_row (Int() $position, :$raw = False) is also<get-row> {
     my guint $p = $position;
 
     propReturnObject(
       gtk_tree_list_model_get_row($!gtk-tlm, $p),
       $raw,
-      |GTK::Tree::ListModel::Row.getTypePair
+      |GTK::Tree::List::Row.getTypePair
     );
   }
 
-  method set_autoexpand (Int() $autoexpand) {
+  method set_autoexpand (Int() $autoexpand) is also<set-autoexpand> {
     my gboolean $a = $autoexpand.so.Int;
 
     gtk_tree_list_model_set_autoexpand($!gtk-tlm, $a);
@@ -210,13 +217,13 @@ class GTK::Tree::ListModel {
 our subset GtkTreeListRowAncestry is export of Mu
   where GtkTreeListRow | GObject;
 
-class GTK::Tree::ListModel::Row {
+class GTK::Tree::List::Row {
   also does GLib::Roles::Object;
 
   has GtkTreeListRow $!gtk-tlr is implementor;
 
-  submethod BUILD ( :$gtk-tree-listmodelrow ) {
-    self.setGtkTreeListRow($gtk-tree-listmodelrow) if $gtk-tree-listmodelrow;
+  submethod BUILD ( :$gtk-tree-listrow ) {
+    self.setGtkTreeListRow($gtk-tree-listrow) if $gtk-tree-listrow;
   }
 
   method setGtkTreeListRow (GtkTreeListRowAncestry $_) {
@@ -237,16 +244,17 @@ class GTK::Tree::ListModel::Row {
   }
 
   method GTK::Raw::Definitions::GtkTreeListRow
+    is also<GtkTreeListRow>
   { $!gtk-tlr }
 
   multi method new (
-     $gtk-tree-listmodelrow where * ~~ GtkTreeListRowAncestry,
+     $gtk-tree-listrow where * ~~ GtkTreeListRowAncestry,
 
     :$ref = True
   ) {
-    return unless $gtk-tree-listmodelrow;
+    return unless $gtk-tree-listrow;
 
-    my $o = self.bless( :$gtk-tree-listmodelrow );
+    my $o = self.bless( :$gtk-tree-listrow );
     $o.ref if $ref;
     $o;
   }
@@ -315,7 +323,9 @@ class GTK::Tree::ListModel::Row {
     );
   }
 
-  method get_child_row (Int() $position, :$raw = False) {
+  method get_child_row (Int() $position, :$raw = False)
+    is also<get-child-row>
+  {
     my guint $p = $position;
 
     propReturnObject(
@@ -325,7 +335,7 @@ class GTK::Tree::ListModel::Row {
     );
   }
 
-  method get_children ( :$raw = False ) {
+  method get_children ( :$raw = False ) is also<get-children> {
     propReturnObject(
       gtk_tree_list_row_get_children($!gtk-tlr),
       $raw,
@@ -333,15 +343,15 @@ class GTK::Tree::ListModel::Row {
     );
   }
 
-  method get_depth {
+  method get_depth is also<get-depth> {
     gtk_tree_list_row_get_depth($!gtk-tlr);
   }
 
-  method get_expanded {
+  method get_expanded is also<get-expanded> {
     gtk_tree_list_row_get_expanded($!gtk-tlr);
   }
 
-  method get_item ( :$raw = False ) {
+  method get_item ( :$raw = False ) is also<get-item> {
     propReturnObject(
       gtk_tree_list_row_get_item($!gtk-tlr),
       $raw,
@@ -349,7 +359,7 @@ class GTK::Tree::ListModel::Row {
     );
   }
 
-  method get_parent ( :$raw = False ) {
+  method get_parent ( :$raw = False ) is also<get-parent> {
     propReturnObject(
       gtk_tree_list_row_get_parent($!gtk-tlr),
       $raw,
@@ -357,15 +367,15 @@ class GTK::Tree::ListModel::Row {
     );
   }
 
-  method get_position {
+  method get_position is also<get-position> {
     gtk_tree_list_row_get_position($!gtk-tlr);
   }
 
-  method is_expandable {
+  method is_expandable is also<is-expandable> {
     so gtk_tree_list_row_is_expandable($!gtk-tlr);
   }
 
-  method set_expanded (Int() $expanded) {
+  method set_expanded (Int() $expanded) is also<set-expanded> {
     my gboolean $e = $expanded.so.Int;
 
     gtk_tree_list_row_set_expanded($!gtk-tlr, $e);
