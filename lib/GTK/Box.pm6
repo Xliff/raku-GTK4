@@ -274,9 +274,9 @@ class GTK::Box:ver<4> is GTK::Widget {
 
 }
 
-BEGIN {
-  writeTypeToManifest(GTK::Box);
-}
+# BEGIN {
+#   writeTypeToManifest(GTK::Box);
+# }
 
 INIT {
   my \O = GTK::Box;

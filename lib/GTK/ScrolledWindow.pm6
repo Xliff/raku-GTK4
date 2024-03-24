@@ -465,9 +465,9 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
 
 }
 
-BEGIN {
-  writeTypeToManifest(GTK::ScrolledWindow, $?FILE);
-}
+# BEGIN {
+#   writeTypeToManifest(GTK::ScrolledWindow, $?FILE);
+# }
 
 INIT {
   my \O = GTK::ScrolledWindow;

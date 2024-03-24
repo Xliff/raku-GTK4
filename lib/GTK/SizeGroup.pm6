@@ -10,6 +10,7 @@ use GLib::GSList;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GTK::Roles::Buildable:ver<4>;
 
 our subset GtkSizeGroupAncestry is export of Mu
   where GtkSizeGroup | GtkBuildable | GObject;
@@ -35,7 +36,7 @@ class GTK::SizeGroup:ver<4> {
 
       when GtkBuildable {
         $to-parent = cast(GObject, $_);
-        $gtk-b     = $_;
+        $!gtk-b    = $_;
         cast(GtkSizeGroup, $_);
       }
 
@@ -141,21 +142,21 @@ class GTK::SizeGroup:ver<4> {
 
 }
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::SizeGroup;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::SizeGroup;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     %widgets = from-json( .slurp );
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::SizeGroup;

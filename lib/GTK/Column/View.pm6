@@ -325,21 +325,23 @@ class GTK::Column::View:ver<4> is GTK::Widget:ver<4> {
 }
 
 # cw: Are macros good enough for this, yet? We should test it!
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Column::View;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::Column::View;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     if .slurp -> $j {
+#       %widgets = try from-json($j) if +$j.lines;
+#     }
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::Column::View;

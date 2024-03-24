@@ -746,21 +746,21 @@ class GTK::Label:ver<4> is GTK::Widget {
 
 }
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Label;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::Label;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     %widgets = from-json( .slurp );
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::Label;

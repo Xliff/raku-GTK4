@@ -124,22 +124,23 @@ class GTK::Button::Link:ver<4> is GTK::Button:ver<4> {
 
 }
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Button::Link;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    my $existing = .slurp;
-    %widgets = try from-json($existing) if $existing.chars;
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::Button::Link;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     if .slurp -> $j {
+#       %widgets = try from-json($j) if +$j.lines;
+#     }
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::Button::Link;

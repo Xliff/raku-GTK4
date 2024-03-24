@@ -461,9 +461,9 @@ class GTK::Button::Spin:ver<4> is GTK::Widget:ver<4> {
 
 }
 
-BEGIN {
-  writeTypeToManifest(GTK::Button::Spin);
-}
+# BEGIN {
+#   writeTypeToManifest(GTK::Button::Spin);
+# }
 
 INIT {
   my \O = GTK::Button::Spin;

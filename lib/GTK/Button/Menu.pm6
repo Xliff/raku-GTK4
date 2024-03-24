@@ -6,6 +6,7 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Button::Menu:ver<4>;
 
+use GIO::MenuModel;
 use GTK::Widget:ver<4>;
 use GTK::Popover:ver<4>;
 
@@ -54,10 +55,12 @@ class GTK::Button::Menu is GTK::Widget:ver<4> {
     $o;
   }
 
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-menu-button = gtk_menu_button_new();
 
-    $gtk-menu-button ?? self.bless( :$gtk-menu-button ) !! Nil;
+    my $o = $gtk-menu-button ?? self.bless( :$gtk-menu-button ) !! Nil;
+    $o.setAttributes( |%a ) if $o && +%a;
+    $o;
   }
 
   # Type: boolean
@@ -385,21 +388,23 @@ class GTK::Button::Menu is GTK::Widget:ver<4> {
 
 }
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::Button::Menu;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::Button::Menu;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     if .slurp -> $j {
+#       %widgets = try from-json($j) if +$j.lines;
+#     }
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::Button::Menu;

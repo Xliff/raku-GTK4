@@ -275,9 +275,9 @@ class GTK::Button::Check:ver<4> is GTK::Widget:ver<4> {
 }
 
 
-BEGIN {
-  writeTypeToManifest(GTK::Button::Check);
-}
+# BEGIN {
+#   writeTypeToManifest(GTK::Button::Check);
+# }
 
 INIT {
   my \O = GTK::Button::Check;

@@ -286,9 +286,9 @@ class GTK::Button:ver<4> is GTK::Widget:ver<4> {
 
 }
 
-BEGIN {
-  writeTypeToManifest( GTK::Button );
-}
+# BEGIN {
+#   writeTypeToManifest( GTK::Button );
+# }
 
 INIT {
   my \O = GTK::Button;

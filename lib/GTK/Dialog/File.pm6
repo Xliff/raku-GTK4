@@ -125,7 +125,11 @@ class GTK::Dialog::File {
   }
 
   # Type: GtkListModel
-  method shortcut-folders ( :$raw = False ) is rw  is g-property is also<shortcut_folders> {
+  method shortcut-folders ( :$raw = False )
+    is rw
+    is g-property
+    is also<shortcut_folders>
+  {
     my $gv = GLib::Value.new( GIO::ListModel.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -193,6 +197,12 @@ class GTK::Dialog::File {
   method get_title is also<get-title> {
     gtk_file_dialog_get_title($!gtk-d-f);
   }
+
+  # method get_type is also<get-type> {
+  #   state ($n, $t);
+  #
+  #   unstable_get_type( self.^name, &gtk_file_dialog_get_type, $n, $t );
+  # }
 
   multi method open (
                         &callback      = Callable,
@@ -443,27 +453,15 @@ class GTK::Dialog::File {
 
 }
 
-BEGIN {
-  use JSON::Fast;
+# BEGIN {
+#   writeTypeToManifest(GTK::Dialog::File);
+# }
 
-  my %widgets;
-  my \O = GTK::Dialog::File;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
-
-INIT {
-  my \O = GTK::Dialog::File;
-  %widget-types{O.get_type} = {
-    name        => O.^name,
-    object      => O,
-    pair        => O.getTypePair
-  }
-}
+# INIT {
+#   my \O = GTK::Dialog::File;
+#   %widget-types{O.get_type} = {
+#     name        => O.^name,
+#     object      => O,
+#     pair        => O.getTypePair
+#   }
+# }

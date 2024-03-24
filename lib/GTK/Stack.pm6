@@ -628,26 +628,26 @@ class GTK::Stack::Page:ver<4> {
 
 }
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  for GTK::Stack, GTK::Stack::Page -> \O {
-    my \P = O.getTypePair;
-    given "widget-types.json".IO.open( :rw ) {
-      if .slurp -> $j {
-        if +$j.lines {
-          .lock;
-          %widgets = from-json( $j );
-          %widgets{ P.head.^shortname } = P.tail.^name;
-          .seek(0, SeekFromBeginning);
-          .spurt: to-json(%widgets);
-          .close;
-        }
-      }
-    }
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   for GTK::Stack, GTK::Stack::Page -> \O {
+#     my \P = O.getTypePair;
+#     given "widget-types.json".IO.open( :rw ) {
+#       if .slurp -> $j {
+#         if +$j.lines {
+#           .lock;
+#           %widgets = from-json( $j );
+#           %widgets{ P.head.^shortname } = P.tail.^name;
+#           .seek(0, SeekFromBeginning);
+#           .spurt: to-json(%widgets);
+#           .close;
+#         }
+#       }
+#     }
+#   }
+# }
 
 INIT {
   for GTK::Stack, GTK::Stack::Page -> \O {

@@ -6,7 +6,7 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::GridView:ver<4>;
 
-use GTK::ListBase:ver<4>;
+use GTK::List::Base:ver<4>;
 use GTK::List::Item::Factory:ver<4>;
 
 use GLib::Roles::Implementor;
@@ -14,7 +14,7 @@ use GLib::Roles::Implementor;
 our subset GtkGridViewAncestry is export of Mu
   where GtkGridView | GtkListBaseAncestry;
 
-class GTK::GridView:ver<4> is GTK::ListBase:ver<4> {
+class GTK::GridView:ver<4> is GTK::List::Base:ver<4> {
   has GtkGridView $!gtk-gv is implementor;
 
   submethod BUILD ( :$gtk-grid-view ) {
@@ -251,21 +251,21 @@ class GTK::GridView:ver<4> is GTK::ListBase:ver<4> {
 
 }
 
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::GridView;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::GridView;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     %widgets = from-json( .slurp );
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::GridView;

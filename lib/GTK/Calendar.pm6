@@ -242,9 +242,9 @@ class GTK::Calendar:ver<4> is GTK::Widget:ver<4> {
 
 }
 
-BEGIN {
-  writeTypeToManifest( GTK::Calendar );
-}
+# BEGIN {
+#   writeTypeToManifest( GTK::Calendar );
+# }
 
 INIT {
   my \O = GTK::Calendar;
