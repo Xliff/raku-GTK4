@@ -13,7 +13,7 @@ use GLib::Roles::Implementor;
 our subset GtkPasswordEntryBufferAncestry is export of Mu
   where GtkPasswordEntryBuffer | GtkEntryBufferAncestry;
 
-class GTK::EntryBuffer::Password {
+class GTK::EntryBuffer::Password:ver<4> is GTK::Entry::Buffer:ver<4> {
   has GtkPasswordEntryBuffer $!gtk-peb is implementor;
 
   submethod BUILD ( :$gtk-pass-entry-buffer ) {
