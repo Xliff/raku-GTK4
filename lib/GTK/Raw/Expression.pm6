@@ -55,14 +55,22 @@ sub gtk_cclosure_expression_get_type
 
 sub gtk_cclosure_expression_new (
   GType                 $value_type,
-  GClosureMarshal       $marshal,
+                        &marshal (
+                          GClosure,
+                          GValue,
+                          guint
+                          GValue,
+                          gpointer,
+                          gpointer
+                          --> gpointer
+                        ),
   guint                 $n_params,
   CArray[GtkExpression] $params,
-                        &callback_func (gpointer),
+                        &callback_func (gpointer --> gpointer),
   gpointer              $user_data,
-                        &user_destroy
+                        &user_destroy (gpointer)
 )
-  returns GtkExpression
+  returns GtkExpressionCClosure
   is      native(gtk4)
   is      export
 { * }
@@ -79,7 +87,7 @@ sub gtk_closure_expression_new (
   guint                 $n_params,
   CArray[GtkExpression] $params
 )
-  returns GtkExpression
+  returns GtkClosureExpression
   is      native(gtk4)
   is      export
 { * }
@@ -97,7 +105,7 @@ sub gtk_constant_expression_get_value (GtkConstantExpression $expression)
 { * }
 
 sub gtk_constant_expression_new (GType $value_type)
-  returns GtkExpression
+  returns GtkConstantExpression
   is      native(gtk4)
   is      export
 { * }
@@ -121,7 +129,7 @@ sub gtk_object_expression_get_type
 { * }
 
 sub gtk_object_expression_new (GObject $object)
-  returns GtkExpression
+  returns GtkObjectExpression
   is      native(gtk4)
   is      export
 { * }
