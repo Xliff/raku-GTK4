@@ -106,3 +106,9 @@ sub gtk_selection_model_unselect_range (
   is      native(gtk4)
   is      export
 { * }
+
+sub gtk_selection_model_get_type
+  returns GType
+  is      native(gtk4)
+  is      export
+{ * }
