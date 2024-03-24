@@ -13,7 +13,7 @@ use GLib::Roles::Object;
 our subset GtkFilterAncestry is export of Mu
   where GtkFilter | GObject;
 
-class GTK::Filter {
+class GTK::Filter:ver<4> {
   also does GLib::Roles::Object;
 
   has GtkFilter $!gtk-f is implementor;
