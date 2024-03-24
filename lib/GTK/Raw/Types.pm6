@@ -14,6 +14,7 @@ my constant forced = 0;
 unit package GTK::Raw::Types:ver<4>;
 
 need Cairo;
+need GLib::Raw::Debug;
 need GLib::Raw::Definitions;
 need GLib::Raw::Enums;
 need GLib::Raw::Exceptions;
