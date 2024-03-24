@@ -8,6 +8,7 @@ use GTK::Raw::Text::Buffer:ver<4>;
 
 use GLib::Value;
 use GTK::Text::Iter:ver<4>;
+use GTK::Text::Tag:ver<4>;
 use GTK::Text::Tag::Table:ver<4>;
 
 use GLib::Roles::Implementor;
@@ -232,13 +233,19 @@ class GTK::Text::Buffer:ver<4> {
     self.apply_tag($t, $s, $e);
   }
 
-  method apply_tag (
+
+  proto method apply_tag (|)
+    is also<apply-tag>
+  { * }
+
+  multi method apply_tag (GtkTextTag() $tag) {
+    samewith($tag, |self.bounds);
+  }
+  multi method apply_tag (
     GtkTextTag()    $tag,
     GtkTextIter()   $start,
     GtkTextIter()   $end
-  )
-    is also<apply-tag>
-  {
+  ) {
     gtk_text_buffer_apply_tag($!gtk-tb, $tag, $start, $end);
   }
 
@@ -292,10 +299,14 @@ class GTK::Text::Buffer:ver<4> {
     gtk_text_buffer_create_mark($!gtk-tb, $mark_name, $where, $l);
   }
 
-  method create_tag (Str() $tag_name, Str() $first_property_name)
+  method create_tag (Str() $tag_name, :$raw = False)
     is also<create-tag>
   {
-    gtk_text_buffer_create_tag($!gtk-tb, $tag_name, $first_property_name);
+    propReturnObject(
+      gtk_text_buffer_create_tag($!gtk-tb, $tag_name, Str),
+      $raw,
+      |GTK::Text::Tag.getTypePair
+    );
   }
 
   method cut_clipboard (GdkClipboard() $clipboard, Int() $default_editable)
@@ -350,7 +361,10 @@ class GTK::Text::Buffer:ver<4> {
   }
 
   proto method get_bounds (|)
-    is also<get-bounds>
+    is also<
+      get-bounds
+      bounds
+    >
   { * }
 
   multi method get_bounds (:$raw = False) {
