@@ -30,7 +30,7 @@ sub gtk_tree_model_foreach (
 
 sub gtk_tree_model_get (
   GtkTreeModel $tree_model,
-  GtkTreeIter  $iter
+  GtkTreeIter  $iter,
   GType        $type,
   gpointer     $val,
   gint         $terminator
@@ -41,7 +41,7 @@ sub gtk_tree_model_get (
 
 sub gtk_tree_model_get_column_type (
   GtkTreeModel $tree_model,
-  gint         $index_
+  gint         $index
 )
   returns GType
   is      native(gtk4)
