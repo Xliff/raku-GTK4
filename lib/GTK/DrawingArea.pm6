@@ -2,6 +2,7 @@ use v6.c;
 
 use Method::Also;
 
+use Cairo;
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::DrawingArea:ver<4>;
@@ -115,32 +116,44 @@ class GTK::DrawingArea:ver<4> is GTK::Widget:ver<4> {
   }
 
   method set_draw_func (
-             &draw_func,
-    gpointer $user_data  = gpointer,
-             &destroy    = %DEFAULT-CALLBACKS<GDestroyNotify>
+              &draw_func,
+    gpointer  $user_data  = gpointer,
+              &destroy    = %DEFAULT-CALLBACKS<GDestroyNotify>,
+             :$raw        = False
   )
     is also<set-draw-func>
   {
-    gtk_drawing_area_set_draw_func($!gtk-da, &draw_func, $user_data, &destroy);
-  }
+    gtk_drawing_area_set_draw_func(
+      $!gtk-da,
+      -> *@a {
+        CATCH {
+          default { .message.say; .backtrace.concise.say }
+        }
 
-}
-
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::DrawingArea;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
+        my $ct = $raw ?? @a[1] !! Cairo::Context.new( @a[1] );
+        &draw_func( self, $ct, |@a.skip(2) );
+      },
+      $user_data,
+      &destroy
+    );
   }
 }
+
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::DrawingArea;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     %widgets = from-json( .slurp );
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::DrawingArea;
