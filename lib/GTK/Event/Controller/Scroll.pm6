@@ -56,8 +56,10 @@ class GTK::Event::Controller::Scroll:ver<4>
     $o.ref if $ref;
     $o;
   }
-  multi method new {
-    my $gtk-gesture-scroll = gtk_event_controller_scroll_new();
+  multi method new (Int() $flags) {
+    my GtkEventControllerScrollFlags $f = $flags;
+
+    my $gtk-gesture-scroll = gtk_event_controller_scroll_new($f);
 
     $gtk-gesture-scroll ?? self.bless( :$gtk-gesture-scroll ) !! Nil;
   }
