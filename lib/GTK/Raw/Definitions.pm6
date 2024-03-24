@@ -43,6 +43,7 @@ class GtkActionable              is repr<CPointer> does GLib::Roles::Pointers is
 class GtkAlertDialog             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAlternativeTrigger      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkActionBar               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkAnyFilter               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAspectFrame             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAssistant               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAssistantPage           is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -82,6 +83,7 @@ class GtkEventControllerKey      is repr<CPointer> does GLib::Roles::Pointers is
 class GtkEventControllerLegacy   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEventControllerMotion   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkEventControllerScroll   is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkEveryFilter             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpander                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpression              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkExpressionCClosure      is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -118,6 +120,7 @@ class GtkMediaFile               is repr<CPointer> does GLib::Roles::Pointers is
 class GtkMediaStream             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMenuButton              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMnemonicAction          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkMultiFilter             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMnemonicTrigger         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkMultiSelection          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkNamedAction             is repr<CPointer> does GLib::Roles::Pointers is export { }
