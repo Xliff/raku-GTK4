@@ -71,3 +71,15 @@ sub gtk_string_list_take (
   is      native(gtk4)
   is      export
 { * }
+
+sub gtk_string_list_get_type
+  returns GType
+  is      native(gtk4)
+  is      export
+{ * }
+
+sub gtk_string_object_get_type
+  returns GType
+  is      native(gtk4)
+  is      export
+{ * }
