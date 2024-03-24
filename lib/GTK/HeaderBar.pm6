@@ -143,15 +143,30 @@ class GTK::HeaderBar:ver<4> is GTK::Widget:ver<4> {
     unstable_get_type( self.^name, &gtk_header_bar_get_type, $n, $t );
   }
 
-  method pack_end (GtkWidget() $child) is also<pack-end> {
+  method pack_end (GtkWidget() $child)
+    is also<
+      pack-end
+      add-child
+      add_child
+    >
+  {
+    #self.appendBuildableChild($child);
     gtk_header_bar_pack_end($!gtk-hb, $child);
   }
 
-  method pack_start (GtkWidget() $child) is also<pack-start> {
+  method pack_start (GtkWidget() $child)
+    is also<
+      pack-start
+      prepend-child
+      prepend_child
+    >
+  {
+    #self.prependBuildableChild($child);
     gtk_header_bar_pack_start($!gtk-hb, $child);
   }
 
   method remove (GtkWidget() $child) {
+    #self.removeBuildableChild($child)
     gtk_header_bar_remove($!gtk-hb, $child);
   }
 
@@ -177,22 +192,21 @@ class GTK::HeaderBar:ver<4> is GTK::Widget:ver<4> {
 
 }
 
-
-BEGIN {
-  use JSON::Fast;
-
-  my %widgets;
-  my \O = GTK::HeaderBar;
-  my \P = O.getTypePair;
-  given "widget-types.json".IO.open( :rw ) {
-    .lock;
-    %widgets = from-json( .slurp );
-    %widgets{ P.head.^shortname } = P.tail.^name;
-    .seek(0, SeekFromBeginning);
-    .spurt: to-json(%widgets);
-    .close;
-  }
-}
+# BEGIN {
+#   use JSON::Fast;
+#
+#   my %widgets;
+#   my \O = GTK::HeaderBar;
+#   my \P = O.getTypePair;
+#   given "widget-types.json".IO.open( :rw ) {
+#     .lock;
+#     %widgets = from-json( .slurp );
+#     %widgets{ P.head.^shortname } = P.tail.^name;
+#     .seek(0, SeekFromBeginning);
+#     .spurt: to-json(%widgets);
+#     .close;
+#   }
+# }
 
 INIT {
   my \O = GTK::HeaderBar;
