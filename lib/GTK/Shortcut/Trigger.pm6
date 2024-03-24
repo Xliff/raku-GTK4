@@ -12,6 +12,8 @@ our subset GtkShortcutTriggerAncestry is export of Mu
   where GtkShortcutTrigger | GObject;
 
 class GTK::Shortcut::Trigger:ver<4> {
+  also does GLib::Roles::Object;
+
   has GtkShortcutTrigger $!gtk-st is implementor;
 
   submethod BUILD ( :$gtk-shortcut-trigger ) {
@@ -23,7 +25,7 @@ class GTK::Shortcut::Trigger:ver<4> {
 
     $!gtk-st = do {
       when GtkShortcutTrigger {
-        $to-parent = cast(GtkShortcutTrigger, $_);
+        $to-parent = cast(GObject, $_);
         $_;
       }
 
@@ -32,7 +34,7 @@ class GTK::Shortcut::Trigger:ver<4> {
         cast(GtkShortcutTrigger, $_);
       }
     }
-    self.setGtkShortcutTrigger($to-parent);
+    self!setObject($to-parent);
   }
 
   method GTK::Raw::Definitions::GtkShortcutTrigger
