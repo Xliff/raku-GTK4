@@ -9,12 +9,14 @@ use GTK::Raw::String::List:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GIO::Roles::ListModel;
 
 our subset GtkStringListAncestry is export of Mu
-  where GtkStringList | GObject;
+  where GtkStringList | GListModel | GObject;
 
 class GTK::String::List {
   also does GLib::Roles::Object;
+  also does GIO::Roles::ListModel;
 
   has GtkStringList $!gtk-sl is implementor;
 
@@ -31,12 +33,19 @@ class GTK::String::List {
         $_;
       }
 
+      when GListModel {
+        $to-parent = cast(GObject, $_);
+        $!lm       = $_;
+        cast(GtkStringList, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkStringList, $_);
       }
     }
     self!setObject($to-parent);
+    self.roleInit-GListModel;
   }
 
   method GTK::Raw::Definitions::GtkStringList
@@ -71,6 +80,12 @@ class GTK::String::List {
     my guint $p = $position;
 
     gtk_string_list_get_string($!gtk-sl, $p);
+  }
+
+  method get_type is also<get-type> {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_string_list_get_type, $n, $t );
   }
 
   method remove (Int() $position) {
@@ -172,6 +187,12 @@ class GTK::String::Object {
 
   method get_string is also<get-string> {
     gtk_string_object_get_string($!gtk-so);
+  }
+
+  method get_type is also<get-type> {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_string_object_get_type, $n, $t );
   }
 
 }
