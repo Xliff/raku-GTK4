@@ -1,5 +1,6 @@
 use v6.c;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Assistant:ver<4>;
 
@@ -8,7 +9,7 @@ use GTK::Window;
 use GLib::Roles::Implementor;
 
 our subset GtkAssistantAncestry is export of Mu
-  where GtkAssistant | GtkWidgetAncestry;
+  where GtkAssistant | GtkWindowAncestry;
 
 class GTK::Assistant:ver<4> is GTK::Window:ver<4> {
   has GtkAssistant $!gtk-ass is implementor;
@@ -48,20 +49,25 @@ class GTK::Assistant:ver<4> is GTK::Window:ver<4> {
     $o.ref if $ref;
     $o;
   }
-
-  method new {
+  multi method new ( *%a ) {
     my $gtk-assistant = gtk_assistant_new();
 
-    $gtk-assistant ?? self.bless( :$gtk-assistant ) !! Nil;
+    my $o = $gtk-assistant ?? self.bless( :$gtk-assistant ) !! Nil;
+    $o.setAttributes(%a) if $o +%a;
+    $o;
   }
 
   # Type: GtkListModel
-  method pages is rw  is g-property {
-    my $gv = GLib::Value.new( GtkListModel );
+  method pages ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new( GIO::ListModel.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('pages', $gv);
-        $gv.GtkListModel;
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GIO::ListModel.getTypePair
+        );
       },
       STORE => -> $,  $val is copy {
         warn 'pages does not allow writing'
@@ -156,7 +162,7 @@ class GTK::Assistant:ver<4> is GTK::Window:ver<4> {
   }
 
   method get_type {
-    state ($n, $t)
+    state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_assistant_get_type, $n, $t );
   }
@@ -230,11 +236,14 @@ class GTK::Assistant:ver<4> is GTK::Window:ver<4> {
 
 }
 
+use GLib::Roles::Object;
 
 our subset GtkAssistantPageAncestry is export of Mu
   where GtkAssistantPage | GObject;
 
 class GTK::Assistant::Page {
+  also does GLib::Roles::Object;
+
   has GtkAssistantPage $!gtk-ass-p is implementor;
 
   submethod BUILD ( :$gtk-assistant-page ) {
@@ -246,7 +255,7 @@ class GTK::Assistant::Page {
 
     $!gtk-ass-p = do {
       when GtkAssistantPage {
-        $to-parent = cast(GtkObject, $_);
+        $to-parent = cast(GObject, $_);
         $_;
       }
 
