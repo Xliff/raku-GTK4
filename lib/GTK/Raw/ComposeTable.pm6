@@ -3,6 +3,7 @@ use v6.c;
 use NativeCall;
 
 use GLib::Raw::Definitions;
+use GLib::Raw::Structs;
 use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
 use GTK::Raw::Structs:ver<4>;
@@ -46,7 +47,12 @@ sub gtk_compose_table_data_hash (
 
 sub gtk_compose_table_foreach (
   GtkComposeTable            $table,
-  GtkComposeSequenceCallback $callback,
+                             &callback (
+                               gunichar,
+                               int32,
+                               Str,
+                               gpointer --> gpointer
+                             ),
   gpointer                   $data
 )
   is      native(gtk4)
