@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::SelectionModel:ver<4>;
 
@@ -8,14 +10,19 @@ use GTK::Bitset:ver<4>;
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
+use GIO::Roles::ListModel;
+
 role GTK::Roles::SelectionModel:ver<4> {
+  also does GIO::Roles::ListModel;
+
   has GtkSelectionModel $!gtk-sm is implementor;
 
   method roleInit-GtkSelectionModel {
     return if $!gtk-sm;
 
     my \i = findProperImplementor( self.^attributes );
-    $!gtk-sm = cast( GtkSelectionModel, i.get_value(self) )
+    $!gtk-sm = cast( GtkSelectionModel, i.get_value(self) );
+    self.roleInit-GListModel;
   }
 
   method GTK::Raw::Definitions::GtkSelectionModel
@@ -48,6 +55,12 @@ role GTK::Roles::SelectionModel:ver<4> {
       $raw,
       |GTK::Bitset.getTypePair
     );
+  }
+
+  method gtkselectionmodel_get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_selection_model_get_type, $n, $t );
   }
 
   method is_selected (Int() $position) {
@@ -108,9 +121,9 @@ role GTK::Roles::SelectionModel:ver<4> {
 
 
 our subset GtkSelectionModelAncestry is export of Mu
-  where GtkSelectionModel | GObject;
+  where GtkSelectionModel | GListModel | GObject;
 
-class GTK::SelectionModel {
+class GTK::Selection::Model {
   also does GLib::Roles::Object;
   also does GTK::Roles::SelectionModel;
 
@@ -127,12 +140,19 @@ class GTK::SelectionModel {
         $_;
       }
 
+      when GListModel {
+        $to-parent = cast(GObject, $_);
+        $!lm       = $_;
+        cast(GtkSelectionModel, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkSelectionModel, $_);
       }
     }
     self!setObject($to-parent);
+    self.roleInit-GListModel;
   }
 
   method new (
@@ -147,4 +167,25 @@ class GTK::SelectionModel {
     $o;
   }
 
+  method get_type is also<get-type> {
+    self.gtkselectionmodel_get_type;
+  }
+
+}
+
+sub returnSelectedObjects ($model, \T, $O?) is export {
+  $model.itemObjects($O !=== Nil);
+  do gather for $model.elems {
+    take $model.get_object(
+      type-pair => (T, $O)
+    ) if $model.is_selected($_);
+  }
+}
+
+sub returnSelectionModel ($obj, $raw, $model, \T, $O?) is export {
+  my $o = propReturnObject( $obj, $raw, |GTK::SelectionModel.getTypePair );
+  return $o if $raw || $model;
+  my @tp = (T, $O);
+  my $non-object = $raw || $O === Nil;
+  returnSelectedObjects( $o, |@tp[ ^($non-object ?? 1 !! 2) ] )
 }
