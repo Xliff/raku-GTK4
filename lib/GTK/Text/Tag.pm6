@@ -47,6 +47,9 @@ class GTK::Text::Tag:ver<4> {
     is also<GtkTextTag>
   { $!gtk-tt }
 
+  proto method new (|)
+  { * }
+
   multi method new (
      $gtk-text-tag where * ~~ GtkTextTagAncestry,
 
@@ -58,10 +61,15 @@ class GTK::Text::Tag:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Str $name) {
+  multi method new (Str() $name) {
     my $gtk-text-tag = gtk_text_tag_new($name);
 
     $gtk-text-tag ?? self.bless( :$gtk-text-tag ) !! Nil;
+  }
+  multi method new (*%a) {
+    my $o = samewith('');
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: boolean
@@ -239,13 +247,13 @@ class GTK::Text::Tag:ver<4> {
       FETCH => sub ($) {
         self.prop_get('font-desc', $gv);
         propReturnObject(
-          $gv.object,
+          $gv.boxed,
           $raw,
           |Pango::FontDescription.getTypePair
         );
       },
       STORE => -> $, PangoFontDescription() $val is copy {
-        $gv.object = $val;
+        $gv.boxed = $val;
         self.prop_set('font-desc', $gv);
       }
     );
