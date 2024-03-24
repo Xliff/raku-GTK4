@@ -48,6 +48,12 @@ role GTK::Roles::Root {
     gtk_root_set_focus($!gtk-r, $focus);
   }
 
+  method gtkroot_get_type {
+    state ($n, $t);
+
+    unstable_get_type( ::?CLASS.^name, &gtk_root_get_type, $n, $t );
+  }
+
 }
 
 our subset GtkRootAncestry is export of Mu
@@ -86,6 +92,10 @@ class GTK::Root {
     $o;
   }
 
+  method get_type {
+    self.gtkroot_get_type
+  }
+
 }
 
 
@@ -107,6 +117,12 @@ sub gtk_root_set_focus (
   GtkRoot   $self,
   GtkWidget $focus
 )
+  is      native(gtk4)
+  is      export
+{ * }
+
+sub gtk_root_get_type
+  returns GType
   is      native(gtk4)
   is      export
 { * }
