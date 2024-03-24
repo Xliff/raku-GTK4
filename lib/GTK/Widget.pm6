@@ -4,6 +4,7 @@ use Method::Also;
 use NativeCall;
 
 use GLib::Raw::Traits;
+use GLib::Object::Types;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Widget:ver<4>;
 
@@ -102,6 +103,7 @@ class GTK::Widget:ver<4> {
         $gv.string;
       },
       STORE => -> $, Str() $val is copy {
+        %WIDGETS{$val} = self;
         $gv.string = $val;
         self.prop_set('name', $gv);
       }
@@ -128,7 +130,7 @@ class GTK::Widget:ver<4> {
 
   # Type: GTKRoot
   method root ( :$raw = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( Gtk::Root.get_type );
+    my $gv = GLib::Value.new( GTK::Root.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('root', $gv);
@@ -607,17 +609,17 @@ class GTK::Widget:ver<4> {
     is g-property
     is also<css_classes>
   {
-    my $gv = GLib::Value.new( G_TYPE_POINTER );
+    my $gv = GLib::Value.new( GLib::StringV.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('css-classes', $gv);
-        return $gv.pointer if $raw;
-        my $r = cast(CArray[Str], $gv.pointer);
+        return $gv.boxed if $raw;
+        my $r = cast(CArray[Str], $gv.boxed);
         return $r if $carray;
         CArrayToArray($r);
       },
       STORE => -> $, $val is copy {
-        $gv.pointer = propAssignArray(Str, $val);
+        $gv.boxed = propAssignArray(Str, $val);
         self.prop_set('css-classes', $gv);
       }
     );
@@ -1684,6 +1686,10 @@ class GTK::Widget:ver<4> {
   }
 
   method set_name (Str() $name) is also<set-name> {
+    if self.name -> $n {
+      %WIDGETS{$n}:delete
+    }
+    %WIDGETS{$name} = self;
     gtk_widget_set_name($!gtk-w, $name);
   }
 
