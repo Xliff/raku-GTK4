@@ -8,7 +8,7 @@ use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
 use GTK::Raw::Structs:ver<4>;
 
-unit package GTK::Raw::Notebook;
+unit package GTK::Raw::Notebook:ver<4>;
 
 ### /usr/src/gtk4/gtk/gtknotebook.h
 
