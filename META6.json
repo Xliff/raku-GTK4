@@ -18,7 +18,7 @@
       "lib/linux/libtree-helper.so",
       "lib/windows/treehelper.dll"
     ],
-                                                                                        "provides": {
+                                                                                                    "provides": {
       "GTK::Raw::Builder::Subs"                        :  "lib/GTK/Raw/Builder/Subs.pm6"                      ,
       "GTK::Raw::Definitions"                          :  "lib/GTK/Raw/Definitions.pm6"                       ,
       "GTK::ColorUtils"                                :  "lib/GTK/ColorUtils.pm6"                            ,
@@ -73,6 +73,7 @@
       "GTK::Roles::Signals::Widget"                    :  "lib/GTK/Roles/Signals/Widget.pm6"                  ,
       "GTK::Roles::SymbolicPaintable"                  :  "lib/GTK/Roles/SymbolicPaintable.pm6"               ,
       "GTK::Settings"                                  :  "lib/GTK/Settings.pm6"                              ,
+      "GTK::Sorter"                                    :  "lib/GTK/Sorter.pm6"                                ,
       "GTK::StyleContext"                              :  "lib/GTK/StyleContext.pm6"                          ,
       "GTK::StyleProvider"                             :  "lib/GTK/StyleProvider.pm6"                         ,
       "GTK::Text::Child::Anchor"                       :  "lib/GTK/Text/Child/Anchor.pm6"                     ,
