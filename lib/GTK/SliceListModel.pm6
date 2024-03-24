@@ -6,9 +6,9 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::SliceListModel:ver<4>;
 
-use GIO::ListModel;
 
 use GLib::Roles::Implementor;
+use GIO::Roles::ListModel;
 
 our subset GtkSliceListModelAncestry is export of Mu
   where GtkSliceListModel | GObject;
@@ -25,7 +25,7 @@ class GTK::SliceListModel:ver<4> is GIO::ListModel {
 
     $!gtk-slm = do {
       when GtkSliceListModel {
-        $to-parent = cast(GObject, $_);
+        $to-parent = cast(GListModel, $_);
         $_;
       }
 
@@ -34,7 +34,7 @@ class GTK::SliceListModel:ver<4> is GIO::ListModel {
         cast(GtkSliceListModel, $_);
       }
     }
-    self!setObject($to-parent);
+    self.setGListModel($to-parent);
   }
 
   method GTK::Raw::Definitions::GtkSliceListModel
