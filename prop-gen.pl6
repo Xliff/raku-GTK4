@@ -250,42 +250,34 @@ sub generateFromFile (
   /;
 
   my %properties;
-
-  sub property-name ($n) {
-  	$n<p>[0].Str
-  }
-
-  for $search[].sort({ .&property-name }) {
+  for $search.sort( *.<p>[0].Str ) {
 
     #.gist.say;
 
-    my $prop-name = .&property-name;
+    my $prop-name = .<p>[0].Str;
 
     my $rw = (
       do gather for .<p>.tail
                         .lc
                         .split(/ <.ws> '|' <.ws> /)
-                        .map({ .trim })
-                        .map({ S:g/<[\(\)]>// })
+        -> $_ is copy
      {
         my @perms;
 
-        #say "RW-P: { $_ }";
+        # say "RW-P: $_";
 
+        s:g/\W//;
         s/ 'writ'» /write/;
 
         @perms.push: 'read'           if .ends-with('_read'  | '_readable');
         @perms.push: 'write'          if .ends-with('_write' | '_writable');
         @perms.append: |<read write>  if .ends-with('readwrite');
 
-        #say "Perms: { @perms.gist }";
-
         if +@perms {
           take $_ for @perms;
         }
       }
     ).cache;
-    next unless +$rw;
 
     #say "RW: { $rw.gist }";
 
@@ -295,12 +287,11 @@ sub generateFromFile (
       $*types = $type;
       getType
     } else {
-      next unless .<p>[3];
-
-      $*types = $type-prefix ~ .<p>[3].split('_')
-                                      .skip(2)
-                                      .map( *.lc.tc )
-                                      .join;
+      my $pre = .<p>[3] // '';
+      $*types = $type-prefix ~ $pre.split('_')
+                                   .skip(2)
+                                   .map( *.lc.tc )
+                                   .join;
     }
 
     my $dep = False;
@@ -319,7 +310,8 @@ sub MAIN (
   $control           is copy,
   :$var              is copy = 'w',
   :$prefix           is copy = "https://developer.gnome.org/gtk3/stable/",
-  :$type-prefix              = %config<type-prefix> // %config<prefix>.lc.tc,
+  :$type-prefix              = %config<struct-prefix> // %config<struct_prefix> //
+                               %config<type-prefix>   // %config<type_prefix>   // %config<prefix>,
   :$control-name
 ) {
   # If it's a URL, then try to pick it apart
