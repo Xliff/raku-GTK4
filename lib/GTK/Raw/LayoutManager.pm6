@@ -62,6 +62,12 @@ sub gtk_layout_manager_measure (
   is      export
 { * }
 
+sub gtk_layout_manager_get_type
+  returns GType
+  is      native(gtk4)
+  is      export
+{ * }
+
 ### /usr/src/gtk4-4.8.1+ds/gtk/gtklayoutchild.h
 
 sub gtk_layout_child_get_child_widget (GtkLayoutChild $layout_child)
