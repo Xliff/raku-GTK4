@@ -55,8 +55,8 @@ class GTK::Shortcuts::Group:ver<4> is GTK::Box:ver<4> {
   multi method new (*%hash) {
     my $gtk-shortcuts-group = ::?CLASS.new-object-ptr( ::?CLASS.get_type );
 
-    my $o = $gtk-shortfcuts-group ?? self.bless( :$gtk-shortfcuts-group )
-                                  !! Nil;
+    my $o = $gtk-shortcuts-group ?? self.bless( :$gtk-shortcuts-group )
+                                 !! Nil;
     $o.setAttributes(%hash) if +%hash;
     $o;
   }
