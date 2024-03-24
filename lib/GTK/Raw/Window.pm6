@@ -421,3 +421,36 @@ sub gtk_window_unminimize (GtkWindow $window)
   is      native(gtk4)
   is      export
 { * }
+
+### /usr/src/gtk4/gtk/gtkshow.h
+
+sub gtk_show_uri (
+  GtkWindow $parent,
+  Str       $uri,
+  guint32   $timestamp
+)
+  is      native(gtk4)
+  is      export
+{ * }
+
+sub gtk_show_uri_full (
+  GtkWindow           $parent,
+  Str                 $uri,
+  guint32             $timestamp,
+  GCancellable        $cancellable,
+                      &callback (GtkWindow, GAsyncResult, gpointer),
+  gpointer            $user_data
+)
+  is      native(gtk4)
+  is      export
+{ * }
+
+sub gtk_show_uri_full_finish (
+  GtkWindow               $parent,
+  GAsyncResult            $result,
+  CArray[Pointer[GError]] $error
+)
+  returns uint32
+  is      native(gtk4)
+  is      export
+{ * }
