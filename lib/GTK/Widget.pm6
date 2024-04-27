@@ -974,12 +974,17 @@ class GTK::Widget:ver<4> {
     :$raw           = False,
     :slow(:$proper) = $fast.not
   )
-    is also<get-first-child>
+    is also<
+      get-first-child
+      first-child
+      first_child
+    >
   {
     returnProperWidget(
       gtk_widget_get_first_child($!gtk-w),
       $raw,
-      $proper
+      $proper,
+      GTK::Widget
     );
   }
 
@@ -988,12 +993,17 @@ class GTK::Widget:ver<4> {
     :$raw           = False,
     :slow(:$proper) = $fast.not
   )
-    is also<get-focus-child>
+    is also<
+      get-focus-child
+      focus_child
+      focus-child
+    >
   {
     returnProperWidget(
       gtk_widget_get_focus_child($!gtk-w),
       $raw,
-      $proper
+      $proper,
+      GTK::Widget
     );
   }
 
@@ -1062,7 +1072,8 @@ class GTK::Widget:ver<4> {
     returnProperWidget(
       gtk_widget_get_last_child($!gtk-w),
       $raw,
-      $proper
+      $proper,
+      GTK::Widget
     );
   }
 
@@ -1123,12 +1134,17 @@ class GTK::Widget:ver<4> {
     :$raw           = False,
     :slow(:$proper) = $fast.not
   )
-    is also<get-next-sibling>
+    is also<
+      get-next-sibling
+      next_sibling
+      next-sibling
+    >
   {
     returnProperWidget(
       gtk_widget_get_next_sibling($!gtk-w),
       $raw,
-      $proper
+      $proper,
+      GTK::Widget
     )
   }
 
@@ -1160,7 +1176,8 @@ class GTK::Widget:ver<4> {
     returnProperWidget(
       gtk_widget_get_parent($!gtk-w),
       $raw,
-      $proper
+      $proper,
+      GTK::Widget
     )
   }
 
@@ -1189,7 +1206,8 @@ class GTK::Widget:ver<4> {
     returnProperWidget(
       gtk_widget_get_prev_sibling($!gtk-w),
       $raw,
-      $proper
+      $proper,
+      GTK::Widget
     );
   }
 
@@ -1225,7 +1243,7 @@ class GTK::Widget:ver<4> {
   {
     my $r = gtk_widget_get_root($!gtk-w);
     return propReturnObject($r, $raw, |GTK::Root.getTypePair) if $root;
-    returnProperWidget($r, $raw, $proper);
+    returnProperWidget($r, $raw, $proper, GTK::Widget);
   }
 
   method get_scale_factor is also<get-scale-factor> {
@@ -1449,7 +1467,9 @@ class GTK::Widget:ver<4> {
       GTK::Widget
     ];
     return $lm if $model;
-    $lm.Array.map({ returnProperWidget($_, $raw, $proper) });
+    $lm.Array.map({
+      returnProperWidget($_, $raw, $proper, GTK::Widget)
+    });
   }
 
   method observe_controllers (
@@ -1489,7 +1509,8 @@ class GTK::Widget:ver<4> {
     returnProperWidget(
       gtk_widget_pick($!gtk-w, $xx, $yy, $f),
       $raw,
-      $proper
+      $proper,
+      GTK::Widget
     );
   }
 
