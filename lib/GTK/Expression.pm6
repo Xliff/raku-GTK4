@@ -349,7 +349,7 @@ class GTK::Expression::Closure::C is GTK::Expression:ver<4> {
 
     my $gtk-expr-cc = gtk_cclosure_expression_new(
       $v,
-      &marshal,
+      gpointer, #&marshal,
       $n,
       $params,
       &cb,
