@@ -33,6 +33,17 @@ sub gtk_builder_add_from_resource (
   is      export
 { * }
 
+# sub gtk_builder_add_from_string (
+#   GtkBuilder              $builder,
+#   CArray[uint8]           $buffer,
+#   gssize                  $length,
+#   CArray[Pointer[GError]] $error
+# )
+#   returns uint32
+#   is      native(gtk4)
+#   is      export
+# { * }
+
 sub gtk_builder_add_from_string (
   GtkBuilder              $builder,
   Str                     $buffer,
