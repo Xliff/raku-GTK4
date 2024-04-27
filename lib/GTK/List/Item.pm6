@@ -8,8 +8,49 @@ use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
 
+our subset GtkListItemAncestry is export of Mu
+  where GtkListItem | GObject;
+
 class GTK::List::Item:ver<4> {
+  also does GLib::Roles::Object;
+
   has GtkListItem $!gtk-li is implementor;
+
+  submethod BUILD ( :$gtk-list-item ) {
+    self.setGtkListItem($gtk-list-item) if $gtk-list-item
+  }
+
+  method setGtkListItem (GtkListItemAncestry $_) {
+    my $to-parent;
+
+    $!gtk-li = do {
+      when GtkListItem {
+        $to-parent = cast(GObject, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GtkListItem, $_);
+      }
+    }
+    self!setObject($to-parent);
+  }
+
+  method GTK::Raw::Definitions::GtkListItem
+  { $!gtk-li }
+
+  multi method new (
+    $gtk-list-item where * ~~ GtkListItemAncestry,
+
+    :$ref = True
+  ) {
+    return unless $gtk-list-item;
+
+    my $o = self.bless( :$gtk-list-item );
+    $o.ref if $ref;
+    $o;
+  }
 
   # Type: boolean
   method activatable is rw  is g-property {

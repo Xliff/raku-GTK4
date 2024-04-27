@@ -8,16 +8,21 @@ use GTK::Raw::ApplicationWindow:ver<4>;
 
 use GTK::Window:ver<4>;
 
+use GIO::Roles::ActionMap;
+use GIO::Roles::ActionGroup;
 use GLib::Roles::Implementor;
 
 our subset GtkApplicationWindowAncestry is export of Mu
-  where GtkApplicationWindow | GtkWindowAncestry;
+  where GtkApplicationWindow |  GActionGroup | GActionMap | GtkWindowAncestry;
 
 class GTK::ApplicationWindow:ver<4> is GTK::Window {
+  also does GIO::Roles::ActionMap;
+  also does GIO::Roles::ActionGroup;
+
   has GtkApplicationWindow $!gtk-aw is implementor;
 
   submethod BUILD ( :$gtk-app-window ) {
-    say "App Win: { $gtk-app-window }";
+    say "App Win: { $gtk-app-window }" if $gtk-app-window;
     self.setGtkApplicationWindow($gtk-app-window) if $gtk-app-window;
   }
 
@@ -28,6 +33,18 @@ class GTK::ApplicationWindow:ver<4> is GTK::Window {
       when GtkApplicationWindow {
         $to-parent = cast(GtkWindow, $_);
         $_;
+      }
+
+      when GActionGroup {
+        $to-parent = cast(GObject, $_);
+        $!ag       = $_;
+        cast(GApplication, $_)
+      }
+
+      when GActionMap {
+        $to-parent = cast(GObject, $_);
+        $!actmap   = $_;
+        cast(GApplication, $_)
       }
 
       default {
