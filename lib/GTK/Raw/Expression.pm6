@@ -55,15 +55,16 @@ sub gtk_cclosure_expression_get_type
 
 sub gtk_cclosure_expression_new (
   GType                 $value_type,
-                        &marshal (
-                          GClosure,
-                          GValue,
-                          guint,
-                          Pointer, # Array of GValues!
-                          gpointer,
-                          gpointer
-                          --> gpointer
-                        ),
+                        gpointer,
+                        # &marshal (
+                        #   GClosure,
+                        #   GValue,
+                        #   guint,
+                        #   Pointer, # Array of GValues!
+                        #   gpointer,
+                        #   gpointer
+                        #   --> gpointer
+                        # ),
   guint                 $n_params,
   CArray[GtkExpression] $params,
                         &callback_func (gpointer --> gpointer),
