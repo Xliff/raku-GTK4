@@ -35,7 +35,7 @@ class GTK::Shortcut::Action {
         cast(GtkShortcutAction, $_);
       }
     }
-    self.setGtkShortcutAction($to-parent);
+    self!setObject($to-parent);
   }
 
   method GTK::Raw::Definitions::GtkShortcutAction
@@ -59,17 +59,19 @@ class GTK::Shortcut::Action {
   method parse_string (Str() $string) is also<parse-string> {
     my $gtk-action = gtk_shortcut_action_parse_string($string);
 
-    my token param { \s+ '(' \w+ ')' }
+    my token param { \s* '(' <[\w\-_\.]>+ ')' }
 
-    (
-      do given $string {
-        when 'nothing'            { ::('GTK::Shortcut::Action::Nothing')  }
-        when 'activate'           { ::('GTK::Shortcut::Action::Activate') }
-        when 'mnemonic-activate'  { ::('GTK::Shortcut::Action::Mnemonic') }
-        when / 'action' <param> / { ::('GTK::Shortcut::Action::Named')    }
-        when / 'signal' <param> / { ::('GTK::Shortcut::Action::Signal')   }
-      }
-    ).new($gtk-action);
+    my $t = do given $string {
+      when 'nothing'            { 'GTK::Shortcut::Action::Nothing'  }
+      when 'activate'           { 'GTK::Shortcut::Action::Activate' }
+      when 'mnemonic-activate'  { 'GTK::Shortcut::Action::Mnemonic' }
+      when / 'action' <param> / { 'GTK::Shortcut::Action::Named'    }
+      when / 'signal' <param> / { 'GTK::Shortcut::Action::Signal'   }
+    }
+
+    die "Could not instantiate a { $t } object!" unless $t !~~ Failure;
+
+    ::($t).new($gtk-action);
   }
 
   method print (GString() $string) {
@@ -127,6 +129,7 @@ class GTK::Shortcut::Action::Nothing is GTK::Shortcut::Action {
   }
   multi method new {
     self.get()
+
   }
 
   method get {
@@ -205,8 +208,7 @@ class GTK::Shortcut::Action::Named is GTK::Shortcut::Action {
   has GtkNamedAction $!gtk-na is implementor;
 
   submethod BUILD ( :$gtk-named-action ) {
-    self.setGtkNamedAction($gtk-named-action)
-      if $gtk-named-action
+    self.setGtkNamedAction($gtk-named-action) if $gtk-named-action
   }
 
   method setGtkNamedAction (GtkNamedActionAncestry $_) {
