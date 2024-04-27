@@ -13,7 +13,7 @@ use GLib::Roles::Implementor;
 our subset GtkPageSetupUnixDialogAncestry is export of Mu
   where GtkPageSetupUnixDialog | GtkDialog;
 
-class GTK::Page::Setup::UnixDialog:ver:<4> is GTK::Dialog:ver<4> {
+class GTK::Page::Setup::UnixDialog:ver<4> is GTK::Dialog:ver<4> {
   has GtkPageSetupUnixDialog $!gtk-psd is implementor;
 
   submethod BUILD ( :$gtk-page-setup ) {

@@ -12,7 +12,7 @@ use GLib::Roles::Implementor;
 our subset GtkShortcutsGroupAncestry is export of Mu
   where GtkShortcutsGroup | GtkBoxAncestry;
 
-class GTK::Shortcuts::Group:ver<4> is GTK::Box:ver<4> {
+class GTK::Shortcut::Group:ver<4> is GTK::Box:ver<4> {
   has GtkShortcutsGroup $!gtk-sg is implementor;
 
   submethod BUILD ( :$gtk-shortcuts-group ) {

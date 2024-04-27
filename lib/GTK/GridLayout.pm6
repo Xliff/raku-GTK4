@@ -15,7 +15,7 @@ use GLib::Roles::Object;
 our subset GtkGridLayoutAncestry is export of Mu
   where GtkGridLayout | GtkLayoutManagerAncestry;
 
-class GTK::Layout::Grid:ver<4> is GTK::LayoutManager:ver<4> {
+class GTK::GridLayout:ver<4> is GTK::LayoutManager:ver<4> {
   has GtkGridLayout $!gtk-gl is implementor;
 
   submethod BUILD ( :$gtk-grid-layout ) {

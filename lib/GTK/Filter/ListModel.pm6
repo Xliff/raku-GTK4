@@ -15,7 +15,7 @@ use GIO::Roles::ListModel;
 our subset GtkFilterListModelAncestry is export of Mu
   where GtkFilterListModel | GListModel | GObject;
 
-class GTK::Raw::FilterListModel:ver<4> {
+class GTK::Filter::ListModel:ver<4> {
   also does GLib::Roles::Object;
   also does GIO::Roles::ListModel;
 

@@ -15,7 +15,7 @@ use GTK::Roles::SelectionModel:ver<4>;
 our subset GtkMultiSelectionAncestry is export of Mu
   where GtkMultiSelection | GObject;
 
-class GTK::MultiSelect:ver<4> {
+class GTK::MultiSelection:ver<4> {
   also does GLib::Roles::Object;
   also does GTK::Roles::SelectionModel;
 

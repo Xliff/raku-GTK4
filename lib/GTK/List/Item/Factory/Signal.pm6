@@ -14,7 +14,7 @@ use GLib::Roles::Object;
 our subset GtkSignalListItemFactoryAncestry is export of Mu
   where GtkSignalListItemFactory | GtkListItemFactoryAncestry;
 
-class GLib::List::Item::Factory::Signal is GTK::List::Item::Factory {
+class GTK::List::Item::Factory::Signal is GTK::List::Item::Factory {
   has GtkSignalListItemFactory $!gtk-slif is implementor;
 
   submethod BUILD ( :$gtk-signal-factory ) {

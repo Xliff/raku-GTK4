@@ -14,7 +14,7 @@ use GLib::Roles::Object;
 our subset GtkNumericSorterAncestry is export of Mu
   where GtkNumericSorter | GObject;
 
-class GTK::Numeric::Sorter {
+class GTK::NumericSorter {
   also does GLib::Roles::Object;
 
   has GtkNumericSorter $!gtk-ns is implementor;
