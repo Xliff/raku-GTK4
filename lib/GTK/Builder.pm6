@@ -11,6 +11,11 @@ use GTK::Raw::Builder:ver<4>;
 use GTK::Raw::Builder::Subs:ver<4>;
 
 use GLib::GList;
+use GLib::Object::Type;
+use GIO::Builder;
+# use GSK::Builder;
+# use GDK::Builder;
+use GTK::TypeManifest;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
@@ -146,6 +151,7 @@ class GTK::Builder:ver<4> {
     # Determine required objects
     for $dom.find('//object | //menu') {
       my ($id, $type) = ( .getAttribute('id'), .getAttribute('class') );
+      next unless $id && $type;
       say "Object { $id } is a { $type }";
       %names{$id} = $type;
     }
@@ -229,8 +235,11 @@ class GTK::Builder:ver<4> {
           :$process  = True,
           :$template = False
   ) {
+    my $ca = CArray[uint8].new(@data);
+    $ca[@data.elems] = 0;
+
     samewith(
-       CArray[uint8].new(@data),
+       $ca,
        $length,
       :$base,
       :$process,
@@ -257,6 +266,7 @@ class GTK::Builder:ver<4> {
       $str-to-use = CArray[uint8].new(
         prepTemplate( cast(Str, $string) ).Str.encode
       );
+      $str-to-use[ $str-to-use.elems ] = 0;
     } else {
       $str-to-use = $string;
     }
@@ -492,16 +502,16 @@ class GTK::Builder:ver<4> {
   method get_current_object (
     :$raw                 = False,
     :quick(:$fast)        = False,
-    :slow(:$proper)       = $fast.not#,
-    #:$base                = GTK::Widget,
+    :slow(:$proper)       = $fast.not,
+    :$base                = GTK::Widget,
   )
     is also<get-current-object>
   {
     returnProperWidget(
       gtk_builder_get_current_object($!gtk-build),
       $raw,
-      $proper#,
-      #$base
+      $proper,
+      $base
     );
   }
 
@@ -509,16 +519,16 @@ class GTK::Builder:ver<4> {
     Str()  $name,
           :$raw           = False,
           :quick(:$fast)  = False,
-          :slow(:$proper) = $fast.not#,
-          #:$base          = GTK::Widget,
+          :slow(:$proper) = $fast.not,
+          :$base          = GTK::Widget,
   )
     is also<get-object>
   {
     returnProperWidget(
       gtk_builder_get_object($!gtk-build, $name),
       $raw,
-      $proper#,
-      #$base
+      $proper,
+      $base
     );
   }
 
@@ -526,8 +536,8 @@ class GTK::Builder:ver<4> {
     :$raw           = False,
     :$gslist        = False,
     :quick(:$fast)  = False,
-    :slow(:$proper) = $fast.not#,
-    #:$base          = GTK::Widget,
+    :slow(:$proper) = $fast.not,
+    :$base          = GTK::Widget,
   )
     is also<get-objects>
   {
@@ -542,8 +552,8 @@ class GTK::Builder:ver<4> {
       returnProperWidget(
         $_,
         $raw,
-        $proper#,
-        #$base
+        $proper,
+        $base
       )
     });
   }
@@ -655,4 +665,8 @@ class GTK::Builder:ver<4> {
     $all.not ?? $rv !! ($rv, $gvalue ?? $value !! $value.value)
   }
 
+}
+
+INIT {
+  REGISTER-GOBJECT-TYPES( GTK::TypeManifest.manifest )
 }
