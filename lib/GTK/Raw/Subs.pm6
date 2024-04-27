@@ -9,6 +9,10 @@ use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
 use GTK::Raw::Structs:ver<4>;
 
+use GLib::Object::Type;
+
+use GLib::Roles::Object;
+
 unit package GTK::Raw::Subs:ver<4>;
 
 our %widget-types is export;
@@ -18,26 +22,34 @@ multi sub returnProperWidget (
   :$raw           = False,
   :quick(:$fast)  = False,
   :slow(:$proper) = $fast.not,
-  :$base          = GLib::Object;
+  :$base          = GLib::Object
 )
   is export
 {
-  say "1 - Obj: { $object // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
+  say "1 - Obj: { $object.^name // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
   return Nil unless $object.defined;
 
-  my $o = ($object ~~ GObject) ?? $object !! cast(GObject, $object);
+  my $o  = ($object ~~ GObject) ?? $object !! cast(GObject, $object);
+  my $tn = GLib::Object.new($o).objectType.name;
 
-  if $proper {
-    if %widget-types{ $o.g_type_instance.g_class.g_type } -> $ot {
-      return propReturnObject( $o, $raw, |$ot<pair> );
-    }
-  }
-  propReturnObject($o, $raw, $base.getTypePair);
+  say "rpw: Given object type: { $tn // '»noType«' }";
+
+  my $rt = RESOLVE-TO-OBJECT($tn);
+  $rt = $base if $rt === Any;
+
+  say "rpw: Resolved object type: { $rt.^name }";
+
+  propReturnObject( $o, $raw, |$rt.getTypePair )
 }
 
-multi sub returnProperWidget ($object, $raw, $proper) is export {
-  say "0 - Obj: { $object // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
-  returnProperWidget($object, :$raw, :$proper)
+multi sub returnProperWidget (
+  $object,
+  $raw,
+  $proper,
+  $base = GLib::Object
+) is export {
+  say "0 - Obj: { $object.^name // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
+  returnProperWidget($object, :$raw, :$proper, :$base)
 }
 
 sub invoke-vfunc ($pointer, &ROUTINE, *@args) is export {
@@ -119,3 +131,13 @@ sub hop (@a, Int() $num, Int() :$skip = 0, :$partial) is export {
     $a.head
   });
 }
+
+# sub GTK-writeTypeToManifest(
+#   \O,
+#   $file   = '',
+#   $f      = "type-manifest.json",
+# )
+#   is export
+# {
+#   writeTypeToManifest(O, $file, $f, prefix => gtk-prefix);
+# }
