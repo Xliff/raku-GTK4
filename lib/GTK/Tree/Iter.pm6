@@ -5,7 +5,11 @@ use Method::Also;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Tree::Model:ver<4>;
 
+use GLib::Roles::Implementor;
+
 class GTK::Tree::Iter {
+  also does GLib::Roles::Implementor;
+
   has GtkTreeModel $!gtk-tm;
   has GtkTreeIter  $!gtk-ti is implementor;
 

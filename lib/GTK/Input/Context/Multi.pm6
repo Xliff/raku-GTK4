@@ -14,6 +14,8 @@ our subset GtkIMMultiContextAncestry is export of Mu
   where GtkIMMultiContext | GtkIMContextAncestry;
 
 class GTK::Input::Context::Multi {
+  also does GLib::Roles::Implementor;
+  
   has GtkIMMultiContext $!gtk-ic-mc is implementor;
 
   submethod BUILD ( :$gtk-input-multi ) {
