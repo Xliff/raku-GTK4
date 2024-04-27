@@ -9,6 +9,7 @@ use GTK::Raw::Button::Menu:ver<4>;
 use GIO::MenuModel;
 use GTK::Widget:ver<4>;
 use GTK::Popover:ver<4>;
+use GTK::PopoverMenu:ver<4>;
 
 use GLib::Roles::Implementor;
 
@@ -190,18 +191,19 @@ class GTK::Button::Menu is GTK::Widget:ver<4> {
   }
 
   # Type: GtkPopover
-  method popover (:$raw = False )
+  method popover ( :$raw = False, :$menu = False )
     is rw
     is g-property
   {
-    my $gv = GLib::Value.new( GTK::Popover.get_type );
+    my \o = $menu ?? GTK::PopoverMenu !! GTK::Popover;
+    my $gv = GLib::Value.new( o.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('popover', $gv);
         propReturnObject(
           $gv.object,
           $raw,
-          |GTK::Popover.getTypePair
+          |o.getTypePair
         );
       },
       STORE => -> $, GtkPopover() $val is copy {
