@@ -68,7 +68,10 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
     $o;
   }
 
-  method new_from_file (Str() $filename) is also<new-from-file> {
+  method new_from_path (IO::Path $filename) is also<new-from-path> {
+    self.new_from_file($filename.absolute);
+  }
+  method new_from_file (Str $filename) is also<new-from-file> {
     my $gtk-image = gtk_image_new_from_file($filename);
 
     $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
