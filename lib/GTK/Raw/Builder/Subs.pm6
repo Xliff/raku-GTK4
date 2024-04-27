@@ -32,7 +32,11 @@ sub prepTemplate ($template, *%opts) is export {
     # Remove parent
     $t.removeAttribute('parent');
   }
+  unless %opts<signals> // False {
+    .unbindNode for $dom.find('//signal')[]
+  }
+
   &dom-callback($dom) if &dom-callback;
 
-  $dom;
+  $dom.Str
 }
