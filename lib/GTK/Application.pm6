@@ -62,10 +62,11 @@ class GTK::Application:ver<4> is GIO::Application {
     $o;
   }
   multi method new (
-    :id(:$title) = 'org.genex.Application',
+    :application_id(:application-id(:id(:$title))) = 'org.genex.Application',
     :$flags      = 0,
     :$width      = 200,
-    :$height     = $width
+    :$height     = $width,
+    *%a
   )
     is static
   {
@@ -77,12 +78,16 @@ class GTK::Application:ver<4> is GIO::Application {
     });
     $o;
   }
-  multi method new (Str() $id, Int() $flags = 0) is static {
+  multi method new (Str() $id, Int() $flags = 0, *%a) is static {
     my GApplicationFlags $f = $flags;
 
     my $gtk-application = gtk_application_new($id, $f);
 
-    $gtk-application ?? self.bless( :$gtk-application ) !! Nil;
+    %a<application-id flags>:delete;
+
+    my $o = $gtk-application ?? self.bless( :$gtk-application ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   method setWindow ($window) {
