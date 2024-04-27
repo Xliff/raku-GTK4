@@ -6,7 +6,7 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Gesture::Single:ver<4>;
 
-use GDK::Events:ver<4>;
+use GDK::Event:ver<4>;
 use GTK::Gesture:ver<4>;
 
 use GLib::Roles::Implementor;

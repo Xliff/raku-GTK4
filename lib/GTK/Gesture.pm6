@@ -8,7 +8,7 @@ use GTK::Raw::Gesture:ver<4>;
 
 use GLib::GList;
 use GDK::Device:ver<4>;
-use GDK::Events:ver<4>;
+use GDK::Event:ver<4>;
 use GTK::Event::Controller:ver<4>;
 
 use GLib::Roles::Implementor;

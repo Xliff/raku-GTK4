@@ -7,7 +7,7 @@ use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Event::Controller:ver<4>;
 
 use GDK::Device:ver<4>;
-use GDK::Events:ver<4>;
+use GDK::Event:ver<4>;
 
 use GLib::Roles::Implementor:ver<4>;
 use GLib::Roles::Object:ver<4>;
