@@ -8,3 +8,5 @@ lib=gtk4
 include_directory=/usr/src/gtk4/gtk
 exec=p6gtk4exec
 idir-avail=True
+manifest-blacklist=GTK::StyleProvider,GTK::Class
+
