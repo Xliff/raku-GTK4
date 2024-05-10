@@ -9,11 +9,14 @@ use GTK::Raw::Grid:ver<4>;
 use GTK::Widget;
 
 use GLib::Roles::Implementor;
+use GTK::Roles::Orientable:ver<4>;
 
 our subset GtkGridAncestry is export of Mu
-  where GtkGrid | GtkWidgetAncestry;
+  where GtkGrid | GtkOrientable | GtkWidgetAncestry;
 
 class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
+  also does GTK::Roles::Orientable;
+
   has GtkGrid $!gtk-g is implementor;
 
   has         %.children;
@@ -31,12 +34,19 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
         $_;
       }
 
+      when GtkOrientable {
+        $to-parent = cast(GtkWidget, $_);
+        $!gtk-o    = $_;
+        cast(GtkGrid, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkGrid, $_);
       }
     }
     self.setGtkWidget($to-parent);
+    self.roleInit-GtkOrientable;
   }
 
   method GTK::Raw::Definitions::GtkGrid
@@ -367,12 +377,3 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
 #     .close;
 #   }
 # }
-
-INIT {
-  my \O = GTK::Grid;
-  %widget-types{O.get_type} = {
-    name        => O.^name,
-    object      => O,
-    pair        => O.getTypePair
-  }
-}
