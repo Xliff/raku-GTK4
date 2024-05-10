@@ -46,38 +46,44 @@ class GTK::Button::Check:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-check-button = gtk_check_button_new();
 
-    $gtk-check-button ?? self.bless( :$gtk-check-button ) !! Nil;
+    my $o = $gtk-check-button ?? self.bless( :$gtk-check-button ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_with_label (Str() $label) is also<new-with-label> {
+  method new_with_label (Str() $label, *%a) is also<new-with-label> {
     my $gtk-check-button = gtk_check_button_new_with_label($label);
 
-    $gtk-check-button ?? self.bless( :$gtk-check-button ) !! Nil;
+    my $o = $gtk-check-button ?? self.bless( :$gtk-check-button ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_with_mnemonic (Str() $label) is also<new-with-mnemonic> {
+  method new_with_mnemonic (Str() $label, *%a) is also<new-with-mnemonic> {
     my $gtk-check-button = gtk_check_button_new_with_mnemonic($label);
 
-    $gtk-check-button ?? self.bless( :$gtk-check-button ) !! Nil;
+    my $o = $gtk-check-button ?? self.bless( :$gtk-check-button ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   proto method new-group (|)
     is also<new_group>
   { * }
 
-  multi method new-group (*@labels) {
-    samewith(@labels);
+  multi method new-group (*@labels, :%attributes) {
+    samewith(@labels, |%attributes);
   }
-  multi method new-group (@labels) {
+  multi method new-group (@labels, *%a) {
     my @group;
     my $first = ::?CLASS.new_with_label(@labels.head);
     @group.push: $first;
 
     for @labels.skip(1) {
-      @group.push: ::?CLASS.new_with_label($_);
+      @group.push: ::?CLASS.new_with_label($_, |%a);
       @group.tail.group = $first;
     };
 
@@ -88,12 +94,12 @@ class GTK::Button::Check:ver<4> is GTK::Widget:ver<4> {
     is also<new_buttons>
   { * }
 
-  multi method new-buttons (*@labels) {
-    samewith(@labels);
+  multi method new-buttons (*@labels, :%attributes) {
+    samewith(@labels, |%attributes);
   }
-  multi method new-buttons (@labels) {
+  multi method new-buttons (@labels, *%attributes) {
     do for @labels {
-      ::?CLASS.new_with_label($_);
+      ::?CLASS.new_with_label($_, |%attributes);
     }
   }
 
