@@ -378,8 +378,8 @@ class GTK::Text::Buffer:ver<4> {
     gtk_text_buffer_get_bounds($!gtk-tb, $start, $end);
 
     (
-      propReturnObject($start, $raw, |GTK::Text::Iter.getTypePair),
-      propReturnObject($end,   $raw, |GTK::Text::Iter.getTypePair)
+      propReturnObject($start, $raw, |GTK::Text::Iter.getTypePair, :!ref),
+      propReturnObject($end,   $raw, |GTK::Text::Iter.getTypePair, :!ref)
     );
   }
 
@@ -399,7 +399,22 @@ class GTK::Text::Buffer:ver<4> {
     so gtk_text_buffer_get_enable_undo($!gtk-tb);
   }
 
-  method get_end_iter (GtkTextIter() $iter) is also<get-end-iter> {
+  proto method get_end_iter (|)
+    is also<get-end-iter>
+  { * }
+
+  multi method get_end_iter ( :$raw = False )
+    is also<
+      end-iter
+      end_iter
+    >
+  {
+    my $e = GtkTextIter.new;
+    samewith($e);
+    return $e if $raw;
+    GTK::Text::Iter.new($e, :!ref);
+  }
+  multi method get_end_iter (GtkTextIter() $iter) {
     gtk_text_buffer_get_end_iter($!gtk-tb, $iter);
   }
 
@@ -426,7 +441,7 @@ class GTK::Text::Buffer:ver<4> {
     my GtkTextChildAnchor $a = $anchor;
 
     gtk_text_buffer_get_iter_at_child_anchor($!gtk-tb, $iter, $a);
-    propReturnObject($iter, $raw, |GTK::Text::Iter);
+    propReturnObject($iter, $raw, |GTK::Text::Iter, :!ref);
   }
 
   proto method get_iter_at_line (|)
@@ -444,7 +459,7 @@ class GTK::Text::Buffer:ver<4> {
     my gint $l = $line_number;
 
     gtk_text_buffer_get_iter_at_line($!gtk-tb, $iter, $l);
-    propReturnObject($iter, $raw, |GTK::Text::Iter);
+    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair, :!ref);
   }
 
   proto method get_iter_at_line_index (|)
@@ -468,7 +483,7 @@ class GTK::Text::Buffer:ver<4> {
     my gint ($l, $b) = ($line_number, $byte_index);
 
     gtk_text_buffer_get_iter_at_line_index($!gtk-tb, $iter, $l, $b);
-    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair);
+    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair, :!ref);
   }
 
   proto method get_iter_at_line_offset (|)
@@ -492,7 +507,7 @@ class GTK::Text::Buffer:ver<4> {
     my gint ($l, $c) = ($line_number, $char_offset);
 
     gtk_text_buffer_get_iter_at_line_offset($!gtk-tb, $iter, $l, $c);
-    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair);
+    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair, :!ref);
   }
 
   proto method get_iter_at_mark (|)
@@ -508,7 +523,7 @@ class GTK::Text::Buffer:ver<4> {
                   :$raw   = False
   ) {
     gtk_text_buffer_get_iter_at_mark($!gtk-tb, $iter, $mark);
-    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair);
+    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair, :!ref);
   }
 
   proto method get_iter_at_offset (|)
@@ -527,7 +542,7 @@ class GTK::Text::Buffer:ver<4> {
 
     gtk_text_buffer_get_iter_at_offset($!gtk-tb, $iter, $c);
 
-    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair);
+    propReturnObject($iter, $raw, |GTK::Text::Iter.getTypePair, :!ref);
   }
 
   method get_line_count is also<get-line-count> {
@@ -560,7 +575,12 @@ class GTK::Text::Buffer:ver<4> {
     is also<get-selection-bounds>
   { * }
 
-  multi method get_selection_bounds {
+  multi method get_selection_bounds
+    is also<
+      selection-bounds
+      selection_bounds
+    >
+  {
     samewith(GtkTextIter.new, GtkTextIter.new);
   }
   multi method get_selection_bounds (
@@ -571,8 +591,8 @@ class GTK::Text::Buffer:ver<4> {
     gtk_text_buffer_get_selection_bounds($!gtk-tb, $start, $end);
 
     (
-      propReturnObject($start, $raw, |GTK::Text::Iter.getTypePair),
-      propReturnObject(  $end, $raw, |GTK::Text::Iter.getTypePair)
+      propReturnObject($start, $raw, |GTK::Text::Iter.getTypePair, :!ref),
+      propReturnObject(  $end, $raw, |GTK::Text::Iter.getTypePair, :!ref)
     )
   }
 
@@ -592,10 +612,24 @@ class GTK::Text::Buffer:ver<4> {
     gtk_text_buffer_get_slice($!gtk-tb, $start, $end, $i);
   }
 
-  method get_start_iter (GtkTextIter() $iter)
+  proto method get_start_iter (|)
+  { * }
+
+  multi method get_start_iter ( :$raw = False )
+    is also<
+      start-iter
+      start_iter
+    >
+  {
+    my $s = GtkTextIter.new;
+    samewith($s);
+    return $s if $raw;
+    GTK::Text::Iter.new($s, :!ref);
+  }
+  multi method get_start_iter (GtkTextIter() $iter)
     is also<get-start-iter>
   {
-    gtk_text_buffer_get_start_iter($!gtk-tb, $iter);
+    gtk_text_buffer_get_start_iter($!gtk-tb, $iter)
   }
 
   method get_tag_table ( :$raw = False ) is also<get-tag-table> {
@@ -627,7 +661,7 @@ class GTK::Text::Buffer:ver<4> {
   method insert (
     GtkTextIter() $iter,
     Str()         $text,
-    Int()         $len
+    Int()         $len   = -1
   ) {
     my gint $l = $len;
 
@@ -650,27 +684,46 @@ class GTK::Text::Buffer:ver<4> {
     gtk_text_buffer_insert_child_anchor($!gtk-tb, $iter, $a);
   }
 
-  method insert_interactive (
+  proto method insert_interactive (|)
+    is also<insert-interactive>
+  { * }
+
+  multi method insert_interactive (
+    GtkTextIter()  $iter,
+    Str()          $text,
+    Int()         :l(:len(:$length))                   = -1,
+    Int()         :edit(:editable(:$default_editable)) = True
+  ) {
+    samewith($iter, $text, $length, $default_editable);
+  }
+  multi method insert_interactive (
     GtkTextIter() $iter,
     Str()         $text,
     Int()         $len,
     Int()         $default_editable
-  )
-    is also<insert-interactive>
-  {
+  ) {
     my gint     $l = $len;
     my gboolean $d = $default_editable.so.Int;
 
     gtk_text_buffer_insert_interactive($!gtk-tb, $iter, $text, $l, $d);
   }
 
-  method insert_interactive_at_cursor (
+  proto method insert_interactive_at_cursor (|)
+    is also<insert-interactive-at-cursor>
+  { * }
+
+  multi method insert_interactive_at_cursor (
+    Str()  $text,
+    Int() :l(:len(:$length))                   = -1,
+    Int() :edit(:editable(:$default_editable)) = True
+  ) {
+    samewith($text, $length, $default_editable);
+  }
+  multi method insert_interactive_at_cursor (
     Str() $text,
     Int() $len,
     Int() $default_editable
-  )
-    is also<insert-interactive-at-cursor>
-  {
+  ) {
     my gint     $l = $len;
     my gboolean $d = $default_editable.so.Int;
 
@@ -680,7 +733,7 @@ class GTK::Text::Buffer:ver<4> {
   method insert_markup (
     GtkTextIter() $iter,
     Str()         $markup,
-    Int()         $len
+    Int()         $len     = -1
   )
     is also<insert-markup>
   {
@@ -727,27 +780,47 @@ class GTK::Text::Buffer:ver<4> {
     );
   }
 
-  method insert_with_tags (
+  proto method insert_with_tags (|)
+    is also<insert-with-tags>
+  { * }
+
+  multi method insert_with_tags (
+    GtkTextIter()  $iter,
+    Str()          $text,
+    GtkTextTag()   $first_tag,
+    Int()         :l(:len(:$length)) = -1
+  ) {
+    samewith($iter, $text, $length, $first_tag);
+  }
+  multi method insert_with_tags (
     GtkTextIter() $iter,
     Str()         $text,
     Int()         $len,
     GtkTextTag()  $first_tag
-  )
-    is also<insert-with-tags>
-  {
+  ) {
     my gint $l = $len;
 
     gtk_text_buffer_insert_with_tags($!gtk-tb, $iter, $text, $l, $first_tag);
   }
 
-  method insert_with_tags_by_name (
+  proto method insert_with_tags_by_name (|)
+    is also<insert-with-tags-by-name>
+  { * }
+
+  multi method insert_with_tags_by_name (
+    GtkTextIter()  $iter,
+    Str()          $text,
+    Str()          $first_tag_name,
+    Int()         :l(:len(:$length)) = -1
+  ) {
+    samewith($iter, $text, $length, $first_tag_name);
+  }
+  multi method insert_with_tags_by_name (
     GtkTextIter() $iter,
     Str()         $text,
     Int()         $len,
     Str()         $first_tag_name
-  )
-    is also<insert-with-tags-by-name>
-  {
+  ) {
     my gint $l = $len;
 
     gtk_text_buffer_insert_with_tags_by_name(
