@@ -26,18 +26,12 @@ multi sub returnProperWidget (
 )
   is export
 {
-  say "1 - Obj: { $object.^name // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
   return Nil unless $object.defined;
 
   my $o  = ($object ~~ GObject) ?? $object !! cast(GObject, $object);
   my $tn = GLib::Object.new($o).objectType.name;
-
-  say "rpw: Given object type: { $tn // '»noType«' }";
-
   my $rt = RESOLVE-TO-OBJECT($tn);
   $rt = $base if $rt === Any;
-
-  say "rpw: Resolved object type: { $rt.^name }";
 
   propReturnObject( $o, $raw, |$rt.getTypePair )
 }
@@ -48,7 +42,6 @@ multi sub returnProperWidget (
   $proper,
   $base = GLib::Object
 ) is export {
-  say "0 - Obj: { $object.^name // 'NONE' }, Raw: { $raw }, Proper: { $proper }";
   returnProperWidget($object, :$raw, :$proper, :$base)
 }
 
