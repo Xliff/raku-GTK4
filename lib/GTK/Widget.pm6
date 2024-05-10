@@ -654,6 +654,18 @@ class GTK::Widget:ver<4> {
       STORE => -> $, @size where *.elems == 2 { self.set_size_request( |@size ) };
   }
 
+  method width is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get-width },
+      STORE => -> $, \v { self.set-size-request(v, self.get-height) }
+  }
+
+  method height is g-accessor {
+    Proxy.new:
+      FETCH => -> $     { self.get-height },
+      STORE => -> $, \v { self.set-size-request(self.get-width, v) }
+  }
+
   method expand is rw is g-accessor {
     Proxy.new:
       FETCH => -> $     {
