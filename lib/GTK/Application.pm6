@@ -24,14 +24,14 @@ class GTK::Application:ver<4> is GIO::Application {
   has GtkApplication $!gtk-app is implementor;
 
   has $.window handles<present>;
-  #has $.init;
 
-  submethod BUILD ( :$gtk-application ) {
-    self.setGtkApplication($gtk-application) if $gtk-application;
-    #$!init = Promise.new;
+  has $.app-init;
+
+  submethod BUILD ( :$gtk-application, :$ident ) {
+    self.setGtkApplication($gtk-application, :$ident) if $gtk-application;
   }
 
-  method setGtkApplication (GtkApplicationAncestry $_) {
+  method setGtkApplication (GtkApplicationAncestry $_, :$ident) {
     my $to-parent;
 
     $!gtk-app = do {
@@ -46,6 +46,15 @@ class GTK::Application:ver<4> is GIO::Application {
       }
     }
     self.setGApplication($to-parent);
+
+    if $ident.not {
+      self.Activate.tap( -> *@a {
+        $!app-init = Promise.new;
+        say "Setting window...";
+        self.setWindow( GTK::ApplicationWindow.new($!gtk-app) );
+        $!app-init.keep;
+      });
+    }
   }
 
   method GTK::Raw::Structs::GtkApplication
@@ -57,26 +66,23 @@ class GTK::Application:ver<4> is GIO::Application {
   {
     return unless $gtk-application;
 
-    my $o = self.bless( :$gtk-application );
+    my $o = self.bless( :$gtk-application, :ident );
     $o.ref if $ref;
     $o;
   }
   multi method new (
-    :application_id(:application-id(:id(:$title))) = 'org.genex.Application',
-    :$flags      = 0,
-    :$width      = 200,
-    :$height     = $width,
+    :a(:application_id(:application-id(:id(:$title)))) = 'org.genex.Application',
+
+    :f(:$flags) = 0,
+    :w(:$width) = 200,
+    :h(:$height)= $width,
     *%a
   )
     is static
   {
-    my $o = ::?CLASS.new($title, $flags);
-    $o.Activate.tap( -> *@a {
-      say "Setting window...";
-      $o.setWindow( GTK::ApplicationWindow.new($o) );
-      $o.window.set-size-request($width, $height);
-    });
-    $o;
+    %a<width height> = ($width, $height);
+
+    ::?CLASS.new($title, $flags, |%a);
   }
   multi method new (Str() $id, Int() $flags = 0, *%a) is static {
     my GApplicationFlags $f = $flags;
@@ -84,6 +90,7 @@ class GTK::Application:ver<4> is GIO::Application {
     my $gtk-application = gtk_application_new($id, $f);
 
     %a<application-id flags>:delete;
+    my ($width, $height) = %a<width height>:delete;
 
     my $o = $gtk-application ?? self.bless( :$gtk-application ) !! Nil;
     $o.setAttributes(%a) if $o && +%a;
@@ -94,9 +101,9 @@ class GTK::Application:ver<4> is GIO::Application {
     $!window = $window;
   }
 
-  # method wait-for-init {
-  #   await $!init;
-  # }
+  method wait-for-init {
+    await $!app-init;
+  }
 
   # Type: boolean
   method register-session is rw  is g-property is also<register_session> {
