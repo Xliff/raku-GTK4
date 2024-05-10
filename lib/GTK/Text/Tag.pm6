@@ -61,13 +61,12 @@ class GTK::Text::Tag:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Str() $name) {
+  multi method new (Str() $name is copy = Str, *%a) {
+    $name = %a<name>:delete unless $name;
+
     my $gtk-text-tag = gtk_text_tag_new($name);
 
-    $gtk-text-tag ?? self.bless( :$gtk-text-tag ) !! Nil;
-  }
-  multi method new (*%a) {
-    my $o = samewith('');
+    my $o = $gtk-text-tag ?? self.bless( :$gtk-text-tag ) !! Nil;
     $o.setAttributes(%a) if $o && +%a;
     $o;
   }
