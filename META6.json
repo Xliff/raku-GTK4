@@ -18,8 +18,9 @@
       "lib/linux/libtree-helper.so",
       "lib/windows/treehelper.dll"
     ],
-                                                                                                    "provides": {
+                                                                                                                                                                                                                                                        "provides": {
       "GTK::Raw::Builder::Subs"                        :  "lib/GTK/Raw/Builder/Subs.pm6"                      ,
+      "GTK::TypeManifest"                              :  "lib/GTK/TypeManifest.pm6"                          ,
       "GTK::Raw::Definitions"                          :  "lib/GTK/Raw/Definitions.pm6"                       ,
       "GTK::ColorUtils"                                :  "lib/GTK/ColorUtils.pm6"                            ,
       "GTK::Raw::Enums"                                :  "lib/GTK/Raw/Enums.pm6"                             ,
@@ -374,7 +375,6 @@
       "GTK::Text::View"                                :  "lib/GTK/Text/View.pm6"                             ,
       "GTK::ToggleButton"                              :  "lib/GTK/ToggleButton.pm6"                          ,
       "GTK::Tree::Expander"                            :  "lib/GTK/Tree/Expander.pm6"                         ,
-      "GTK::Tree::View"                                :  "lib/GTK/Tree/View.pm6"                             ,
       "GTK::Video"                                     :  "lib/GTK/Video.pm6"                                 ,
       "GTK::Viewport"                                  :  "lib/GTK/Viewport.pm6"                              ,
       "GTKWidgets"                                     :  "lib/GTKWidgets.pm6"                                ,

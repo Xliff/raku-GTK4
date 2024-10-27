@@ -21,6 +21,10 @@ our %WIDGETS is export;
 
 constant W   is export = %WIDGETS;
 
+sub GTK4-Distribution is export is DistributionProvider {
+  $?DISTRIBUTION;
+}
+
 class GtkAccessible              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkAccessibleRange         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkActivateAction          is repr<CPointer> does GLib::Roles::Pointers is export { }
