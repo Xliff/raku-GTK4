@@ -13,12 +13,14 @@ use GTK::Text::Tag::Table:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GTK::Roles::Signals::Text::Buffer;
 
 our subset GtkTextBufferAncestry is export of Mu
   where GtkTextBuffer | GObject;
 
 class GTK::Text::Buffer:ver<4> {
   also does GLib::Roles::Object;
+  also does GTK::Roles::Signals::Text::Buffer;
 
   has GtkTextBuffer $!gtk-tb is implementor;
 
@@ -186,6 +188,96 @@ class GTK::Text::Buffer:ver<4> {
         self.prop_set('text', $gv);
       }
     );
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer --> void
+  method Begin-User-Action {
+    self.connect-begin-user-action($!gtk-tb, 'begin-user-action');
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer --> void
+  method Undo {
+    self.connect($!gtk-tb, 'undo');
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer --> void
+  method End-User-Action {
+    self.connect($!gtk-tb, 'end-user-action');
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer --> void
+  method Redo {
+    self.connect($!gtk-tb, 'redo');
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer,  GtkTextIter *pos,  char *new_text,  int new_text_length --> void
+  method Insert-Text {
+    self.connect-insert-text($!gtk-tb);
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer,  GtkTextIter *location,  GtkTextMark *mark --> void
+  method Mark-Set {
+    self.connect-mark-set($!gtk-tb);
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer --> void
+  method Modified-Changed {
+    self.connect($!gtk-tb, 'modified-changed');
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer,  GtkTextIter *start,  GtkTextIter *end --> void
+  method Delete-Range {
+    self.connect-delete-range($!gtk-tb);
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer,  GtkTextIter *iter,  GdkPaintable *paintable --> void
+  method Insert-Paintable {
+    self.connect-insert-paintable($!gtk-tb);
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer,  GtkTextTag *tag,  GtkTextIter *start,  GtkTextIter *end --> void
+  method Remove-Tag {
+    self.connect-remove-tag($!gtk-tb);
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer,  GtkTextIter *iter,  GtkTextChildAnchor *anchor --> void
+  method Insert-Child-Anchor {
+    self.connect-insert-child-anchor($!gtk-tb);
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer,  GtkTextTag *tag,  GtkTextIter *start,  GtkTextIter *end --> void
+  method Apply-Tag {
+    self.connect-apply-tag($!gtk-tb);
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer,  GtkTextMark *mark --> void
+  method Mark-Deleted {
+    self.connect-mark($!gtk-tb, 'mark-deleted');
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer,  GdkClipboard *clipboard --> void
+  method Paste-Done {
+    self.connect-clipboard($!gtk-tb, 'paste-done');
+  }
+
+  # Is originally:
+  # GtkTextBuffer *buffer --> void
+  method Changed {
+    self.connect($!gtk-tb, 'changed');
   }
 
   method add_mark (GtkTextMark() $mark, GtkTextIter() $where) \
@@ -903,12 +995,14 @@ class GTK::Text::Buffer:ver<4> {
     gtk_text_buffer_remove_tag_by_name($!gtk-tb, $name, $start, $end);
   }
 
-  method select_range (
-    GtkTextIter() $ins,
-    GtkTextIter() $bound
-  )
-    is also<select-range>
-  {
+  proto method select_range (|)
+   is also<select-range>
+  { * }
+
+  multi method select_range (GtkTextIter() $ins-bound) {
+    samewith($ins-bound, $ins-bound);
+  }
+  multi method select_range (GtkTextIter() $ins, GtkTextIter() $bound) {
     gtk_text_buffer_select_range($!gtk-tb, $ins, $bound);
   }
 
