@@ -409,7 +409,12 @@ class GTK::Text::Iter:ver<4> {
     gtk_text_iter_free($!gtk-ti);
   }
 
-  method get_buffer ( :$raw = False ) is also<get-buffer> {
+  method get_buffer ( :$raw = False )
+    is also<
+      get-buffer
+      buffer
+    >
+  {
     propReturnObject(
       gtk_text_iter_get_buffer($!gtk-ti),
       $raw,
@@ -417,19 +422,42 @@ class GTK::Text::Iter:ver<4> {
     );
   }
 
-  method get_bytes_in_line is also<get-bytes-in-line> {
+  method get_bytes_in_line
+    is also<
+      get-bytes-in-line
+      bytes_in_line
+      bytes-in-line
+    >
+  {
     gtk_text_iter_get_bytes_in_line($!gtk-ti);
   }
 
-  method get_char is also<get-char> {
+  method get_char
+    is also<
+      get-char
+      char
+    >
+  {
     gtk_text_iter_get_char($!gtk-ti);
   }
 
-  method get_chars_in_line is also<get-chars-in-line> {
+  method get_chars_in_line
+    is also<
+      get-chars-in-line
+      chars_in_line
+      chars-in-line
+    >
+  {
     gtk_text_iter_get_chars_in_line($!gtk-ti);
   }
 
-  method get_child_anchor ( :$raw = False ) is also<get-child-anchor> {
+  method get_child_anchor ( :$raw = False )
+    is also<
+      get-child-anchor
+      child_anchor
+      child-anchor
+    >
+  {
     propReturnObject(
       gtk_text_iter_get_child_anchor($!gtk-ti),
       $raw,
@@ -437,7 +465,12 @@ class GTK::Text::Iter:ver<4> {
     );
   }
 
-  method get_language ( :$raw = False ) is also<get-language> {
+  method get_language ( :$raw = False )
+    is also<
+      get-language
+      language
+    >
+  {
     propReturnObject(
       gtk_text_iter_get_language($!gtk-ti),
       $raw,
@@ -445,19 +478,41 @@ class GTK::Text::Iter:ver<4> {
     );
   }
 
-  method get_line is also<get-line> {
+  method get_line
+    is also<
+      get-line
+      line
+    >
+  {
     gtk_text_iter_get_line($!gtk-ti);
   }
 
-  method get_line_index is also<get-line-index> {
+  method get_line_index
+    is also<
+      get-line-index
+      line_index
+      line-index
+    >
+  {
     gtk_text_iter_get_line_index($!gtk-ti);
   }
 
-  method get_line_offset is also<get-line-offset> {
+  method get_line_offset
+    is also<
+      get-line-offset
+      line_offset
+      line-offset
+    >
+  {
     gtk_text_iter_get_line_offset($!gtk-ti);
   }
 
-  method get_marks ( :$raw = False, :$glist = False ) is also<get-marks> {
+  method get_marks ( :$raw = False, :$glist = False )
+    is also<
+      get-marks
+      marks
+    >
+  {
     returnGSList(
       gtk_text_iter_get_marks($!gtk-ti),
       $raw,
@@ -466,11 +521,21 @@ class GTK::Text::Iter:ver<4> {
     );
   }
 
-  method get_offset is also<get-offset> {
+  method get_offset
+    is also<
+      get-offset
+      offset
+    >
+  {
     gtk_text_iter_get_offset($!gtk-ti);
   }
 
-  method get_paintable ( :$raw = False ) is also<get-paintable> {
+  method get_paintable ( :$raw = False )
+    is also<
+      get-paintable
+      paintable
+    >
+  {
     propReturnObject(
       gtk_text_iter_get_paintable($!gtk-ti),
       $raw,
@@ -478,11 +543,21 @@ class GTK::Text::Iter:ver<4> {
     );
   }
 
-  method get_slice (GtkTextIter() $end) is also<get-slice> {
+  method get_slice (GtkTextIter() $end)
+    is also<
+      get-slice
+      slice
+    >
+  {
     gtk_text_iter_get_slice($!gtk-ti, $end);
   }
 
-  method get_tags ( :$raw = False, :$glist = False ) is also<get-tags> {
+  method get_tags ( :$raw = False, :$glist = False )
+    is also<
+      get-tags
+      tags
+    >
+  {
     returnGSList(
       gtk_text_iter_get_tags($!gtk-ti),
       $raw,
@@ -491,11 +566,22 @@ class GTK::Text::Iter:ver<4> {
     );
   }
 
-  method get_text (GtkTextIter() $end) is also<get-text> {
+  method get_text (GtkTextIter() $end)
+    is also<
+      get-text
+      text
+    >
+  {
     gtk_text_iter_get_text($!gtk-ti, $end);
   }
 
-  method get_toggled_tags (Int() $toggled_on) is also<get-toggled-tags> {
+  method get_toggled_tags (Int() $toggled_on)
+    is also<
+      get-toggled-tags
+      toggled_tags
+      toggled-tags
+    >
+  {
     my gboolean $t = $toggled_on.so.Int;
 
     gtk_text_iter_get_toggled_tags($!gtk-ti, $t);
@@ -507,19 +593,43 @@ class GTK::Text::Iter:ver<4> {
     unstable_get_type( self.^name, &gtk_text_iter_get_type, $n, $t );
   }
 
-  method get_visible_line_index is also<get-visible-line-index> {
+  method get_visible_line_index
+    is also<
+      get-visible-line-index
+      visible_line_index
+      visible-line-index
+    >
+  {
     gtk_text_iter_get_visible_line_index($!gtk-ti);
   }
 
-  method get_visible_line_offset is also<get-visible-line-offset> {
+  method get_visible_line_offset
+    is also<
+      get-visible-line-offset
+      visible_line_offset
+      visible-line-offset
+    >
+  {
     gtk_text_iter_get_visible_line_offset($!gtk-ti);
   }
 
-  method get_visible_slice (GtkTextIter() $end) is also<get-visible-slice> {
+  method get_visible_slice (GtkTextIter() $end)
+    is also<
+      get-visible-slice
+      visible_slice
+      visible-slice
+    >
+  {
     gtk_text_iter_get_visible_slice($!gtk-ti, $end);
   }
 
-  method get_visible_text (GtkTextIter() $end) is also<get-visible-text> {
+  method get_visible_text (GtkTextIter() $end)
+    is also<
+      get-visible-text
+      visible_text
+      visible-text
+    >
+  {
     gtk_text_iter_get_visible_text($!gtk-ti, $end);
   }
 
