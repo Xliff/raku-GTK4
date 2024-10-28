@@ -27,6 +27,7 @@ our subset GtkBuilderAncestry is export of Mu
 class GTK::Builder:ver<4> {
   also does GLib::Roles::Object;
   also does Associative;
+  also does NotInManifest;
 
   has %!objects;
   has $!definition;
@@ -36,15 +37,11 @@ class GTK::Builder:ver<4> {
   submethod BUILD (
     :$gtk-builder,
     :$process,
-    :$base,
     :$!definition
   ) {
     self.setGtkBuilder($gtk-builder) if $gtk-builder;
     self!processInputByName          if $!definition;
-
-    unless $!definition {
-      self!processInput(:$base)        if $process;
-    }
+    self!processInput                if $process;
   }
 
   method setGtkBuilder (GtkBuilderAncestry $_) {
@@ -84,12 +81,12 @@ class GTK::Builder:ver<4> {
 
     $gtk-builder ?? self.bless( :$gtk-builder ) !! Nil
   }
-  multi method new ( :$pod is required ) {
+  multi method new ( :$pod is required, :$process = True ) {
     my $pod-str = (
       getPodSection($pod, 'ui') // getPodSection($pod, 'glade')
     ).join("\n");
 
-    ::?CLASS.new_from_string($pod-str)
+    ::?CLASS.new_from_string($pod-str, :$process)
   }
 
   proto method new_from_file (|)
@@ -110,8 +107,8 @@ class GTK::Builder:ver<4> {
   }
   multi method new_from_file (
     Str  $filename,
-        :$base,
-        :$template,
+        :$base       = GTK::Widget,
+        :$template   = False,
         :$process    = True
   ) {
     return self.new_from_string(
@@ -123,7 +120,9 @@ class GTK::Builder:ver<4> {
 
     my $gtk-builder = gtk_builder_new_from_file($filename);
 
-    $gtk-builder ?? self.bless( :$gtk-builder, :$process, :$base ) !! Nil
+    $gtk-builder
+      ?? self.bless( :$gtk-builder, :$process, :$base, :$template )
+      !! Nil
   }
 
   method new_from_resource (Str() $resource_path, :$base, :$process = True)
@@ -134,10 +133,30 @@ class GTK::Builder:ver<4> {
     $gtk-builder ?? self.bless( :$gtk-builder, :$process, :$base ) !! Nil
   }
 
-  method !processInput ( :$base ) {
-    for self.get_objects(:$base) {
-      say "Process Input: { .name }";
-      %!objects{ .name } = $_;
+  method !processInput {
+    for self.get_objects[] {
+      if .buildable-id -> $id {
+        say "Id: { $id }";
+        %!objects{ $id } = $_;
+      }
+    }
+  }
+
+  method !loadObjects (%names) {
+    # Check required objects for need of dynamic loading.
+    for %names.values {
+      my $O = try ::($_);
+      if $O === Nil {
+        CATCH { default { .&note } }
+        say "Attempting to load { $_ }...";
+
+        require ::($ = $_);
+        return  ::($ = $_)  unless $O === Nil;
+      }
+    }
+    for %names.keys {
+      say "Creating '$_'...";
+      %!objects{$_} = self.get_object($_);
     }
   }
 
@@ -155,21 +174,7 @@ class GTK::Builder:ver<4> {
       say "Object { $id } is a { $type }";
       %names{$id} = $type;
     }
-    # Check required objects for need of dynamic loading.
-    for %names.values {
-      my $O = try ::($_);
-      if $O === Nil {
-        CATCH { default { .&note } }
-        say "Attempting to load { $_ }...";
-
-        require ::($ = $_);
-        return  ::($ = $_)  unless $O === Nil;
-      }
-    }
-    for %names.keys {
-      say "Creating '$_'...";
-      %!objects{$_} = self.get_object($_);
-    }
+    self!loadObjects(%names);
   }
 
   # Role: Associative
@@ -257,7 +262,7 @@ class GTK::Builder:ver<4> {
     my gssize $l           = $length;
     my        $str-to-use;
 
-    if $template {
+    if $template || $process {
       # cw: This is VERY bad. We do a lot of converting in the earlier
       #     multis only to convert BACK if we have to process it as
       #     a template! In this situation, we should make the
@@ -266,7 +271,9 @@ class GTK::Builder:ver<4> {
       $str-to-use = CArray[uint8].new(
         prepTemplate( cast(Str, $string) ).Str.encode
       );
-      $str-to-use[ $str-to-use.elems ] = 0;
+      #my $s = cast(Str, $str-to-use);
+      #$s.say;
+      #$str-to-use[ $str-to-use.elems ] = 0;
     } else {
       $str-to-use = $string;
     }
@@ -533,29 +540,20 @@ class GTK::Builder:ver<4> {
   }
 
   method get_objects (
-    :$raw           = False,
-    :$gslist        = False,
-    :quick(:$fast)  = False,
-    :slow(:$proper) = $fast.not,
-    :$base          = GTK::Widget,
+    :$raw            = False,
+    :glist(:$gslist) = False,
+    :quick(:$fast)   = False,
+    :slow(:$proper)  = $fast.not,
+    :$base           = GTK::Widget,
   )
     is also<get-objects>
   {
-    my $l = returnGList(
+    returnGList(
       gtk_builder_get_objects($!gtk-build),
       $raw,
-      $gslist
+      $gslist,
+      |$base.getTypePair
     );
-    return $l if $raw && $gslist;
-
-    $l.Array.map({
-      returnProperWidget(
-        $_,
-        $raw,
-        $proper,
-        $base
-      )
-    });
   }
 
   method get_scope is also<get-scope> {
