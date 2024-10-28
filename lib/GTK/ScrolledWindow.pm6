@@ -43,6 +43,9 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
     is also<GtkScrolledWindow>
   { $!gtk-sw }
 
+  proto method new (|)
+  { * }
+
   multi method new (
     GtkScrolledWindowAncestry  $gtk-scrolled-window,
                               :$ref                  = True
@@ -365,6 +368,10 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
     >
   {
     gtk_scrolled_window_set_child($!gtk-sw, $child);
+  }
+
+  method add (GtkWidget() $child) {
+    self.set_child($child)
   }
 
   method set_hadjustment (Int() $hadjustment) is also<set-hadjustment> {
