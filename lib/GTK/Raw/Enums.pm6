@@ -1976,14 +1976,14 @@ our enum GtkTextViewLayerEnum is export <
 >;
 
 constant GtkTextWindowType is export := guint32;
-our enum GtkTextWindowTypeEnum is export <
-  GTK_TEXT_WINDOW_WIDGET
-  GTK_TEXT_WINDOW_TEXT
-  GTK_TEXT_WINDOW_LEFT
-  GTK_TEXT_WINDOW_RIGHT
-  GTK_TEXT_WINDOW_TOP
-  GTK_TEXT_WINDOW_BOTTOM
->;
+our enum GtkTextWindowTypeEnum is export (
+  'GTK_TEXT_WINDOW_WIDGET' => 1,
+  'GTK_TEXT_WINDOW_TEXT',
+  'GTK_TEXT_WINDOW_LEFT',
+  'GTK_TEXT_WINDOW_RIGHT',
+  'GTK_TEXT_WINDOW_TOP',
+  'GTK_TEXT_WINDOW_BOTTOM'
+);
 
 constant GtkTreeModelFlags is export := guint32;
 our enum GtkTreeModelFlagsEnum is export <
