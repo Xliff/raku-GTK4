@@ -1,5 +1,7 @@
 use LibXML;
 
+use GLib::Object::Type;
+
 unit package GTK::Raw::Builder::Subs:ver<4>;
 
 sub prepTemplate ($template, *%opts) is export {
@@ -32,11 +34,53 @@ sub prepTemplate ($template, *%opts) is export {
     # Remove parent
     $t.removeAttribute('parent');
   }
-  unless %opts<signals> // False {
-    .unbindNode for $dom.find('//signal')[]
+
+  my %signals;
+
+  for $dom.find('//signal | //packing')[] {
+    %signals{ .parent<id> // "OBJECT" } = %(
+      handler => .<handler>,
+      name    => .<name>
+    );
+    .unbindNode unless %opts<signals> // False;
+  }
+
+  if %opts<generate> {
+    my %o;
+
+    %o{ .<id> } = .<Class> for $dom.find('//object')[];
+
+    my $attrs   = %o.pairs.map({ qq:to/ATTR/.join("\n") });
+        has { TYPE-TO-OBJECT(.value) } \$!{ .key }"  });
+        ATTR
+
+    my $attrs-set = %o.pairs.map({ qq:to/ATTRSET/.join("\n") });
+      \$!\{ .key } = \$b\{{ .key }\};
+      ATTRSET
+
+    my $signals = %signals.pairs.map({ qq:to/CALL/.join("\n") });
+      \$b\{{ .key }\}.{ .value.name.tc }.tap: sub (*\@a) \{
+        { .value.handler }( |@a );
+      \}
+      CALL
+
+    say qq:to/CLASS/;
+      class :: \{
+        { $attrs }
+
+        submethod BUILD \{
+          \$b = GTK::Builder.new;
+          { $attrs-set }
+          { $signals }
+        \}
+      \}
+      CLASS
   }
 
   &dom-callback($dom) if &dom-callback;
 
-  $dom.Str
+  my $s = $dom.Str.trim;
+  $s .= chop if $s.comp.tail.ord = 0;
+  $s .= chomp;
+  $s;
 }
