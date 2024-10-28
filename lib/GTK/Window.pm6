@@ -573,28 +573,6 @@ class GTK::Window:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
-  method children (
-    :$raw           = False,
-    :quick(:$fast)  = False,
-    :slow(:$proper) = $fast.not
-  ) {
-    my $child = self.get-first-child( :raw );
-    my @return;
-    repeat {
-      $child = returnProperWidget(
-        $child,
-        $raw,
-        $proper,
-        GTK::Widget
-      );
-      if $child {
-        @return.push: $child;
-        $child .= next-sibling( :raw );
-      }
-    } while $child;
-    @return;
-  }
-
   method get_child (
      :$raw           = False,
      :quick(:$fast)  = False,
