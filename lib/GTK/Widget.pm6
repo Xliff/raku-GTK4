@@ -981,6 +981,29 @@ class GTK::Widget:ver<4> {
     );
   }
 
+  method children (
+    :$raw           = False,
+    :quick(:$fast)  = False,
+    :slow(:$proper) = $fast.not,
+    :$base          = GTK::Widget
+  ) {
+    my $child = self.get-first-child( :raw );
+    my @return;
+    repeat {
+      $child = returnProperWidget(
+        $child,
+        $raw,
+        $proper,
+        $base
+      );
+      if $child {
+        @return.push: $child;
+        $child .= next-sibling( :raw );
+      }
+    } while $child;
+    @return;
+  }
+
   method get_first_child (
     :quick(:$fast)  = False,
     :$raw           = False,
