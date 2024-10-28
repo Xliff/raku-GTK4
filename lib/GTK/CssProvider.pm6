@@ -57,7 +57,7 @@ class GTK::CssProvider:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new ( :$pod, :$style is copy) {
+  multi method new ( :$pod, :css(:$style) is copy ) {
     $style //= '';
 
     my $gtk-css-provider = gtk_css_provider_new();
