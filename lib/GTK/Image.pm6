@@ -7,10 +7,13 @@ use GDK::Pixbuf::Raw::Definitions;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Image:ver<4>;
 
-use GTK::Widget;
+use GDK::Pixbuf;
+use GDK::Texture:ver<4>;
+use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
 use GIO::Roles::Icon;
+use GDK::Roles::Pixbuf:ver<4>;
 use GDK::Roles::Paintable:ver<4>;
 
 our subset GtkImageAncestry is export of Mu
@@ -53,6 +56,11 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
     is also<GtkImage>
   { $!gtk-i }
 
+  proto method new (|c) {
+    say "Args passed: { c.gist }";
+    {*}
+  }
+
   multi method new (GtkImageAncestry $gtk-image, :$ref = True) {
     return unless $gtk-image;
 
@@ -64,6 +72,16 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
     my $gtk-image = gtk_image_new();
 
     my $o = $gtk-image ?? self.bless( :$gtk-image ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
+  }
+  multi method new (GdkPixbuf() $p, :p(:$pixbuf), *%a is required) {
+    my $o = self.new_from_pixbuf($p);
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
+  }
+  multi method new ( Str() $f, :f(:$file) is required, *%a ) {
+    my $o = self.new_from_file($f);
     $o.setAttributes(%a) if $o && +%a;
     $o;
   }
@@ -209,6 +227,17 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
+  method pixbuf ( :$raw = False ) is rw is g-pseudo-property {
+    my $p = self.get_paintable( :raw );
+    return Nil unless $p;
+    my $t = GDK::Texture.new($p);
+    return Nil unless $t;
+
+    say "T: { $t }";
+
+    GDK::Pixbuf::Loader.get-from-texture($t);
+  }
+
   # Type: string
   method resource is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_STRING );
@@ -280,8 +309,10 @@ class GTK::Image:ver<4> is GTK::Widget:ver<4> {
   }
 
   method get_paintable ( :$raw = False ) is also<get-paintable> {
+    my $i = gtk_image_get_paintable($!gtk-i);
+    say "Image Paintable: ({ $!gtk-i }) / { $i // '»NON«' }";
     propReturnObject(
-      gtk_image_get_paintable($!gtk-i),
+      $i,
       $raw,
       |GDK::Paintable.getTypePair
     );
