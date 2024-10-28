@@ -7,6 +7,7 @@ use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Range:ver<4>;
 
 use GTK::Widget:ver<4>;
+use GTK::Adjustment:ver<4>;
 
 use GLib::Roles::Implementor;
 use GTK::Roles::Orientable:ver<4>;
@@ -60,15 +61,19 @@ class GTK::Range:ver<4> is GTK::Widget {
   }
 
   # Type: GTKAdjustment
-  method adjustment is rw is g-property {
+  method adjustment ( :$raw = False ) is rw is g-property {
     my $gv = GLib::Value.new( G_TYPE_POINTER );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('adjustment', $gv);
-        cast(GtkAdjustment, $gv.pointer);
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GTK::Adjustment.getTypePair
+        );
       },
       STORE => -> $, GtkAdjustment() $val is copy {
-        $gv.pointer = $val;
+        $gv.object = $val;
         self.prop_set('adjustment', $gv);
       }
     );
