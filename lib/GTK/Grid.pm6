@@ -175,18 +175,24 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
     Int()       :c(:$column) = 0,
     Int()       :r(:$row)    = 0,
     Int()       :w(:$width)  = 1,
-    Int()       :h(:$height) = 1
+    Int()       :h(:$height) = 1,
+
+                :rev(:$reverse) = False
   ) {
-    samewith($child, $column, $row, $width, $height);
+    samewith($child, $column, $row, $width, $height, :$reverse);
   }
   multi method attach (
     GtkWidget() $child,
-    Int()       $column,
-    Int()       $row,
-    Int()       $width   = 1,
-    Int()       $height  = 1
+    Int()       $column is copy,
+    Int()       $row    is copy,
+    Int()       $width           = 1,
+    Int()       $height          = 1,
+
+               :rev(:$reverse) = False
   ) {
     my gint ($c, $r, $w, $h) = ($column, $row, $width, $height);
+
+    ($c, $r) = ($r, $c) if $reverse;
 
     %!children{ +$child } = ($column, $row, $width, $height, $child);
 
