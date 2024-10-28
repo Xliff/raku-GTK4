@@ -25,15 +25,19 @@ role GTK::Roles::Buildable:ver<4> {
   method GtkBuildable
   { $!gtk-b }
 
-  method get_buildable_id
-    is also<
-      get-buildable-id
-      buildable_id
-      buildable-id
-    >
-  {
+  method get_buildable_id {
     gtk_buildable_get_buildable_id($!gtk-b);
   }
+  method get-buildable-id {
+    self.get_buildable_id
+  }
+  method buildable-id {
+    self.get_buildable_id
+  }
+  method buildable_id {
+    self.get_buildable_id
+  }
+
 
   method get_type is also<get-type> {
     state ($n, $t);
