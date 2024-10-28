@@ -27,11 +27,30 @@ class GTK::Application:ver<4> is GIO::Application {
 
   has $.app-init;
 
-  submethod BUILD ( :$gtk-application, :$ident ) {
-    self.setGtkApplication($gtk-application, :$ident) if $gtk-application;
+  submethod BUILD (
+    :$gtk-application,
+    :ident(:$id)       is copy,
+    :$width,
+    :$height,
+    :$title
+  ) {
+    $id = $title if $id.not && $title;
+    self.setGtkApplication(
+       $gtk-application,
+      :$id,
+      :$width,
+      :$height,
+      :$title
+    ) if $gtk-application;
   }
 
-  method setGtkApplication (GtkApplicationAncestry $_, :$ident) {
+  method setGtkApplication (
+    GtkApplicationAncestry  $_,
+                           :$id,
+                           :$width,
+                           :$height,
+                           :$title
+  ) {
     my $to-parent;
 
     $!gtk-app = do {
@@ -47,14 +66,15 @@ class GTK::Application:ver<4> is GIO::Application {
     }
     self.setGApplication($to-parent);
 
-    if $ident.not {
-      self.Activate.tap( -> *@a {
-        $!app-init = Promise.new;
-        say "Setting window...";
-        self.setWindow( GTK::ApplicationWindow.new($!gtk-app) );
-        $!app-init.keep;
-      });
-    }
+    self.Activate.tap( -> *@a {
+      $!app-init = Promise.new;
+      say "Setting window...";
+      my $w = GTK::ApplicationWindow.new($!gtk-app);
+      $w.set-size-request($width, $height) if $width && $height;
+      $w.title = $title if $title;
+      self.setWindow($w);
+      $!app-init.keep;
+    });
   }
 
   method GTK::Raw::Structs::GtkApplication
@@ -71,18 +91,18 @@ class GTK::Application:ver<4> is GIO::Application {
     $o;
   }
   multi method new (
-    :a(:application_id(:application-id(:id(:$title)))) = 'org.genex.Application',
-
+    :a(:application_id(:application-id(:ident(:$id)))) = 'org.genex.Application',
     :f(:$flags) = 0,
     :w(:$width) = 200,
     :h(:$height)= $width,
+    :t(:$title),
     *%a
   )
     is static
   {
-    %a<width height> = ($width, $height);
+    %a<title width height> = ($title, $width, $height);
 
-    ::?CLASS.new($title, $flags, |%a);
+    ::?CLASS.new($id, $flags, |%a);
   }
   multi method new (Str() $id, Int() $flags = 0, *%a) is static {
     my GApplicationFlags $f = $flags;
@@ -90,9 +110,11 @@ class GTK::Application:ver<4> is GIO::Application {
     my $gtk-application = gtk_application_new($id, $f);
 
     %a<application-id flags>:delete;
-    my ($width, $height) = %a<width height>:delete;
+    my ($width, $height, $title) = %a<width height title>:delete;
 
-    my $o = $gtk-application ?? self.bless( :$gtk-application ) !! Nil;
+    my $o = $gtk-application
+      ?? self.bless( :$gtk-application, :$width, :$height, :$title )
+      !! Nil;
     $o.setAttributes(%a) if $o && +%a;
     $o;
   }
