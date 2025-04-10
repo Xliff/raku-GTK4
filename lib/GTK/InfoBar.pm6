@@ -70,7 +70,7 @@ class GTK::InfoBar:ver<4> is GTK::Widget:ver<4> {
     $o.add_button( |$_ ) for @buttons;
     $o;
   }
-  multi method new_with_buttons (@buttons where *.all ~~ Pair) {
+  multi method new_with_buttons (@buttons where { .all ~~ Pair }) {
     my $first   = @buttons.shift;
     my $o = ::?CLASS.new_with_button($first.key, $first.value);
     $o.add_button( .key, .value ) for @buttons;
@@ -173,7 +173,7 @@ class GTK::InfoBar:ver<4> is GTK::Widget:ver<4> {
   ) {
     self.add_button( |$_ ) for @buttons;
   }
-  multi method add_buttons (@buttons where *.all ~~ Pair) {
+  multi method add_buttons (@buttons where { .all ~~ Pair }) {
     .add_button( .key, .value ) for @buttons.pairs;
   }
 
