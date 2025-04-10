@@ -7,6 +7,7 @@ use DOM::Tiny;
 
 use lib <scripts .>;
 
+use ScriptConfig;
 use GTKScripts;
 
 my @really-strings = <
@@ -218,8 +219,15 @@ sub generateFromFile (
   my $control-type = do if $control-name.not {
     # First part must come from header (.h) file
     my $contents = $control.ends-with('.h') ??
-      $control.IO.slurp !!
-      $control.IO.extension('h').IO.slurp;
+      $control.IO !!
+      $control.IO.extension('h').IO;
+
+    $contents = $contents.parent.add('deprecated').add($contents.basename)
+      unless $contents.r;
+
+    die "File { $contents } not found!" unless $contents.r;
+
+    $contents .= slurp;
 
     my token start-decls {
       'G_DECLARE_FINAL_TYPE'    | 'G_DECLARE_DERIVABLE_TYPE'
@@ -237,9 +245,16 @@ sub generateFromFile (
   }
 
   # Final part must come from implementation (.c) file
-  my $contents = $control.ends-with('.c') ??
-    $control.IO.slurp !!
-    $control.IO.extension('c').IO.slurp;
+  my $contents = $control.ends-with('.c')
+    ?? $control.IO
+    !! $control.IO.extension('c').IO;
+
+  $contents = $contents.parent.add('deprecated').add($contents.basename)
+    unless $contents.r;
+
+  die "File { $contents } not found!" unless $contents.r;
+
+  $contents .= slurp;
 
   my $search = $contents ~~ m:g/
     'g_param_spec_' (\w+) <?{ $0.Str eq <ref unref>.none }> <.ws>? '(' <.ws>?
