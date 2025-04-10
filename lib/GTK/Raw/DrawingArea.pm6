@@ -56,7 +56,7 @@ sub gtk_drawing_area_set_draw_func (
   GtkDrawingArea $self,
                  &draw_func (
                    GtkDrawingArea,
-                   cairo_t,
+                   Cairo::cairo_t,
                    gint,
                    gint,
                    gpointer
