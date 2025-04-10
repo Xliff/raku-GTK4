@@ -3,7 +3,6 @@ use v6.c;
 use NativeCall;
 
 use GLib::Raw::Definitions;
-use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Structs:ver<4>;
 
 use GLib::Roles::Pointers;
@@ -63,6 +62,8 @@ class GtkCenterLayout            is repr<CPointer> does GLib::Roles::Pointers is
 class GtkCClosureExpression      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkClosureExpression       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkColorDialog             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkColorChooser            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkColorChooserDialog      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkColumnView              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkColumnViewColumn        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstantExpression      is repr<CPointer> does GLib::Roles::Pointers is export { }
