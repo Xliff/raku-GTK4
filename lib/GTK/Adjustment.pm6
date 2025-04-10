@@ -54,6 +54,24 @@ class GTK::Adjustment:ver<4> {
     $o;
   }
   multi method new (
+    Num() :$value          = 0,
+    Num() :$lower          = 0,
+    Num() :$upper          = 100,
+    Num() :$step_increment = 1,
+    Num() :$page_increment = 10,
+    Num() :$page_size      = 100
+  ) {
+    say "This new { $upper }";
+    samewith(
+      $value,
+      $lower,
+      $upper,
+      $step_increment,
+      $page_increment,
+      $page_size
+    );
+  }
+  multi method new (
     Num() $value,
     Num() $lower          = 0,
     Num() $upper          = 100,
