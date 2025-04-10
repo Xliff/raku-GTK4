@@ -10,11 +10,11 @@ role GTK::Roles::Tree::Model {
   has GtkTreeModel $!gtk-tm is implementor;
 
   method foreach (&func, gpointer $user_data = gpointer) {
-    gtk_tree_model_foreach($!gtk-tm, $func, $user_data);
+    gtk_tree_model_foreach($!gtk-tm, &func, $user_data);
   }
 
   method get (GtkTreeIter() $iter, GType $type, gpointer $val) {
-    gtk_tree_model_get($!gtk-tm, $iter, $type, $value, -1);
+    gtk_tree_model_get($!gtk-tm, $iter, $type, $val, -1);
   }
 
   method get_column_type (Int() $index) {
@@ -113,9 +113,9 @@ role GTK::Roles::Tree::Model {
   ) {
     my gint $c = $column;
 
-    gtk_tree_model_get_value($!gtk-tm, $iter, $column, $value);
+    gtk_tree_model_get_value($!gtk-tm, $iter, $column, $val);
     return $val if $gvalue;
-    $value.value
+    $val.value
   }
 
   method ref_node (GtkTreeIter() $iter) {
