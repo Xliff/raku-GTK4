@@ -4,22 +4,15 @@ use NativeCall;
 
 use GTK::Raw::Types;
 
-use GDK::Display:ver<4>;
+role GTK::Roles::StyleProvider {
+  has GtkStyleProvider $!gsp is implementor;
 
-use MONKEY-TYPING;
+  method roleInit-GtkStyleProvider {
+    return if $!gsp;
 
-class GTK::Style::Provider {
-
-  method get_type {
-    state ($n, $t);
-
-    unstable_get_type( self.^name, &gtk_style_provider_get_type, $n, $t );
+    my \i = findProperImplementor(self.^attributes);
+    $!gsp = cast( GtkStyleProvider, i.get_value(self) )
   }
-
-}
-
-
-augment class GDK::Display {
 
   method add_provider_for_display (
     GtkStyleProvider() $provider,
@@ -39,6 +32,12 @@ augment class GDK::Display {
       self.GdkDisplay,
       $provider
     );
+  }
+
+  method gtkstyleprovider_get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_style_provider_get_type, $n, $t );
   }
 
 }
