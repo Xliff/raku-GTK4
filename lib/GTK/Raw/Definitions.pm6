@@ -67,6 +67,7 @@ class GtkColorChooser            is repr<CPointer> does GLib::Roles::Pointers is
 class GtkColorChooserDialog      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkColumnView              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkColumnViewColumn        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkComboBoxText            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstantExpression      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraint              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkConstraintGuide         is repr<CPointer> does GLib::Roles::Pointers is export { }
