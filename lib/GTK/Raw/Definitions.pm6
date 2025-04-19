@@ -57,6 +57,7 @@ class GtkBuilder                 is repr<CPointer> does GLib::Roles::Pointers is
 class GtkBuildableParser         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCalendar                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCallbackAction          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkCellEditable            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCellLayout              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCenterBox               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCenterLayout            is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -204,6 +205,7 @@ class GtkTreeListModel           is repr<CPointer> does GLib::Roles::Pointers is
 class GtkTreeListRow             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeModel               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreePath                is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkTreeSelection           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeRowReference        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkVideo                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkViewport                is repr<CPointer> does GLib::Roles::Pointers is export { }
