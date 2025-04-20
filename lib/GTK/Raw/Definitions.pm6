@@ -206,6 +206,7 @@ class GtkTreeListRow             is repr<CPointer> does GLib::Roles::Pointers is
 class GtkTreeModel               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreePath                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeSelection           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkTreeSortable            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeRowReference        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkVideo                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkViewport                is repr<CPointer> does GLib::Roles::Pointers is export { }
