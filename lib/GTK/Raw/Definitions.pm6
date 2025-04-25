@@ -200,6 +200,9 @@ class GtkSwitch                  is repr<CPointer> does GLib::Roles::Pointers is
 class GtkSymbolicPaintable       is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTextTagTable            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTooltip                 is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkTreeDragDest            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkTreeDragSource          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkTreeDropTarget          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeExpander            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeListModel           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeListRow             is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -208,6 +211,7 @@ class GtkTreePath                is repr<CPointer> does GLib::Roles::Pointers is
 class GtkTreeSelection           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeSortable            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkTreeRowReference        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkTreeViewColumn          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkVideo                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkViewport                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkWindowControls          is repr<CPointer> does GLib::Roles::Pointers is export { }
