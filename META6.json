@@ -18,7 +18,7 @@
       "lib/linux/libtree-helper.so",
       "lib/windows/treehelper.dll"
     ],
-                                                                                                                                                                                                                                                                                                                "provides": {
+    "provides": {
       "GTK::Raw::Builder::Subs"                        :  "lib/GTK/Raw/Builder/Subs.pm6"                      ,
       "GTK::TypeManifest"                              :  "lib/GTK/TypeManifest.pm6"                          ,
       "GTK::Raw::Definitions"                          :  "lib/GTK/Raw/Definitions.pm6"                       ,
@@ -76,7 +76,7 @@
       "GTK::Settings"                                  :  "lib/GTK/Settings.pm6"                              ,
       "GTK::Sorter"                                    :  "lib/GTK/Sorter.pm6"                                ,
       "GTK::StyleContext"                              :  "lib/GTK/StyleContext.pm6"                          ,
-      "GTK::StyleProvider"                             :  "lib/GTK/StyleProvider.pm6"                         ,
+      "GTK::Roles::StyleProvider"                      :  "lib/GTK/Roles/StyleProvider.pm6"                   ,
       "GTK::Text::Child::Anchor"                       :  "lib/GTK/Text/Child/Anchor.pm6"                     ,
       "GTK::Text::Iter"                                :  "lib/GTK/Text/Iter.pm6"                             ,
       "GTK::Text::Mark"                                :  "lib/GTK/Text/Mark.pm6"                             ,
@@ -85,7 +85,7 @@
       "GTK::Tooltip"                                   :  "lib/GTK/Tooltip.pm6"                               ,
       "GTK::Tree::Iter"                                :  "lib/GTK/Tree/Iter.pm6"                             ,
       "GTK::Tree::ListModel"                           :  "lib/GTK/Tree/ListModel.pm6"                        ,
-      "GTK::Tree::Model"                               :  "lib/GTK/Tree/Model.pm6"                            ,
+      "GTK::Roles::Tree::Model"                        :  "lib/GTK/Roles/Tree/Model.pm6"                      ,
       "GTK::Tree::Path"                                :  "lib/GTK/Tree/Path.pm6"                             ,
       "GTK::Widget::Paintable"                         :  "lib/GTK/Widget/Paintable.pm6"                      ,
       "GTK::Window::Group"                             :  "lib/GTK/Window/Group.pm6"                          ,
