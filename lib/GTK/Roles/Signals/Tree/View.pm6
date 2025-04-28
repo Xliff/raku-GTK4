@@ -1,6 +1,13 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Raw::Types:ver<4>;
+use GLib::Raw::ReturnedValue;
+
+use GTK::Tree::Iter:ver<4>;
+use GTK::Tree::Path:ver<4>;
+use GTK::Tree::View::Column:ver<4>;
 
 role GTK::Roles::Signals::Tree::View {
   has %!signals-tv;
@@ -8,23 +15,28 @@ role GTK::Roles::Signals::Tree::View {
   #  GtkTreeIter *iter,  GtkTreePath *path --> void
   method connect-row-collapsed (
     $obj,
-    $signal = 'row-collapsed',
-    &handler?
+    $signal    = 'row-collapsed',
+    &handler?,
+    :$raw      = False
   ) {
     my $hid;
     %!signals-tv{$signal} //= do {
       my \𝒮 = Supplier.new;
       $hid = g-connect-row-collapsed($obj, $signal,
-        -> $, $gti, $gtp {
+        -> $, $gti is copy, $gtp is copy {
           CATCH {
             default { 𝒮.note($_) }
+          }
+
+          unless $raw {
+            $gti = GTK::Tree::Iter.new($gti);
+            $gtp = GTK::Tree::Path.new($gtp);
           }
 
           𝒮.emit( [self, $gti, $gtp] );
         },
         Pointer, 0
       );
-      [ 𝒮.Supply, $obj, $hid ];
     };
     %!signals-tv{$signal}[0].tap(&handler) with &handler;
     %!signals-tv{$signal}[0];
@@ -32,9 +44,10 @@ role GTK::Roles::Signals::Tree::View {
 
   #  GtkTreeIter *iter,  GtkTreePath *path --> gboolean
   method connect-test-expand-row (
-    $obj,
-    $signal = 'test-expand-row',
-    &handler?
+     $obj,
+     $signal     = 'test-expand-row',
+     &handler?,
+    :$raw        = False
   ) {
     my $hid;
     %!signals-tv{$signal} //= do {
@@ -43,6 +56,11 @@ role GTK::Roles::Signals::Tree::View {
         -> $, $gti, $gtp {
           CATCH {
             default { 𝒮.note($_) }
+          }
+
+          unless $raw {
+            $gti = GTK::Tree::Iter.new($gti);
+            $gtp = GTK::Tree::Path.new($gtp);
           }
 
           my $r = ReturnedValue.new;
@@ -113,22 +131,26 @@ role GTK::Roles::Signals::Tree::View {
 
   #  GtkTreePath *path,  GtkTreeViewColumn *column --> void
   method connect-row-activated (
-    $obj,
-    $signal = 'row-activated',
-    &handler?
+     $obj,
+     $signal    = 'row-activated',
+     &handler?,
+    :$raw       = False
   ) {
     my $hid;
     %!signals-tv{$signal} //= do {
       my \𝒮 = Supplier.new;
       $hid = g-connect-row-activated($obj, $signal,
-        -> $, $gtp, $gtvc {
+        -> $, $gtp is copy, $gtvc is copy {
           CATCH {
             default { 𝒮.note($_) }
           }
 
-          my $r = ReturnedValue.new;
-          𝒮.emit( [self, $gtp, $gtvc, $r] );
-          $r.r;
+          unless $raw {
+            $gtp  = GTK::Tree::Path.new($gtp);
+            $gtvc = GTK::Tree::View::Column.new($gtvc);
+          }
+
+          𝒮.emit( [self, $gtp, $gtvc] );
         },
         Pointer, 0
       );
