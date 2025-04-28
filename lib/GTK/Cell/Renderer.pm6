@@ -10,13 +10,15 @@ use GLib::Roles::Object;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
-use GTK::Roles::Cell::Editable;
+use GTK::Roles::Cell::Editable:ver<4>;
+use GTK::Roles::Signals::Cell::Renderer:ver<4>;
 
 our subset GtkCellRendererAncestry is export of Mu
   where GtkCellRenderer | GObject;
 
 class GTK::Cell::Renderer:ver<4> {
   also does GLib::Roles::Object;
+  also does GTK::Roles::Signals::Cell::Renderer;
 
   has GtkCellRenderer $!gtk-cr is implementor;
 
