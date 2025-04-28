@@ -10,18 +10,19 @@ use GTK::Raw::Tree::View:ver<4>;
 use GLib::GList;
 use GTK::Widget:ver<4>;
 use GTK::Tree::Path:ver<4>;
+use GTK::Tree::View::Column:ver<4>;
 
 constant TP  := GTK::Tree::Path;
-
-# cw; STUBBED for now.
-class GTK::Tree::View::Column { }
-
 constant TVC := GTK::Tree::View::Column;
+
+use GTK::Roles::Signals::Tree::View:ver<4>;
 
 our subset GtkTreeViewAncestry is export of Mu
   where GtkTreeView | GtkWidgetAncestry;
 
 class GTK::Tree::View is GTK::Widget {
+  also does GTK::Roles::Signals::Tree::View;
+  
   has GtkTreeView $!gtk-tv is implementor;
 
   submethod BUILD ( :$gtk-tree-view ) {
