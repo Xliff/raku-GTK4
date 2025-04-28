@@ -68,7 +68,7 @@ class GTK::Frame:ver<4> is GTK::Widget:ver<4> {
       FETCH => sub ($) {
         self.prop_get('child', $gv);
 
-        say "Frame-child: { $gv.object }";
+        say "Frame-child: { $gv.object // '»NONE«' }";
 
         returnProperWidget(
           $gv.object,
