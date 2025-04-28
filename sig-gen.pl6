@@ -3,6 +3,7 @@ use v6.c;
 
 use lib 'scripts';
 
+use ScriptConfig;
 use GTKScripts;
 use LWP::Simple;
 #use Mojo::DOM:from<Perl5>;
@@ -140,13 +141,14 @@ sub MAIN (
   }
 
   # Output in-class handlers
-  for %signals.pairs {
+  for %signals.pairs.sort( *.value<mn> ) {
+    my $mn = .value<mn>.Str.split('-').map( *.tc ).join('-');
 
     given .value {
       say qq:to/METH/;
         # Is originally:
         # { .<s-sig>.join(', ') } --> { .<rt> }
-        method { .<mn> } \{
+        method { $mn } \{
           self.{ .<udm> ?? "connect({ .<v> }, '{ .<mn> }')"
                         !! "connect-{ .<mn> }({ .<v> })" };
         \}
