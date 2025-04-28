@@ -547,6 +547,32 @@ class GTK::Window:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
+  method default_size is also<default-size> is rw {
+    Proxy.new:
+      FETCH => -> $ {
+        $.get_default_size
+      },
+
+      STORE => -> $, $v is copy {
+        unless $v ~~ Positional {
+          $v = do given $v {
+            when Rat        { $_ .= Num;         proceed }
+            when Num        { $_ = (.Int, .Int); proceed }
+            when Int        { $_ = ($_, $_);     proceed }
+            when Seq        { $_ = .Array;       proceed }
+            default         { $_                         }
+          }
+        }
+
+        X::GLib::InvalidValue.new(
+          message => "Value cannot be a {
+            .^name } when setting default-size!"
+        ).throw unless $v ~~ Positional;
+
+        $.set_default_size( |$v );
+      }
+  }
+
   method close {
     gtk_window_close($!gtk-win);
   }
