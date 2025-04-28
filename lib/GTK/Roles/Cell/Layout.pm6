@@ -159,4 +159,8 @@ class GTK::Cell::Layout:ver<4> {
     $o;
   }
 
+  method get_type {
+    self.gtkcelllayout_get_type;
+  }
+
 }
