@@ -7,18 +7,22 @@ use GTK::Raw::Types:ver<4>;
 use GTK::Raw::ComboBox:ver<4>;
 
 use GTK::Tree::Iter:ver<4>;
-use GTK::Tree::Model:ver<4>;
 use GTK::Widget:ver<4>;
 
+use GTK::Roles::Cell::Layout:ver<4>;
+use GTK::Roles::Cell::Editable:ver<4>;
 use GTK::Roles::Signals::ComboBox:ver<4>;
+use GTK::Roles::Tree::Model:ver<4>;
 
 our subset GtkComboBoxAncestry is export of Mu
-  where GtkComboBox | GtkWidgetAncestry;
+  where GtkComboBox | GtkCellLayout | GtkCellEditable | GtkWidgetAncestry;
 
 class GTK::ComboBox:ver<4>
   is GTK::Widget
   is DEPRECATED(GtkDropDown)
 {
+  also does GTK::Roles::Cell::Editable;
+  also does GTK::Roles::Cell::Layout;
   also does GTK::Roles::Signals::ComboBox;
 
   has GtkComboBox $!gcb is implementor;
@@ -36,12 +40,26 @@ class GTK::ComboBox:ver<4>
         $_;
       }
 
+      when GtkCellEditable {
+        $!gce      = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkComboBox, $_);
+      }
+
+      when GtkCellLayout {
+        $!gcl      = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkComboBox, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkComboBox, $_);
       }
     }
     self.setGtkWidget($to-parent);
+    self.roleInit-CellLayout;
+    self.roleInit-CellEditable;
   }
 
   method GTK::Raw::Definitions::GtkComboBox
