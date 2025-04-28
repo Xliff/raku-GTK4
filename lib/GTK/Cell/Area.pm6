@@ -45,7 +45,7 @@ class GTK::Cell::Area {
     is also<GtkCellArea>
   { $!gtk-ca }
 
-  multi method new (
+  method new (
     $gtk-cell-area where * ~~ GtkCellAreaAncestry,
 
     :$ref = True
@@ -55,11 +55,6 @@ class GTK::Cell::Area {
     my $o = self.bless( :$gtk-cell-area );
     $o.ref if $ref;
     $o;
-  }
-  multi method new {
-    my $gtk-cell-area = self.new-object-ptr( self.get_type );
-
-    $gtk-cell-area ?? self.bless( :$gtk-cell-area ) !! Nil;
   }
 
   method activate (
