@@ -16,7 +16,7 @@ use GDK::Cursor:ver<4>;
 use GDK::Display:ver<4>;
 use GDK::FrameClock:ver<4>;
 use GTK::LayoutManager:ver<4>;
-#use GTK::Settings:ver<4>;
+use GTK::Settings:ver<4>;
 #use GTK::StyleContext:ver<4>;
 
 use GLib::Roles::Implementor;
