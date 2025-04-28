@@ -4,6 +4,7 @@ use NativeCall;
 
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Tree::Model:ver<4>;
+use GTK::Raw::Tree::DnD:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
@@ -19,6 +20,14 @@ role GTK::Roles::Tree::Model {
 
     my \i    = findProperImplementor(self.^attributes);
     $!gtk-tm = cast( GtkTreeModel, i.get_value(self) )
+  }
+
+  method create_row_drag_content (GtkTreePath() $path, :$raw = False) {
+    propReturnObject(
+      gtk_tree_create_row_drag_content($!gtk-tm, $path),
+      $raw,
+      |GDK::Content::Provider.getTypePair
+    );
   }
 
   method foreach (&func, gpointer $user_data = gpointer) {
@@ -259,7 +268,7 @@ class GTK::Tree::Model {
   }
 
   method get_type {
-    gtktreemodel_get_type
+    self.gtktreemodel_get_type
   }
 
 }
