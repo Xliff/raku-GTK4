@@ -192,6 +192,28 @@ class GTK::DropDown:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
+  # Type: GtkObject
+  method selected-item-as-string ( :$raw = False )
+    is rw
+    is g-pseudo-property
+    is also<selected_item_as_string>
+  {
+    my $gv = GLib::Value.new( GTK::StringObject.get_type );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('selected-item', $gv);
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |GTK::StringObject.getTypePair
+        );
+      },
+      STORE => -> $,  $val is copy {
+        warn 'selected-item-as-string does not allow writing'
+      }
+    );
+  }
+
   # Type: boolean
   method show-arrow is rw  is g-property is also<show_arrow> {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
