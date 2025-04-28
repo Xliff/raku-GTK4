@@ -3,8 +3,8 @@ use v6.c;
 use NativeCall;
 
 use GLib::Raw::Types;
-use GTK::Raw::Definitions;
-use GTK::Raw::Structs;
+use GTK::Raw::Definitions:ver<4>;
+use GTK::Raw::Structs:ver<4>;
 
 unit package GTK::Raw::Tree::Expander;
 
