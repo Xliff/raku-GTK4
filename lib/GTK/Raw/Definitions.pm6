@@ -168,6 +168,7 @@ class GtkSearchEntry             is repr<CPointer> does GLib::Roles::Pointers is
 class GtkScrollable              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrollbar               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkScrolledWindow          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkSelectionData           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSelectionModel          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSeparator               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkSettings                is repr<CPointer> does GLib::Roles::Pointers is export { }
