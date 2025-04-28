@@ -41,7 +41,11 @@ class GTK::ProgressBar:ver<4> is GTK::Widget:ver<4> {
     is also<GtkProgressBar>
   { $!gtk-pb }
 
-  multi method new (GtkProgressBarAncestry $gtk-progress-bar, :$ref = True) {
+  multi method new (
+    GtkProgressBarAncestry $gtk-progress-bar,
+
+    :$ref = True
+  ) {
     return unless $gtk-progress-bar;
 
     my $o = self.bless( :$gtk-progress-bar );
