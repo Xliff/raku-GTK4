@@ -6,7 +6,7 @@ use NativeCall;
 
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::IconTheme:ver<4>;
+use GTK::Raw::Icon::Theme:ver<4>;
 
 use GDK::Display:ver<4>;
 
@@ -17,7 +17,7 @@ use GIO::Roles::GFile;
 our subset GtkIconThemeAncestry is export of Mu
   where GtkIconTheme | GObject;
 
-class GTK::IconTheme:ver<4> {
+class GTK::Icon::Theme:ver<4> {
   also does GLib::Roles::Object;
 
   has GtkIconTheme $!gtk-it is implementor;
