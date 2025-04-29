@@ -4,7 +4,7 @@ use Method::Also;
 
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::File::Chooser::Native:ver<4>;
+use GTK::Raw::Chooser::File::Native:ver<4>;
 
 use GTK::NativeDialog:ver<4>;
 
@@ -51,12 +51,17 @@ class GTK::File::Chooser::Dialog is GTK::NativeDialog:ver<4> {
     $o;
   }
   multi method new (
-     $action,
-     $accept_label = 'OK',
-     $cancel_label = 'Cancel',
-    :$parent       = GtkWindow
+     $title,
+    :$action       is copy = GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+    :$accept_label         = 'OK',
+    :$cancel_label         = 'Cancel',
+    :$parent               = GtkWindow,
+    :$save
   ) {
+    $action = GTK_FILE_CHOOSER_ACTION_SAVE if $save;
+
     samewith(
+      $title,
       $parent,
       $action,
       $accept_label,
@@ -64,6 +69,7 @@ class GTK::File::Chooser::Dialog is GTK::NativeDialog:ver<4> {
     );
   }
   multi method new (
+    Str()       $title,
     GtkWindow() $parent,
     Int()       $action,
     Str()       $accept_label,
@@ -71,11 +77,12 @@ class GTK::File::Chooser::Dialog is GTK::NativeDialog:ver<4> {
   ) {
     my GtkFileChooserAction $a = $action;
 
-    my $gtk-file-native = gtk_file_chooser_native_new(
-      $parent,
-      $a,
-      $accept_label,
-      $cancel_label
+    my $gtk-file-native = GTK::Chooser::File::Native.new(
+      $title,
+      action => $a,
+      ok     => $accept_label,
+      cancel => $cancel_label,
+      parent => $parent
     );
 
     $gtk-file-native ?? self.bless( :$gtk-file-native ) !! Nil;
