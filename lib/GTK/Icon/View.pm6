@@ -13,9 +13,10 @@ use GTK::Tree::Path:ver<4>;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
+use GTK::Roles::Cell::Layout;
 
 our subset GtkIconViewAncestry is export of Mu
-  where GtkIconView | GtkWidgetAncestry;
+  where GtkIconView | GtkCellLayout | GtkWidgetAncestry;
 
 class GTK::Icon::View:ver<4> is GTK::Widget {
   also does GTK::Roles::Signals::Generic;
@@ -35,12 +36,19 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
         $_;
       }
 
+      when GtkCellLayout {
+        $!gtk-cl   = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkIconView, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkIconView, $_);
       }
     }
     self.setGtkWidget($to-parent);
+    self.roleInit-GtkCellLayout;
   }
 
   method GTK::Raw::Definitions::GtkIconView
@@ -412,8 +420,23 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
     gtk_icon_view_enable_model_drag_source($!gtk-iv, $s, $formats, $a);
   }
 
-  method get_activate_on_single_click is also<get-activate-on-single-click> {
+  method get_activate_on_single_click
+    is also<get-activate-on-single-click>
+  {
     so gtk_icon_view_get_activate_on_single_click($!gtk-iv);
+  }
+
+  method get_area ( :$raw = False )
+    is also<
+      get-area
+      area
+    >
+  {
+    propReturnObject(
+      self.::GTK::Roles::Cell::Layout::get_area,
+      $raw,
+      |GTK::Cell::Area::Box.getTypePair
+    );
   }
 
   proto method get_cell_rect (|)
