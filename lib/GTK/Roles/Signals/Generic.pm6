@@ -35,9 +35,10 @@ role GTK::Roles::Signals::Generic:ver<4> {
   }
 
   method connect-widget (
-    $obj,
-    $signal,
-    &handler?
+     $obj,
+     $signal,
+     &handler?,
+    :$raw       = False
   )
     is also<connect_widget>
   {
@@ -111,7 +112,47 @@ role GTK::Roles::Signals::Generic:ver<4> {
     %!signals-gtk{$signal}[0];
   }
 
+  #  GtkTreePath *path --> void
+  method connect-treepath (
+     $obj,
+     $signal,
+     &handler?,
+    :$raw       = False
+  ) {
+    my $hid;
+    %!signals-gtk{$signal} //= do {
+      my \𝒮 = Supplier.new;
+      $hid = g-connect-print-context($obj, $signal,
+        -> $, $p is copy, $ud {
+          CATCH {
+            default { 𝒮.note($_) }
+          }
+
+          $p = ::('GTK::Tree::Path').new($p) unless $raw;
+
+          𝒮.emit( [self, $pc, $ud] );
+        },
+        Pointer, 0
+      );
+      [ self.create-signal-supply($signal, 𝒮), $obj, $hid ];
+    };
+    %!signals-gtk{$signal}[0].tap(&handler) with &handler;
+    %!signals-gtk{$signal}[0];
+  }
+
 }
+
+sub g_connect_treepath (
+  Pointer $app,
+  Str     $name,
+          &handler (gpointer, GtkTreePath, gpointer),
+  Pointer $data,
+  uint32  $flags
+)
+  returns uint64
+  is native('gobject-2.0')
+  is symbol('g_signal_connect_object')
+{ * }
 
 sub g_connect_2double (
   Pointer $app,
