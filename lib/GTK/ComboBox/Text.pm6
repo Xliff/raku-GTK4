@@ -52,10 +52,15 @@ class GTK::ComboBox::Text:ver<4> is GTK::ComboBox {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *@items, *%a ) {
     my $gtk-combo-text = gtk_combo_box_text_new();
 
-    $gtk-combo-text ?? self.bless( :$gtk-combo-text ) !! Nil;
+    my $o = $gtk-combo-text ?? self.bless( :$gtk-combo-text ) !! Nil;
+    if $o {
+      $o.setAttributes(%a) if +%a;
+      $o.append_text($_) if +@items;
+    }
+    $o
   }
 
   method new_with_entry is also<new-with-entry> {
