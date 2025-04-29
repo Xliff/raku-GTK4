@@ -4,7 +4,7 @@ use Method::Also;
 
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
-use GTK::Raw::IconTheme:ver<4>;
+use GTK::Raw::Icon::Theme:ver<4>;
 
 use GLib::Roles::Object;
 use GLib::Roles::Implementor;
@@ -15,7 +15,7 @@ use GTK::Roles::SymbolicPaintable:ver<4>;
 our subset GtkIconPaintableAncestry is export of Mu
   where GtkIconPaintable | GtkSymbolicPaintable | GdkPaintable | GObject;
 
-class GTK::IconPaintable:ver<4> {
+class GTK::Icon::Paintable:ver<4> {
   also does GLib::Roles::Object;
   also does GDK::Roles::Paintable;
   also does GTK::Roles::SymbolicPaintable;
