@@ -57,6 +57,7 @@ class GtkBuilder                 is repr<CPointer> does GLib::Roles::Pointers is
 class GtkBuildableParser         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCalendar                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCallbackAction          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkCellAreaBox             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCellEditable            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCellLayout              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCellRendererPixbuf      is repr<CPointer> does GLib::Roles::Pointers is export { }
