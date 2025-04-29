@@ -9,6 +9,7 @@ use GTK::Raw::List::Store:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GLib::Roles::TypedBuffer;
 use GTK::Roles::Tree::DnD:ver<4>;
 use GTK::Roles::Tree::Model:ver<4>;
 use GTK::Roles::Tree::Sortable:ver<4>;
@@ -238,6 +239,38 @@ class GTK::List::Store:ver<4> {
     gtk_list_store_set_column_types($!gls, $n, $types);
   }
 
+  method !preSet (@col-vals --> Nil) {
+    X::GLib::InvalidValues.new(
+      message => "You must specify column number anc column value in {
+       '' }the argument list. The list received does not have an even {
+       '' }number of elements!"
+    ).throw unless @col-vals %% 2;
+
+    @*cv = @col-vals.rotor(2);
+    @*c  = @cv.map( *.head );
+    @*v  = @cv.map( *.tail );
+  }
+
+  method !postSet {
+    $.set_valuesv($*i, $*c, $*v);
+  }
+
+  method set (*@col-vals, :a(:$append) is required) {
+    my (@*cv, @*c, @*v);
+
+    self!preSet(@col-vals);
+    my $*i = $.append;
+    self!postSet;
+  }
+
+  method set (*@col-vals, :p(:$prepend) is required) {
+    my (@*cv, @*c, @*v);
+
+    self!preSet(@col-vals);
+    my $*i = $.prepend;
+    self!postSet;
+  }
+
   method set_value (
     GtkTreeIter()  $iter,
     Int()          $column,
@@ -257,19 +290,21 @@ class GTK::List::Store:ver<4> {
   multi method set_valuesv (
     GtkTreeIter() $iter,
                   @columns,
-    GValue()      $values
+                  @values
   ) {
     samewith(
       $iter,
       ArrayToCArray(guint, @columns),
       @columns.elems,
-      $values
+      GLib::Roles::TypedBuffer[GValue].new(
+        @values.map({ valueToGValue($_, :$signed, :$double) })
+      ).p
     );
   }
   multi method set_valuesv (
     GtkTreeIter() $iter,
     CArray[guint] $columns,
-    GValue()      $values,
+    gpointer      $values,
     Int()         $n_values
   ) {
     my gint $n = $n_values;
