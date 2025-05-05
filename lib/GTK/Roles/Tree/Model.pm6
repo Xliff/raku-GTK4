@@ -6,6 +6,10 @@ use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Tree::Model:ver<4>;
 use GTK::Raw::Tree::DnD:ver<4>;
 
+use GDK::Content::Provider:ver<4>;
+use GTK::Tree::Iter:ver<4>;
+use GTK::Tree::Path:ver<4>;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
@@ -34,8 +38,33 @@ role GTK::Roles::Tree::Model {
     gtk_tree_model_foreach($!gtk-tm, &func, $user_data);
   }
 
-  method get (GtkTreeIter() $iter, GType $type, gpointer $val) {
-    gtk_tree_model_get($!gtk-tm, $iter, $type, $val, -1);
+  method get (GtkTreeIter() $iter, Int() $type) {
+    my GType $t = $type;
+
+    my $v = (
+      do given $t {
+        when G_TYPE_UINT   { CArray[uint32] }
+        when G_TYPE_INT    { CArray[int32]  }
+        when G_TYPE_FLOAT  { CArray[num32]  }
+        when G_TYPE_DOUBLE { CArray[num64]  }
+        when G_TYPE_UINT64 { CArray[uint64] }
+        when G_TYPE_INT64  { CArray[int64]  }
+      }
+    ).allocate(1);
+
+    $v[0] = $t == (G_TYPE_FLOAT, G_TYPE_DOUBLE).any
+      ?? 0e0
+      !! 0;
+
+    gtk_tree_model_get(
+      $!gtk-tm,
+      $iter,
+      $type,
+      cast(gpointer, $v),
+      -1
+    );
+
+    $v[0]
   }
 
   method get_column_type (Int() $index) {
@@ -53,57 +82,73 @@ role GTK::Roles::Tree::Model {
   proto method get_iter (|)
   { * }
 
-  multi method get_iter (GtkTreePath() $path) {
-    return-with-all( samewith(GtkTreeIter.new, $path, :all) );
+  multi method get_iter (GtkTreePath() $path, :$raw = False) {
+    return-with-all( samewith(GtkTreeIter.new, $path, :$raw) );
   }
   multi method get_iter (
     GtkTreeIter()  $iter,
     GtkTreePath()  $path,
-                  :$all   = False
+                  :$raw   = False
   ) {
     my $rv = gtk_tree_model_get_iter($!gtk-tm, $iter, $path);
+    return Nil unless $rv;
 
-    $all.not ?? $rv !! ($rv, $iter);
+    propReturnObject($iter, $raw, |GTK::Tree::Iter.getTypePair);
   }
 
   proto method get_iter_first (|)
   { * }
 
-  multi method get_iter_first {
-    return-with-all( samewith(GtkTreeIter.new, :all) );
+  multi method get_iter_first ( :$raw = False ) {
+    return-with-all( samewith(GtkTreeIter.new, :$raw) );
   }
-  multi method get_iter_first (GtkTreeIter() $iter, :$all = False) {
+  multi method get_iter_first (GtkTreeIter() $iter, :$raw = False) {
     my $rv = gtk_tree_model_get_iter_first($!gtk-tm, $iter);
+    return Nil unless $rv;
 
-    $all.not ?? $rv !! ($rv, $iter);
+    propReturnObject($iter, $raw, |GTK::Tree::Iter.getTypePair);
   }
 
   proto method get_iter_from_string (|)
   { * }
 
-  multi method get_iter_from_string (Str() $path_string) {
-    return-with-all( samewith(GtkTreeIter.new, $path_string, :all) );
+  multi method get_iter_from_string (Str() $path_string, :$raw = False) {
+    return-with-all( samewith(GtkTreeIter.new, $path_string, :$raw) );
   }
   multi method get_iter_from_string (
     GtkTreeIter()  $iter,
     Str()          $path_string,
-                  :$all          = False
+                  :$raw          = False
   ) {
     my $rv = gtk_tree_model_get_iter_from_string(
       $!gtk-tm,
       $iter,
       $path_string
     );
+    return Nil unless $rv;
 
-    $all.not ?? $rv !! ($rv, $iter);
+    propReturnObject($iter, $raw, |GTK::Tree::Iter.getTypePair);
   }
 
   method get_n_columns {
     gtk_tree_model_get_n_columns($!gtk-tm);
   }
+  method elems {
+    $.get_n_columns
+  }
 
-  method get_path (GtkTreeIter() $iter) {
-    gtk_tree_model_get_path($!gtk-tm, $iter);
+  method path ( :$raw = False ) {
+    $.get_path( :$raw );
+  }
+  multi method get_path ( :$raw = False ) {
+    samewith(GtkTreeIter.new, :$raw);
+  }
+  multi method get_path (GtkTreeIter() $iter, :$raw = False) {
+    propReturnObject(
+      gtk_tree_model_get_path($!gtk-tm, $iter),
+      $raw,
+      |GTK::Tree::Path.getTypePair
+    );
   }
 
   method get_string_from_iter (GtkTreeIter() $iter) {
