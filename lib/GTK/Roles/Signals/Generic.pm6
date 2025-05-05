@@ -130,7 +130,7 @@ role GTK::Roles::Signals::Generic:ver<4> {
 
           $p = ::('GTK::Tree::Path').new($p) unless $raw;
 
-          𝒮.emit( [self, $pc, $ud] );
+          𝒮.emit( [self, $p, $ud] );
         },
         Pointer, 0
       );
@@ -150,8 +150,8 @@ sub g_connect_treepath (
   uint32  $flags
 )
   returns uint64
-  is native('gobject-2.0')
-  is symbol('g_signal_connect_object')
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
 { * }
 
 sub g_connect_2double (
@@ -162,8 +162,8 @@ sub g_connect_2double (
   uint32  $flags
 )
   returns uint64
-  is native('gobject-2.0')
-  is symbol('g_signal_connect_object')
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
 { * }
 
 sub g_connect_widget (
@@ -174,8 +174,8 @@ sub g_connect_widget (
   uint32  $flags
 )
   returns uint64
-  is native('gobject-2.0')
-  is symbol('g_signal_connect_object')
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
 { * }
 
 sub g_connect_move_cursor (
@@ -186,8 +186,8 @@ sub g_connect_move_cursor (
   uint32  $flags
 )
   returns uint64
-  is native('gobject-2.0')
-  is symbol('g_signal_connect_object')
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
 { * }
 
 # GtkPrintOperationPreview *preview,  GtkPrintContext *context
@@ -199,6 +199,6 @@ sub g-connect-print-context (
   uint32  $flags
 )
   returns uint64
-  is native(gobject)
-  is symbol('g_signal_connect_object')
+  is      native(gobject)
+  is      symbol('g_signal_connect_object')
 { * }
