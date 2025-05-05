@@ -62,6 +62,7 @@ class GtkCellEditable            is repr<CPointer> does GLib::Roles::Pointers is
 class GtkCellLayout              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCellRendererPixbuf      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCellRendererToggle      is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GtkCellView                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCenterBox               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCenterLayout            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GtkCClosureExpression      is repr<CPointer> does GLib::Roles::Pointers is export { }
