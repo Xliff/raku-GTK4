@@ -18,7 +18,15 @@ class GTK::Tree::Iter {
     :gtk-tree-iter( :$!gtk-ti)
   ) { }
 
-  multi method new (GtkTreeIter $gtk-tree-iter, :$ref = True, :$gtk-tree-model) {
+  method GTK::Raw::Structs::GtkTreeIter
+    is also<GtkTreeIter>
+  { $!gtk-ti }
+
+  multi method new (
+    GtkTreeIter  $gtk-tree-iter,
+                :$ref             = True,
+                :$gtk-tree-model
+  ) {
     return Nil unless $gtk-tree-iter;
 
     my $o = self.bless(
