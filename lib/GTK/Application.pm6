@@ -6,11 +6,11 @@ use NativeCall;
 use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Application:ver<4>;
-use GTK::Raw::Main:ver<4>;
 
 use GIO::Application;
 use GIO::MenuModel;
-use GTK::ApplicationWindow;
+use GTK::Main:ver<4>;
+use GTK::ApplicationWindow:ver<4>;
 
 use GLib::Roles::Implementor;
 use GTK::Roles::Signals::Application:ver<4>;
@@ -300,20 +300,19 @@ class GTK::Application:ver<4> is GIO::Application {
   }
 
   method disable_setlocale is static is also<disable-setlocale> {
-    gtk_disable_setlocale();
+    GTK::Main.disable_setlocale
   }
 
   method get_default_language is static is also<get-default-language> {
-    gtk_get_default_language();
+    GTK::Main.get_default_language
   }
 
   method get_locale_direction is static is also<get-locale-direction> {
-    gtk_get_locale_direction();
+    GTK::Main.get_locale_direction
   }
 
   method init is static {
-    gtk_init();
-    self.postInit;
+    GTK::Main.init;
   }
 
   # method init_abi_check is static (
@@ -337,7 +336,7 @@ class GTK::Application:ver<4> is GIO::Application {
   # }
 
   method is_initialized is static is also<is-initialized> {
-    gtk_is_initialized();
+    GTK::Main.is_initialized
   }
 
 }
