@@ -7,6 +7,9 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::List::Store:ver<4>;
 
+use GLib::Value;
+use GTK::Tree::Iter:ver<4>;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 use GLib::Roles::TypedBuffer;
@@ -16,14 +19,14 @@ use GTK::Roles::Tree::Sortable:ver<4>;
 
 our subset GtkListStoreAncestry is export of Mu
   where GtkListStore    |
-        #GtkDragDest | GtkDragSource |
-        GtkTreeModel |
+        GtkTreeDragDest | GtkTreeDragSource |
+        GtkTreeModel    |
         GtkTreeSortable | GObject;
 
 class GTK::List::Store:ver<4> {
   also does GLib::Roles::Object;
-  # also does GTK::Roles::Tree::Drag::Dest;
-  # also does GTK::Roles::Tree::Drag::Source;
+  also does GTK::Roles::Tree::Drag::Dest;
+  also does GTK::Roles::Tree::Drag::Source;
   also does GTK::Roles::Tree::Model;
   also does GTK::Roles::Tree::Sortable;
 
@@ -42,17 +45,17 @@ class GTK::List::Store:ver<4> {
         $_;
       }
 
-      # when GtkDragDest {
-      #   $!gtk-dd = $_;
-      #   $to-parent = cast(GObject, $_);
-      #   cast(GtkListStore, $_);
-      # }
-      #
-      # when GtkDragSource {
-      #   $!gtk-ds = $_;
-      #   $to-parent = cast(GObject, $_);
-      #   cast(GtkListStore, $_);
-      # }
+      when GtkTreeDragDest {
+        $!gtk-td = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GtkListStore, $_);
+      }
+
+      when GtkTreeDragSource {
+        $!gtk-tsrc = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GtkListStore, $_);
+      }
 
       when GtkTreeModel {
         $!gtk-tm = $_;
@@ -72,10 +75,10 @@ class GTK::List::Store:ver<4> {
       }
     }
     self!setObject($to-parent);
-    self.roleInit-GtkDragDest;
-    self.roleInit-GtkDragSource;
+    self.roleInit-GtkTreeDragDest;
+    self.roleInit-GtkTreeDragSource;
     self.roleInit-GtkTreeModel;
-    self.roleInit-GtktreeSortable;
+    self.roleInit-GtkTreeSortable;
   }
 
   method GTK::Raw::Definitions::GtkListStore
@@ -103,8 +106,17 @@ class GTK::List::Store:ver<4> {
 
     $gtk-list-store ?? self.bless( :$gtk-list-store ) !! Nil;
   }
+  multi method new (@types) {
+    self.newv(@types);
+  }
 
-  multi method newv (@types) {
+  multi method newv (@types is copy) {
+    @types .= map({
+      when    .defined   { $_ }
+      when    $_ === Nil { G_TYPE_NONE }
+      default            { GLib::Value.gTypeFromType($_) }
+    });
+
     samewith( @types.elems, ArrayToCArray(GType, @types) );
   }
   multi method newv (Int() $n_columns, CArray[GType] $types) {
@@ -115,8 +127,12 @@ class GTK::List::Store:ver<4> {
     $gtk-list-store ?? self.bless( :$gtk-list-store ) !! Nil;
   }
 
-  method append (GtkTreeIter() $iter) {
+  multi method append {
+    samewith(GtkTreeIter.new);
+  }
+  multi method append (GtkTreeIter() $iter, :$raw = False) {
     gtk_list_store_append($!gls, $iter);
+    propReturnObject($iter, $raw, |GTK::Tree::Iter.getTypePair);
   }
 
   method clear {
@@ -246,29 +262,64 @@ class GTK::List::Store:ver<4> {
        '' }number of elements!"
     ).throw unless @col-vals %% 2;
 
-    @*cv = @col-vals.rotor(2);
-    @*c  = @cv.map( *.head );
-    @*v  = @cv.map( *.tail );
+    my @cv = @col-vals.rotor(2);
+    @*c    = @cv.map( *.head );
+    @*v    = @cv.map( *.tail );
   }
 
   method !postSet {
-    $.set_valuesv($*i, $*c, $*v);
+    $.set_valuesv($*i, @*c, @*v);
   }
 
-  method set (*@col-vals, :a(:$append) is required) {
-    my (@*cv, @*c, @*v);
+  multi method set (*@col-vals, :a(:$append) is required is copy) {
+    my (@*c, @*v);
+
+    $append = GtkTreeIter.new if $append !~~ GtkTreeIter;
 
     self!preSet(@col-vals);
-    my $*i = $.append;
+    my $*i = $.append($append);
     self!postSet;
+    $*i;
   }
+  multi method set (*@col-vals, :p(:$prepend) is required is copy) {
+    my (@*c, @*v);
 
-  method set (*@col-vals, :p(:$prepend) is required) {
-    my (@*cv, @*c, @*v);
+    $prepend = GtkTreeIter.new if $prepend !~~ GtkTreeIter
 
     self!preSet(@col-vals);
-    my $*i = $.prepend;
+    my $*i = $.prepend($prepend);
     self!postSet;
+    $*i;
+  }
+  multi method set (*@col-vals, :i(:$insert) is required is copy) {
+    my (@*c, @*v);
+
+    $insert = GtkTreeIter.new if $insert !~~ GtkTreeIter
+
+    self!preSet(@col-vals);
+    my $*i = $.insert($prepend);
+    self!postSet;
+    $*i;
+  }
+  multi method set (*@col-vals, :b(:$before) is required is copy) {
+    my (@*c, @*v);
+
+    $before = GtkTreeIter.new if $before !~~ GtkTreeIter
+
+    self!preSet(@col-vals);
+    my $*i = $.insert_before($before);
+    self!postSet;
+    $*i;
+  }
+  multi method set (*@col-vals, :aft(:$after) is required is copy) {
+    my (@*c, @*v);
+
+    $after = GtkTreeIter.new if $after !~~ GtkTreeIter
+
+    self!preSet(@col-vals);
+    my $*i = $.insert_after($after);
+    self!postSet;
+    $*i;
   }
 
   method set_value (
@@ -288,9 +339,11 @@ class GTK::List::Store:ver<4> {
   { * }
 
   multi method set_valuesv (
-    GtkTreeIter() $iter,
-                  @columns,
-                  @values
+    GtkTreeIter()  $iter,
+                   @columns,
+                   @values,
+                  :$signed    = False,
+                  :$double    = True
   ) {
     samewith(
       $iter,
