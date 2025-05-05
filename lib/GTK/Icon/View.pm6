@@ -1,5 +1,6 @@
 use v6.c;
 
+use NativeCall;
 use Method::Also;
 
 use GLib::Raw::Traits;
@@ -13,12 +14,14 @@ use GTK::Tree::Path:ver<4>;
 use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
-use GTK::Roles::Cell::Layout;
+use GTK::Roles::Cell::Layout:ver<4>;
+use GTK::Roles::Signals::Generic:ver<4>;
 
 our subset GtkIconViewAncestry is export of Mu
   where GtkIconView | GtkCellLayout | GtkWidgetAncestry;
 
 class GTK::Icon::View:ver<4> is GTK::Widget {
+  also does GTK::Roles::Cell::Layout;
   also does GTK::Roles::Signals::Generic;
 
   has GtkIconView $!gtk-iv is implementor;
@@ -37,7 +40,7 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
       }
 
       when GtkCellLayout {
-        $!gtk-cl   = $_;
+        $!gcl      = $_;
         $to-parent = cast(GtkWidget, $_);
         cast(GtkIconView, $_);
       }
@@ -308,7 +311,7 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
       FETCH => sub ($) {
         self.prop_get('selection-mode', $gv);
         my $m = $gv.enum;
-        return $m unless $enum
+        return $m unless $enum;
         GtkSelectionModeEnum($m);
       },
       STORE => -> $, Int() $val is copy {
@@ -470,12 +473,13 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
     is also<get-cursor>
   { * }
 
-  method get_cursor {
+  multi method get_cursor ( :$raw = False ) {
     samewith( newCArray(GtkTreePath), newCArray(GtkCellRenderer) );
   }
-  method get_cursor (
-    CArray[GtkTreePath]              $path,
-    CArray[Pointer[GtkCellRenderer]] $cell
+  multi method get_cursor (
+    CArray[GtkTreePath]               $path,
+    CArray[Pointer[GtkCellRenderer]]  $cell,
+                                     :$raw   = False
   ) {
     my $rv = gtk_icon_view_get_cursor($!gtk-iv, $path, $cell);
     return Nil unless $rv;
@@ -494,10 +498,11 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
     samewith($drag_x, $drag_y, newCArray(GtkTreePath), $, :$raw)
   }
   multi method get_dest_item_at_pos (
-    Int()               $drag_x,
-    Int()               $drag_y,
-    CArray[GtkTreePath] $path,
-                        $pos     is rw
+    Int()                $drag_x,
+    Int()                $drag_y,
+    CArray[GtkTreePath]  $path,
+                         $pos     is rw,
+                        :$raw            = False
   ) {
     my gint                    ($dx, $dy) = ($drag_x, $drag_y);
     my GtkIconViewDropPosition  $p        =  0;
@@ -519,8 +524,9 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
     samewith( newCArray(GtkTreePath), $, :$raw )
   }
   multi method get_drag_dest_item (
-    CArray[GtkTreePath] $path,
-                        $pos    is rw
+    CArray[GtkTreePath]  $path,
+                         $pos    is rw,
+                        :$raw           = False
   ) {
     my GtkIconViewDropPosition $p = 0;
 
@@ -541,7 +547,7 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
        $x,
        $y,
        newCArray(GtkTreePath),
-       newCArray(GtkCellRenderer,
+       newCArray(GtkCellRenderer),
       :$raw
     )
   }
@@ -599,7 +605,9 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
     );
   }
 
-  method get_path_at_pos (Int() $x, Int() $y) is also<get-path-at-pos> {
+  method get_path_at_pos (Int() $x, Int() $y, :$raw = False)
+    is also<get-path-at-pos>
+  {
     my gint ($xx, $yy) = ($x, $y);
 
     propReturnObject(
@@ -666,12 +674,13 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
     );
   }
   multi method get_tooltip_context (
-    Int()                $x,
-    Int()                $y,
-    Int()                $keyboard_tip,
-    CArray[GtkTreeModel] $model,
-    CArray[GtkTreePath]  $path,
-    GtkTreeIter          $iter
+    Int()                 $x,
+    Int()                 $y,
+    Int()                 $keyboard_tip,
+    CArray[GtkTreeModel]  $model,
+    CArray[GtkTreePath]   $path,
+    GtkTreeIter()         $iter,
+                         :$raw          = False
   ) {
     my gint     ($xx, $yy) = ($x, $y);
     my gboolean  $k        =  $keyboard_tip.so.Int;
@@ -705,7 +714,7 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
   { * }
 
   multi method get_visible_range ( :$raw = False ) {
-    samewith( newCArray(GtkTreePath), newCArray(GtkTreePath) );
+    samewith( newCArray(GtkTreePath), newCArray(GtkTreePath), :$raw  );
   }
   multi method get_visible_range (
     CArray[GtkTreePath]  $start_path,
@@ -716,8 +725,8 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
     return Nil unless $rv;
 
     (
-      propReturnObject( ppr($start_path), $raw, |GTK::Tree::Path.getTypePair,
-      propReturnObject( ppr($end_path),   $raw, |GTK::Tree::Path.getTypePair
+      propReturnObject( ppr($start_path), $raw, |GTK::Tree::Path.getTypePair ),
+      propReturnObject( ppr($end_path),   $raw, |GTK::Tree::Path.getTypePair )
     )
   }
 
@@ -809,7 +818,7 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
   }
 
   method set_item_padding (Int() $item_padding) is also<set-item-padding> {
-    muy gint $i = $item_padding;
+    my gint $i = $item_padding;
 
     gtk_icon_view_set_item_padding($!gtk-iv, $i);
   }
