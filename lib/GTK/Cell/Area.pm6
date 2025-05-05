@@ -7,7 +7,8 @@ use GTK::Raw::Cell::Area:ver<4>;
 
 use GLib::GList;
 use GLib::Value;
-# use GTK::Cell::Renderer:ver<4>;
+use GTK::Cell::Renderer:ver<4>;
+use GTK::Cell::Area::Context:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
