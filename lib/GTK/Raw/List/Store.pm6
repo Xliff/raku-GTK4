@@ -70,7 +70,7 @@ sub gtk_list_store_insert_with_valuesv (
   GtkListStore $list_store,
   GtkTreeIter  $iter,
   gint         $position,
-  gint         $columns is rw,
+  gint         $columns      is rw,
   GValue       $values,
   gint         $n_values
 )
@@ -112,8 +112,8 @@ sub gtk_list_store_new (gint $n_columns, Str)
 { * }
 
 sub gtk_list_store_newv (
-  gint  $n_columns,
-  GType $types
+  gint          $n_columns,
+  CArray[GType] $types
 )
   returns GtkListStore
   is      native(gtk4)
