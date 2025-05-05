@@ -704,6 +704,7 @@ class GTK::Widget:ver<4> {
   method Destroy {
     self.connect($!gtk-w, 'destroy');
   }
+
   method Direction-Changed is also<Direction_Changed> {
     self.connect-uint($!gtk-w, 'direction-changed');
   }
@@ -1632,10 +1633,24 @@ class GTK::Widget:ver<4> {
     gtk_widget_set_cursor_from_name($!gtk-w, $name);
   }
 
-  method set_default_direction (Int() $direction)
-    is static
+  proto method set_default_direction (|)
     is also<set-default-direction>
-  {
+    is static
+  { * }
+
+  multi method set_default_direction ( :$rtl is required where *.so ) {
+    samewith(GTK_TEXT_DIR_RTL);
+  }
+  multi method set_default_direction ( :$rtl is required where *.so.not ) {
+    samewith(GTK_TEXT_DIR_LTR);
+  }
+  multi method set_default_direction ( :$ltr is required where *.so ) {
+    samewith( :!rtl );
+  }
+  multi method set_default_direction ( :$ltr is required where *.so.not ) {
+    samewith( :rtl );
+  }
+  multi method set_default_direction (Int() $direction) {
     my GtkTextDirection $d = $direction;
 
     gtk_widget_set_default_direction($d);
