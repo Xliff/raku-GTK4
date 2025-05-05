@@ -48,10 +48,12 @@ class GTK::Frame:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (Str() $label = '')  {
+  multi method new (Str() $label = '', *%a)  {
     my $gtk-frame = gtk_frame_new($label);
 
-    $gtk-frame ?? self.bless( :$gtk-frame ) !! Nil;
+    my $o = $gtk-frame ?? self.bless( :$gtk-frame ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: GtkWidget
