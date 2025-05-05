@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use NativeCall;
 
 use GTK::Raw::Types:ver<4>;
@@ -17,6 +19,7 @@ class GTK::Tree::Path:ver<4> {
   }
 
   method GTK::Raw::Definitions::GtkTreePath
+    is also<GtkTreePath>
   { $!gtk-tp }
 
   method new {
@@ -25,17 +28,18 @@ class GTK::Tree::Path:ver<4> {
     $gtk-tree-path ?? self.bless( :$gtk-tree-path ) !! Nil
   }
 
-  method new_first {
+  method new_first is also<new-first> {
     my $gtk-tree-path = gtk_tree_path_new_first();
 
     $gtk-tree-path ?? self.bless( :$gtk-tree-path ) !! Nil
   }
 
-  method new_from_indices (*@indices) {
+  method new_from_indices (*@indices) is also<new-from-indices> {
     self.new_from_indicesv(@indices);
   }
 
   proto method new_from_indicesv (|)
+    is also<new-from-indicesv>
   { * }
 
   multi method new_from_indicesv (@indices) {
@@ -55,13 +59,13 @@ class GTK::Tree::Path:ver<4> {
     $gtk-tree-path ?? self.bless( :$gtk-tree-path ) !! Nil
   }
 
-  method new_from_string (Str() $string) {
+  method new_from_string (Str() $string) is also<new-from-string> {
     my $gtk-tree-path = gtk_tree_path_new_from_string($string);
 
     $gtk-tree-path ?? self.bless( :$gtk-tree-path ) !! Nil
   }
 
-  method append_index (Int() $index) {
+  method append_index (Int() $index) is also<append-index> {
     my gint $i = $index;
 
     gtk_tree_path_append_index($!gtk-tp, $i);
@@ -87,27 +91,37 @@ class GTK::Tree::Path:ver<4> {
     gtk_tree_path_free($!gtk-tp);
   }
 
-  method get_depth {
+  method get_depth
+    is also<
+      get-depth
+      depth
+    >
+  {
     gtk_tree_path_get_depth($!gtk-tp);
   }
 
-  method get_indices ( :$carray = False ) {
+  method get_indices ( :carray(:$raw) = False )
+    is also<
+      get-indices
+      indices
+    >
+  {
     my $ca = gtk_tree_path_get_indices($!gtk-tp);
-    return $ca if $carray;
+    return $ca if $raw;
     CArrayToArray($ca, self.get_depth);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_tree_path_get_type, $n, $t );
   }
 
-  method is_ancestor (GtkTreePath() $descendant) {
+  method is_ancestor (GtkTreePath() $descendant) is also<is-ancestor> {
     gtk_tree_path_is_ancestor($!gtk-tp, $descendant);
   }
 
-  method is_descendant (GtkTreePath() $ancestor) {
+  method is_descendant (GtkTreePath() $ancestor) is also<is-descendant> {
     gtk_tree_path_is_descendant($!gtk-tp, $ancestor);
   }
 
@@ -115,17 +129,17 @@ class GTK::Tree::Path:ver<4> {
     gtk_tree_path_next($!gtk-tp);
   }
 
-  method prepend_index (
-        gint        $index_
-  ) {
-    gtk_tree_path_prepend_index($!gtk-tp, $index_);
+  method prepend_index (Int() $index) is also<prepend-index> {
+    my gint $i = $index;
+
+    gtk_tree_path_prepend_index($!gtk-tp, $index);
   }
 
   method prev {
     gtk_tree_path_prev($!gtk-tp);
   }
 
-  method to_string {
+  method to_string is also<to-string> {
     gtk_tree_path_to_string($!gtk-tp);
   }
 
