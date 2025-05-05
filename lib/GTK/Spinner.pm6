@@ -48,10 +48,12 @@ class GTK::Spinner:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-spinner = gtk_spinner_new();
 
-    $gtk-spinner ?? self.bless( :$gtk-spinner ) !! Nil;
+    my $o = $gtk-spinner ?? self.bless( :$gtk-spinner ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   method get_spinning is also<get-spinning> {
