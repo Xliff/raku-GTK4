@@ -7,18 +7,9 @@ use GTK::Raw::Definitions:ver<4>;
 use GTK::Raw::Enums:ver<4>;
 use GTK::Raw::Structs:ver<4>;
 
-unit package GTK::Raw::Cell::Area:ver<4>;
+unit package GTK::Raw::Cell::Area::Box:ver<4>;
 
 ### /usr/src/gtk4/gtk/deprecated/gtkcellareabox.h
-
-sub _gtk_cell_area_box_group_visible (
-  GtkCellAreaBox $box,
-  gint           $group_idx
-)
-  returns uint32
-  is      native(gtk4)
-  is      export
-{ * }
 
 sub gtk_cell_area_box_get_spacing (GtkCellAreaBox $box)
   returns gint
