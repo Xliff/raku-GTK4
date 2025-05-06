@@ -3,6 +3,7 @@ use v6.c;
 use Method::Also;
 use NativeCall;
 
+use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 
 use GTK::Cell::Renderer:ver<4>;
@@ -76,7 +77,7 @@ class GTK::Cell::Renderer::Text:ver<4> is GTK::Cell::Renderer {
   }
 
   # Type: GtkAttrList
-  method attributes is rw  is g-property {
+  method attributes ( :$raw = False ) is rw  is g-property {
     my $gv = GLib::Value.new( Pango::AttrList.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -125,7 +126,7 @@ class GTK::Cell::Renderer::Text:ver<4> is GTK::Cell::Renderer {
           |GDK::RGBA.getTypePair
         );
       },
-      STORE => -> $, GdkRgba() $val is copy {
+      STORE => -> $, GdkRGBA() $val is copy {
         $gv.pointer = $val;
         self.prop_set('background-rgba', $gv);
       }
@@ -206,8 +207,8 @@ class GTK::Cell::Renderer::Text:ver<4> is GTK::Cell::Renderer {
           |Pango::FontDescription.getTypePair
         );
       },
-      STORE => -> $,  $val is copy {
-        $gv.GtkFontDescription = $val;
+      STORE => -> $, PangoFontDescription() $val is copy {
+        $gv.object = $val;
         self.prop_set('font-desc', $gv);
       }
     );
@@ -244,7 +245,7 @@ class GTK::Cell::Renderer::Text:ver<4> is GTK::Cell::Renderer {
           |GDK::RGBA.getTypePair
         );
       },
-      STORE => -> $, GdkRgba() $val is copy {
+      STORE => -> $, GdkRGBA() $val is copy {
         $gv.pointer = $val;
         self.prop_set('foreground-rgba', $gv);
       }
@@ -430,7 +431,7 @@ class GTK::Cell::Renderer::Text:ver<4> is GTK::Cell::Renderer {
         self.prop_get('style', $gv);
         my $s = $gv.enum;
         return $s unless $enum;
-        PangoStyleEnum($e);
+        PangoStyleEnum($s);
       },
       STORE => -> $,  $val is copy {
         $gv.valueFromEnum(PangoStyle) = $val;
