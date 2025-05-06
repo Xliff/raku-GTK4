@@ -8,8 +8,16 @@ use GTK::Raw::Tree::DnD:ver<4>;
 
 use GTK::Tree::Path;
 
-class GTK::Drag::Dest {
+role GTK::Roles::Tree::Drag::Dest:ver<4> {
   has GtkTreeDragDest $!gtk-td is implementor;
+
+  method roleInit-GtkTreeDragDest {
+    return if $!gtk-td;
+
+    my \i = findProperImplementor(self.^attributes);
+
+    $!gtk-td = cast( GtkTreeDragDest, i.get_value(self) );
+  }
 
   method data_received (GtkTreePath() $dest, GValue() $value) {
     gtk_tree_drag_dest_drag_data_received($!gtk-td, $dest, $value);
@@ -27,7 +35,7 @@ class GTK::Drag::Dest {
 
 }
 
-class GTK::Tree::Drag::Data {
+class GTK::Tree::Drag::Data:ver<4> {
 
   proto method get_row_drag_data (|)
     is static
@@ -63,15 +71,23 @@ class GTK::Tree::Drag::Data {
 
 }
 
-class GTK::Tree::Drag::Source {
-  has GtkTreeDragSource $!gtk-ts is implementor;
+role GTK::Roles::Tree::Drag::Source:ver<4> {
+  has GtkTreeDragSource $!gtk-tsrc is implementor;
 
-  method data_delete (GtkTreePath() $path) {
-    gtk_tree_drag_source_drag_data_delete($!gtk-ts, $path);
+  method roleInit-GtkTreeDragSource {
+    return if $!gtk-tsrc;
+
+    my \i = findProperImplementor(self.^attributes);
+
+    $!gtk-tsrc = cast( GtkTreeDragSource, i.get_value(self) )
   }
 
-  method get (GtkTreePath() $path) {
-    gtk_tree_drag_source_drag_data_get($!gtk-ts, $path);
+  method data_delete (GtkTreePath() $path) {
+    gtk_tree_drag_source_drag_data_delete($!gtk-tsrc, $path);
+  }
+
+  method getData (GtkTreePath() $path) {
+    gtk_tree_drag_source_drag_data_get($!gtk-tsrc, $path);
   }
 
   method get_type {
@@ -81,6 +97,6 @@ class GTK::Tree::Drag::Source {
   }
 
   method row_draggable (GtkTreePath() $path) {
-    so gtk_tree_drag_source_row_draggable($!gtk-ts, $path);
+    so gtk_tree_drag_source_row_draggable($!gtk-tsrc, $path);
   }
 }
