@@ -96,6 +96,19 @@ class GTK::Cell::Area {
     gtk_cell_area_add($!gtk-ca, $renderer);
   }
 
+  method add_with_properties (
+    GtkCellRenderer()  $renderer,
+                      :$signed    = True
+                      :$double    = True
+                      *%a
+  ) {
+    is also<add-with-properties>
+  {
+    $.add($renderer);
+    $.cell_set_property($renderer, .key, .value, :$signed, :$double)
+      for %a.pairs;
+  }
+
   method add_focus_sibling (
     GtkCellRenderer() $renderer,
     GtkCellRenderer() $sibling
@@ -105,14 +118,14 @@ class GTK::Cell::Area {
     gtk_cell_area_add_focus_sibling($!gtk-ca, $renderer, $sibling);
   }
 
-  method add_with_properties (
-    GtkCellRenderer() $renderer,
-    Str()             $first_prop_name
-  )
-    is also<add-with-properties>
-  {
-    gtk_cell_area_add_with_properties($!gtk-ca, $renderer, $first_prop_name);
-  }
+  # method add_with_properties (
+  #   GtkCellRenderer() $renderer,
+  #   Str()             $first_prop_name
+  # )
+  #   is also<add-with-properties>
+  # {
+  #   gtk_cell_area_add_with_properties($!gtk-ca, $renderer, $first_prop_name);
+  # }
 
   method apply_attributes (
     GtkTreeModel() $tree_model,
