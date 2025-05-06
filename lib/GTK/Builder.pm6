@@ -359,7 +359,21 @@ class GTK::Builder:ver<4> {
     $rv;
   }
 
-  method add_objects_from_resource (
+  proto method add_objects_from_resource (|)
+  { * }
+
+  multi method add_objects_from_resource (
+    $resource_path,
+    @object_ids,
+    $error          = gerror
+  ) {
+    samewith(
+      $resource_path,
+      ArrayToCArray(Str, @object_ids, :null);
+      $error
+    );
+  }
+  multi method add_objects_from_resource (
     Str()                   $resource_path,
     CArray[Str]             $object_ids,
     CArray[Pointer[GError]] $error          = gerror
