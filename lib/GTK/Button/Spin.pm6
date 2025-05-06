@@ -134,7 +134,25 @@ class GTK::Button::Spin:ver<4> is GTK::Widget:ver<4> {
     die "Invalid arguments { |c.gist }";
   }
 
-  method new_with_range (
+  proto method new_with_range (|)
+  { * }
+
+  multi method new_with_range (
+    $r               is copy,
+    :s(:$step)                = 1,
+    :h(:$horizontal)          = True,
+    :v(:$vertical)            = $horizontal.not
+  ) {
+    unless $r ~~ Range {
+      $r .= Range if $r.^can('Range');
+      X::GLib::InvalidValue.new(
+        message => 'Value must be Range-compatible!'
+      ).throw unless $r ~~ Range
+    }
+
+    samewith($r.min, $r.max, $step, :$vertical);
+  }
+  multi method new_with_range (
     Num()  $min,
     Num()  $max,
     Num()  $step,
