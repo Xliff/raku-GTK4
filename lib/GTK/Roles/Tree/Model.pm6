@@ -137,6 +137,13 @@ role GTK::Roles::Tree::Model {
     $.get_n_columns
   }
 
+  has $!gtk-tmi;
+  method iter {
+    $!gtk-tmi = GTK::Tree::Iter.new($!gtk-tm) unless $!gtk-tmi;
+
+    $!gtk-tmi;
+  }
+
   method path ( :$raw = False ) {
     $.get_path( :$raw );
   }
