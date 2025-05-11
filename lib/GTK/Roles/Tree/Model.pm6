@@ -67,10 +67,22 @@ role GTK::Roles::Tree::Model {
     $v[0]
   }
 
-  method get_column_type (Int() $index) {
+  method get_column_types {
+    do for ^$.get_n_columns {
+      $.get_column_type($_);
+    }
+  }
+
+  method get_column_type (Int() $index, :$enum = True) {
     my gint $i = $index;
 
-    gtk_tree_model_get_column_type($!gtk-tm, $i);
+    my $e = gtk_tree_model_get_column_type($!gtk-tm, $i);
+    return $e unless $enum;
+    my $ap = GTypeEnum.enums.antipairs.Hash;
+    if $ap{$e}:exists {
+      return $ap{$e};
+    }
+    $e;
   }
 
   method get_flags ( :set(:$flags) = True ) {
