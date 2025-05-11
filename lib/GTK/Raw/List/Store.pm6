@@ -176,8 +176,8 @@ sub gtk_list_store_set_value (
 sub gtk_list_store_set_valuesv (
   GtkListStore $list_store,
   GtkTreeIter  $iter,
-  gint         $columns is rw,
-  GValue       $values,
+  CArray[gint] $columns,
+  gpointer     $values,        #= @[GValue]
   gint         $n_values
 )
   is      native(gtk4)
