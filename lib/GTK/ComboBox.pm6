@@ -58,8 +58,8 @@ class GTK::ComboBox:ver<4>
       }
     }
     self.setGtkWidget($to-parent);
-    self.roleInit-CellLayout;
-    self.roleInit-CellEditable;
+    self.roleInit-GtkCellLayout;
+    self.roleInit-GtkCellEditable;
   }
 
   method GTK::Raw::Definitions::GtkComboBox
