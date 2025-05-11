@@ -113,7 +113,7 @@ class GTK::Tree::Store:ver<4> {
   ) {
     samewith($iter, $parent, $position, :$raw);
   }
-  method insert (
+  multi method insert (
     GtkTreeIter()  $iter,
     GtkTreeIter()  $parent,
     Int()          $position,
@@ -179,7 +179,7 @@ class GTK::Tree::Store:ver<4> {
      $position,
      @columns,
      @values,
-    :$parent     = GtkTreeIter
+    :$parent     = GtkTreeIter,
     :$signed     = False,
     :$double     = True
   ) {
@@ -239,10 +239,10 @@ class GTK::Tree::Store:ver<4> {
     gtk_tree_store_move_before($!gtk-ts, $iter, $position);
   }
 
-  method prepend ($parent, :$raw = False) {
+  multi method prepend ($parent, :$raw = False) {
     samewith(GtkTreeIter.new, $parent, :$raw);
   }
-  method prepend (
+  multi method prepend (
     GtkTreeIter()  $iter,
     GtkTreeIter()  $parent = GtkTreeIter,
                   :$raw    = False
