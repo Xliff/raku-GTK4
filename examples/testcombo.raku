@@ -1,5 +1,7 @@
 use v6.c;
 
+use GTK::Raw::Types:ver<4>;
+
 use GLib::MainContext;
 use GTK::Box:ver<4>;
 use GTK::Cell::Renderer::Pixbuf:ver<4>;
@@ -8,20 +10,25 @@ use GTK::Cell::View:ver<4>;
 use GTK::ComboBox:ver<4>;
 use GTK::Frame:ver<4>;
 use GTK::List::Store:ver<4>;
+use GTK::Main:ver<4>;
 use GTK::Tree::Iter:ver<4>;
 use GTK::Tree::Path:ver<4>;
 use GTK::Tree::Store:ver<4>;
 use GTK::Window:ver<4>;
 
+use GLib::Roles::Object;
+
 sub create-tree-blaat {
   my $ts = GTK::Tree::Store.new(Str, Str, Bool);
 
-  $ts.set( :append, ['dialog-warning', 'dialog-warning', False ], :!double);
-  $ts.set( :append, ['process-stop',   'process-stop',   False ], :!double);
-  $ts.set( :append, ['document-new',   'document-new',   False ], :!double);
-  $ts.set( :append, ['edit-clear',     'edit-clear',     False ], :!double);
-  $ts.set( :append, [Str,              'separator',      False ], :!double);
-  $ts.set( :append, ['document-open',  'document-open',  False ], :!double);
+  $*ERR.say: "{ &?ROUTINE.name.uc } start";
+  $ts.set( :append, ['dialog-warning', 'dialog-warning', False ], :!double );
+  $ts.set( :append, ['process-stop',   'process-stop',   False ], :!double );
+  $ts.set( :append, ['document-new',   'document-new',   False ], :!double );
+  $ts.set( :append, ['edit-clear',     'edit-clear',     False ], :!double );
+  $ts.set( :append, [Str,              'separator',      False ], :!double );
+  $ts.set( :append, ['document-open',  'document-open',  False ], :!double );
+  $*ERR.say: "{ &?ROUTINE.name.uc } end";
 
   $ts;
 }
@@ -29,33 +36,42 @@ sub create-tree-blaat {
 sub create-empty-list-blaat {
   my $ls = GTK::List::Store.new(Str, Str);
 
+  $*ERR.say: "{ &?ROUTINE.name.uc } start";
   $ls.set( :append, 'dialog-warning' xx 2);
+  $*ERR.say: "{ &?ROUTINE.name.uc } end";
 
-  $ts;
+  $ls;
 }
 
 sub populate-list-blaat ($cb) {
   my $ls = $cb.model;
-  my $i  = $ts.first.next;
+  my $i  = $ls.first.next;
 
-  $ts.set( append => $i, [ 'process-stop',   'process-stop', ], :!double);
-  $ts.set( append => $i, [ 'document-new',   'document-new', ], :!double);
-  $ts.set( append => $i, [ 'edit-clear',     'edit-clear',   ], :!double);
-  $ts.set( append => $i, [ Str,              'separator',    ], :!double);
-  $ts.set( append => $i, [ 'document-open',  'document-open' ], :!double);
+  $*ERR.say: "{ &?ROUTINE.name.uc } start ";
+  $ls.set( append => $i, [ 'process-stop',   'process-stop', ], :!double );
+  $ls.set( append => $i, [ 'document-new',   'document-new', ], :!double );
+  $ls.set( append => $i, [ 'edit-clear',     'edit-clear',   ], :!double );
+  $ls.set( append => $i, [ Str,              'separator',    ], :!double );
+  $ls.set( append => $i, [ 'document-open',  'document-open' ], :!double );
+  $*ERR.say: "{ &?ROUTINE.name.uc } end";
 
-  $ts;
+  $ls;
 }
 
 sub create-list-blaat {
-  my $ls = GTK::List::Store.new(Str, Str);
+  my $ls = GTK::List::Store.new(Str, Str, Bool);
+  my $i  = GtkTreeIter.new;
 
-  $ls.set( :append, [ 'dialog-warning', 'dialog-warning', False ], :!double);
-  $ls.set( :append, [ 'process-stop',   'process-stop',   False ], :!double);
-  $ls.set( :append, [ 'document-new',   'document-new',   False ], :!double);
-  $ls.set( :append, [ 'edit-clear',     'edit-clear',     False ], :!double);
-  $ls.set( :append, [ Str,              'separator',      False ], :!double);
-  $ls.set( :append, [ 'document-open',  'document-open',  False ], :!double);
+  $*ERR.say: "{ &?ROUTINE.name.uc } start";
+  $ls.set( append => $i, [ 'dialog-warning', 'dialog-warning', False ], :!double );
+  $ls.set( append => $i, [ 'process-stop',   'process-stop',   False ], :!double );
+  $ls.set( append => $i, [ 'document-new',   'document-new',   False ], :!double );
+  $ls.set( append => $i, [ 'edit-clear',     'edit-clear',     False ], :!double );
+  $ls.set( append => $i, [ Str,              'separator',      False ], :!double );
+  $ls.set( append => $i, [ 'document-open',  'document-open',  False ], :!double );
+  $*ERR.say: "{ &?ROUTINE.name.uc } end";
+
+  $ls.get_column_types.gist.say;
 
   $ls;
 }
@@ -63,6 +79,7 @@ sub create-list-blaat {
 sub create-list-long {
   my $ls = GTK::List::Store.new(Str);
 
+  $*ERR.say: "{ &?ROUTINE.name.uc } start";
   $ls.set(
     :append,
     [ q<here is some long long text that grows out of the combo's allocation> ]
@@ -75,6 +92,7 @@ sub create-list-long {
     :append,
     [ 'and see the combo box menu being allocated without any constraints' ]
   );
+  $*ERR.say: "{ &?ROUTINE.name.uc } end";
 
   $ls
 }
@@ -82,11 +100,13 @@ sub create-list-long {
 sub create-food-list {
   my $ls = GTK::List::Store.new(Str, Str);
 
+  $*ERR.say: "{ &?ROUTINE.name.uc } start";
   $ls.set( :append, <Pepperoni Pizza>     );
   $ls.set( :append, <Cheese Burger>       );
   $ls.set( :append, <Pineapple Milkshake> );
   $ls.set( :append, <Orange Soda>         );
   $ls.set( :append, <Club Sandwich>       );
+  $*ERR.say: "{ &?ROUTINE.name.uc } end";
 
   $ls
 }
@@ -208,10 +228,10 @@ sub capital-animation ($m) {
     when 1 { $m.set( insert => $m.get-iter( GTP.new-from-indices(0) ), [ 'Berlin' ] ) }
     when 2 { $m.set( insert => $m.get-iter( GTP.new-from-indices(0) ), [ 'London' ] ) }
     when 3 { $m.set( insert => $m.get-iter( GTP.new-from-indices(0) ), [ 'Paris'  ] ) }
-    when 4 { $m.remove( $m.get-iter( GTP.new-from-indices(0, 2) ) }
-    when 5 { $m.remove( $m.get-iter( GTP.new-from-indices(0, 1) ) }
-    when 6 { $m.remove( $m.get-iter( GTP.new-from-indices(0, 0) ) }
-    when 7 { $m.remove( $m.get-iter( GTP.new-from-indices(0)    ) }
+    when 4 { $m.remove( $m.get-iter( GTP.new-from-indices(0, 2) ) ) }
+    when 5 { $m.remove( $m.get-iter( GTP.new-from-indices(0, 1) ) ) }
+    when 6 { $m.remove( $m.get-iter( GTP.new-from-indices(0, 0) ) ) }
+    when 7 { $m.remove( $m.get-iter( GTP.new-from-indices(0)    ) ) }
   }
 
   $c++;
@@ -225,7 +245,7 @@ sub setup-combo-box-entry ($cb) {
   »;
 
   my @at = <bloop bleep klaas>;
-  @at.append: |( 'klass' «~« (0..9, 'a'..'f', 10..12) ).flat
+  @at.append: |( 'klass' «~« (0..9, 'a'..'f', 10..12) ).flat;
 
   $cb.append-text($_) for @at;
 }
@@ -259,28 +279,28 @@ sub MAIN {
   my $m1    = create-list-blaat;
   my $crp4  = GTK::Cell::Renderer::Pixbuf.new;
   my $crt4  = GTK::Cell::Renderer::Text.new;
-  my $cv2   = GTK::Cell::View.new( model => $m );
-  my $crt5  = GTK::Cell::Renderer::Text.new;
-  my $cb3   = GTK::ComboBox.new-with-model($m, child => $cv2);
+  my $cv2   = GTK::Cell::View.new( model => $m1 );
+  my $crt4b = GTK::Cell::Renderer::Text.new;
+  my $cb3   = GTK::ComboBox.new-with-model($m1, child => $cv2);
   my $f5    = GTK::Frame.new('GtkComboBox (tree)', child => $b5);
   my $cb4   = GTK::ComboBox.new-with-model( create-tree-blaat );
   my $crp5  = GTK::Cell::Renderer::Pixbuf.new;
   my $crt5  = GTK::Cell::Renderer::Text.new;
-  my $f5    = GTK::Frame.new('GtkComboBox (grid)', child => $b6);
-  my $f6    = GTK::Frame.new('GtkComboBox with Entry', child => $b7);
+  my $f6    = GTK::Frame.new('GtkComboBox (grid)', child => $b6);
+  my $f7    = GTK::Frame.new('GtkComboBox with Entry', child => $b7);
   my $cb5   = GTK::ComboBox.new-with-entry();
-  my $f7    = GTK::Frame.new('What are you?', child => $b8);
+  my $f8    = GTK::Frame.new('What are you?', child => $b8);
   my $cb6   = GTK::ComboBox.new-with-model( create_phylogenetic_tree );
   my $crt6  = GTK::Cell::Renderer::Text.new;
-  my $f8    = GTK::Frame.new('Where are you?', child => $b9);
+  my $f9    = GTK::Frame.new('Where are you?', child => $b9);
   my $m2    = create-capital-tree;
   my $cb7   = GTK::ComboBox.new-with-model($m2);
   my $crt7  = GTK::Cell::Renderer::Text.new;
-  my $f9    = GTK::Frame.new('Hungry?');
+  my $f10    = GTK::Frame.new('Hungry?');
   my $cb8   = GTK::ComboBox.new-with-model( create-food-list, active => 0 );
   my $crt8  = GTK::Cell::Renderer::Text.new;
   my $crt9  = GTK::Cell::Renderer::Text.new;
-  my $f10   = GTK::Frame.new('Unconstrained Menu');
+  my $f11   = GTK::Frame.new('Unconstrained Menu');
   my $cb9   = GTK::ComboBox.new-with-model(
     create-list-long,
     active            => 0,
@@ -288,7 +308,7 @@ sub MAIN {
   );
   my $crt10 = GTK::Cell::Renderer::Text.new( ellipsize => PANGO_ELLIPSIZE_END );
   my $cb10  = GTK::ComboBox::Text.new( active => 53 );
-  my $f11   = GTK::Frame.new('Looong', child => $cb10 );
+  my $f12   = GTK::Frame.new('Looong', child => $cb10 );
 
   sub set-sensitive ($cl, $c, $tm, $i) {
     $c.sensitive = $tm.get_path($i).get-indices.head.not
@@ -322,7 +342,7 @@ sub MAIN {
 
   $cv.push: $_ for $crp1, $crt;
 
-  setup-combo-and-cells($cb,  $crp2, $crt2);
+  setup-combo-and-cells($cb1, $crp2, $crt2);
   setup-combo-and-cells($cb2, $crp3, $crt3);
   setup-combo-and-cells($cb3, $crp4, $crt4); # cw: Check to ensure this one is valid
   setup-combo-and-cells($cb4, $crp5, $crt5);
@@ -333,8 +353,8 @@ sub MAIN {
 
   $cv2.push: $crt5, :expand;
   $cv2.set-attributes($crt5, 'text', 1);
-  $cb.&display-row-changed($cv2);
-  $cb3.Changed.tap: SUB { display-row-changed( |@*A[^2] );
+  $cb1.&displayed-row-changed($cv2);
+  $cb3.Changed.tap: SUB { displayed-row-changed( |@*A[^2] ) }
 
   $cb5.&setup-combo-box-entry;
 
@@ -353,7 +373,7 @@ sub MAIN {
     }
   );
   $cb7.set-active-iter(
-    $tm.get-iter( GTK::Tree::Path.new-from-indicies(0, 8) )
+    $cb7.get-iter( GTK::Tree::Path.new-from-indicies(0, 8) )
   );
   GLib::Timeout.add( 100, SUB { capital-animation($m2) } );
 
@@ -368,11 +388,12 @@ sub MAIN {
 
   $cb10.append-text("Item { $_ }") for ^200;
 
-  $mb. append: $_ for $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8, $f9, $f10, $f11;
+  $mb. append: $_
+    for $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8, $f9, $f10, $f11, $f12;
 
   .head.append: .tail for (
-    $b1,  $cv,    $b2,  $cb1,   $b3,  $cb2,    $b4, $cb3
-    $b5,  $cb4,   $b7,  $cb5,   $b8,  $cb6,    $b9, $cb7
+    $b1,  $cv,    $b2,  $cb1,   $b3,  $cb2,    $b4, $cb3,
+    $b5,  $cb4,   $b7,  $cb5,   $b8,  $cb6,    $b9, $cb7,
     $b10, $cb8,   $b11, $cb9,   $b12, $cb10
   ).rotor(2);
 
