@@ -98,10 +98,10 @@ class GTK::Cell::Area {
 
   method add_with_properties (
     GtkCellRenderer()  $renderer,
-                      :$signed    = True
-                      :$double    = True
+                      :$signed    = True,
+                      :$double    = True,
                       *%a
-  ) {
+  ) 
     is also<add-with-properties>
   {
     $.add($renderer);
