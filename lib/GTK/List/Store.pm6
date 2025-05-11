@@ -85,6 +85,9 @@ class GTK::List::Store:ver<4> {
     is also<GtkListStore>
   { $!gls }
 
+  proto method new (|)
+  { * }
+
   multi method new (
     $gtk-list-store where * ~~ GtkListStoreAncestry,
 
@@ -109,12 +112,15 @@ class GTK::List::Store:ver<4> {
   multi method new (@types) {
     self.newv(@types);
   }
+  multi method new (*@types where *.elems > 1) {
+    samewith(@types);
+  }
 
   multi method newv (@types is copy) {
     @types .= map({
       when    .defined   { $_ }
       when    $_ === Nil { G_TYPE_NONE }
-      default            { GLib::Value.gTypeFromType($_) }
+      default            { GLib::Value.gtypeFromType($_) }
     });
 
     samewith( @types.elems, ArrayToCArray(GType, @types) );
@@ -256,11 +262,14 @@ class GTK::List::Store:ver<4> {
   }
 
   method !preSet (@col-vals --> Nil) {
-    X::GLib::InvalidValues.new(
-      message => "You must specify column number anc column value in {
-       '' }the argument list. The list received does not have an even {
-       '' }number of elements!"
-    ).throw unless @col-vals %% 2;
+    unless @col-vals %% 2 {
+      my $lv = @col-vals.map({ .defined ?? $_ !! .^name }).join(', ');
+      X::GLib::InvalidValue.new(
+        message => "You must specify column number and column value in {
+         '' }the argument list. The list received does not have an even {
+         '' }number of elements! List elements were: ({ $lv })"
+      ).throw unless @col-vals %% 2;
+    }
 
     my @cv = @col-vals.rotor(2);
     @*c    = @cv.map( *.head );
@@ -271,52 +280,57 @@ class GTK::List::Store:ver<4> {
     $.set_valuesv($*i, @*c, @*v);
   }
 
-  multi method set (*@col-vals, :a(:$append) is required is copy) {
+  multi method set (*@col-vals, :a(:$append) is required is copy where *.so) {
     my (@*c, @*v);
 
-    $append = GtkTreeIter.new if $append !~~ GtkTreeIter;
+    $append = $append.GtkTreeIter if $append.^can('GtkTreeIter');
+    $append = GtkTreeIter.new     if $append === True;
 
-    self!preSet(@col-vals);
+    X::GLib::InvalidValue.new(
+      message => '<append> must be GtkTreeIter-compatible or True'
+    ).throw unless $append ~~ GtkTreeIter;
+
+    self!preSet(@col-vals.kv);
     my $*i = $.append($append);
     self!postSet;
     $*i;
   }
-  multi method set (*@col-vals, :p(:$prepend) is required is copy) {
+  multi method set (*@col-vals, :p(:$prepend) is required is copy where *.so) {
     my (@*c, @*v);
 
-    $prepend = GtkTreeIter.new if $prepend !~~ GtkTreeIter
+    $prepend = GtkTreeIter.new if $prepend !~~ GtkTreeIter;
 
-    self!preSet(@col-vals);
+    self!preSet(@col-vals.kv);
     my $*i = $.prepend($prepend);
     self!postSet;
     $*i;
   }
-  multi method set (*@col-vals, :i(:$insert) is required is copy) {
+  multi method set (*@col-vals, :i(:$insert) is required is copy where *.so) {
     my (@*c, @*v);
 
-    $insert = GtkTreeIter.new if $insert !~~ GtkTreeIter
+    $insert = GtkTreeIter.new if $insert !~~ GtkTreeIter;
 
-    self!preSet(@col-vals);
-    my $*i = $.insert($prepend);
+    self!preSet(@col-vals.kv);
+    my $*i = $.insert($insert);
     self!postSet;
     $*i;
   }
-  multi method set (*@col-vals, :b(:$before) is required is copy) {
+  multi method set (*@col-vals, :b(:$before) is required is copy where *.so) {
     my (@*c, @*v);
 
-    $before = GtkTreeIter.new if $before !~~ GtkTreeIter
+    $before = GtkTreeIter.new if $before !~~ GtkTreeIter;
 
-    self!preSet(@col-vals);
+    self!preSet(@col-vals.kv);
     my $*i = $.insert_before($before);
     self!postSet;
     $*i;
   }
-  multi method set (*@col-vals, :aft(:$after) is required is copy) {
+  multi method set (*@col-vals, :aft(:$after) is required is copy where *.so) {
     my (@*c, @*v);
 
-    $after = GtkTreeIter.new if $after !~~ GtkTreeIter
+    $after = GtkTreeIter.new if $after !~~ GtkTreeIter;
 
-    self!preSet(@col-vals);
+    self!preSet(@col-vals.kv);
     my $*i = $.insert_after($after);
     self!postSet;
     $*i;
@@ -348,10 +362,10 @@ class GTK::List::Store:ver<4> {
     samewith(
       $iter,
       ArrayToCArray(guint, @columns),
-      @columns.elems,
       GLib::Roles::TypedBuffer[GValue].new(
-        @values.map({ valueToGValue($_, :$signed, :$double) })
-      ).p
+        @values.Array.map({ valueToGValue($_, :$signed, :$double) })
+      ).p,
+      @columns.elems
     );
   }
   multi method set_valuesv (
