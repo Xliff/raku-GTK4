@@ -197,11 +197,12 @@ class GtkCellArea is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
 }
 
-class GtkCellAreaBoxAllocation is repr<CStruct> does GLib::Roles::Pointers is export {
-	has int $!group_idx;
-	has int $!position ;
-	has int $!size     ;
-}
+# cw: Not found in GTK4 source
+# class GtkCellAreaBoxAllocation is repr<CStruct> does GLib::Roles::Pointers is export {
+# 	has int $!group_idx;
+# 	has int $!position ;
+# 	has int $!size     ;
+# }
 
 class GtkCellAreaContext is repr<CStruct> does GLib::Roles::Pointers is export {
 	HAS GObject $!parent_instance;
@@ -467,14 +468,15 @@ class GtkStyleAnimation is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint                  $!ref_count;
 }
 
-class GtkCssKeyframes is repr<CStruct> does GLib::Roles::Pointers is export {
-  has gint                         $.ref_count;
-  has gint                         $.n_keyframes;
-  has CArray[gdouble]              $.keyframe_progress;
-  has gint                         $.n_properties;
-  has CArray[guint]                $.property_ids;
-  has CArray[Pointer[GtkCssValue]] $.values;
-};
+# cw: Converted to CPointer
+# class GtkCssKeyframes is repr<CStruct> does GLib::Roles::Pointers is export {
+#   has gint                         $.ref_count;
+#   has gint                         $.n_keyframes;
+#   has CArray[gdouble]              $.keyframe_progress;
+#   has gint                         $.n_properties;
+#   has CArray[guint]                $.property_ids;
+#   has CArray[Pointer[GtkCssValue]] $.values;
+# };
 
 class GtkProgressTracker is repr<CStruct> does GLib::Roles::Pointers is export {
 	has guint64  $!last_frame_time;
@@ -1497,17 +1499,28 @@ class GtkToggleButton is repr<CStruct> does GLib::Roles::Pointers is export {
 }
 
 class GtkTreeDataSortHeader is repr<CStruct> does GLib::Roles::Pointers is export {
-	has gint                    $!sort_column_id;
-	has gpointer  $!func          ; #= GtkTreeIterCompareFunc
-	has gpointer               $!data          ;
-	has GDestroyNotify         $!destroy       ;
+	has gint           $!sort_column_id;
+	has gpointer       $!func          ; #= GtkTreeIterCompareFunc
+	has gpointer       $!data          ;
+	has GDestroyNotify $!destroy       ;
 }
 
 class GtkTreeIter is repr<CStruct> does GLib::Roles::Pointers is export {
-	has gint      $!stamp     ;
+	has gint     $!stamp     ;
 	has gpointer $!user_data ;
 	has gpointer $!user_data2;
 	has gpointer $!user_data3;
+
+	method raku {
+		qq:to/GIST/;
+			GtkTreeIter.new(
+				stamp      => { $!stamp },
+				user_data  => { $!user_data  // '»NULL«' },
+				user_data2 => { $!user_data2 // '»NULL«' },
+				user_data3 => { $!user_data3 // '»NULL«' }
+		  );
+		  GIST
+  }
 }
 
 class GtkTreeModelCssNode is repr<CStruct> does GLib::Roles::Pointers is export {
