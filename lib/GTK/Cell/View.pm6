@@ -13,13 +13,15 @@ use GTK::Widget:ver<4>;
 
 use GLib::Roles::Implementor;
 use GTK::Roles::Orientable:ver<4>;
+use GTK::Roles::Cell::Layout:ver<4>;
 use GTK::Roles::Tree::Model:ver<4>;
 
 our subset GtkCellViewAncestry is export of Mu
-  where GtkCellView | GtkOrientable | GtkWidgetAncestry;
+  where GtkCellView | GtkCellLayout | GtkOrientable | GtkWidgetAncestry;
 
 class GTK::Cell::View:ver<4> is GTK::Widget:ver<4> {
   also does GTK::Roles::Orientable;
+  also does GTK::Roles::Cell::Layout;
 
   has GtkCellView $!gtk-cv is implementor;
 
@@ -36,6 +38,12 @@ class GTK::Cell::View:ver<4> is GTK::Widget:ver<4> {
         $_;
       }
 
+      when GtkCellLayout {
+        $!gcl      = $_;
+        $to-parent = cast(GtkWidget, $_);
+        cast(GtkCellView, $_);
+      }
+
       when GtkOrientable {
         $!gtk-o    = $_;
         $to-parent = cast(GtkWidget, $_);
@@ -49,6 +57,7 @@ class GTK::Cell::View:ver<4> is GTK::Widget:ver<4> {
     }
     self.setGtkWidget($to-parent);
     self.roleInit-GtkOrientable;
+    self.roleInit-GtkCellLayout;
   }
 
   method GTK::Raw::Definitions::GtkCellView
@@ -67,9 +76,9 @@ class GTK::Cell::View:ver<4> is GTK::Widget:ver<4> {
     $o;
   }
   multi method new ( *%a ) {
-    my $gtk-cell-area = gtk_cell_view_new();
+    my $gtk-cell-view = gtk_cell_view_new();
 
-    my $o = $gtk-cell-area ?? self.bless( :$gtk-cell-area ) !! Nil;
+    my $o = $gtk-cell-view ?? self.bless( :$gtk-cell-view ) !! Nil;
     $o.setAttributes(%a) if $o && +%a;
     $o;
   }

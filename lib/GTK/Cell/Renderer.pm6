@@ -43,7 +43,7 @@ class GTK::Cell::Renderer:ver<4> {
     self!setObject($to-parent);
   }
 
-  method GTK::Raw::Definitions::GtkCellRenderer
+  method GTK::Raw::Structs::GtkCellRenderer
     is also<GtkCellRenderer>
   { $!gtk-cr }
 
