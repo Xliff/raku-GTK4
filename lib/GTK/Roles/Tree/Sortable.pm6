@@ -7,16 +7,16 @@ use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
 role GTK::Roles::Tree::Sortable:ver<4> {
-  has GtkTreeSortable $!gtk-ts is implementor;
+  has GtkTreeSortable $!gtk-tsort is implementor;
 
-  method GTK::Raw::Definitions::GtkTreeSortable { $!gtk-ts }
-  method GtkTreeSortable                        { $!gtk-ts }
+  method GTK::Raw::Definitions::GtkTreeSortable { $!gtk-tsort }
+  method GtkTreeSortable                        { $!gtk-tsort }
 
   method roleInit-GtkTreeSortable {
-    return if $!gtk-ts;
+    return if $!gtk-tsort;
 
     my \i    = findProperImplementor(self.^attributes);
-    $!gtk-ts = cast( GtkTreeSortable, i.get_value(self) );
+    $!gtk-tsort = cast( GtkTreeSortable, i.get_value(self) );
   }
 
   proto method get_sort_column_id (|)
@@ -32,7 +32,7 @@ role GTK::Roles::Tree::Sortable:ver<4> {
     my gint        $s = 0;
     my GtkSortType $o = 0;
 
-    gtk_tree_sortable_get_sort_column_id($!gtk-ts, $s, $o);
+    gtk_tree_sortable_get_sort_column_id($!gtk-tsort, $s, $o);
     ($sort_column_id, $order) = ($s, $o);
   }
 
@@ -43,7 +43,7 @@ role GTK::Roles::Tree::Sortable:ver<4> {
   }
 
   method has_default_sort_func {
-    so gtk_tree_sortable_has_default_sort_func($!gtk-ts);
+    so gtk_tree_sortable_has_default_sort_func($!gtk-tsort);
   }
 
   method set_default_sort_func (
@@ -52,7 +52,7 @@ role GTK::Roles::Tree::Sortable:ver<4> {
              &destroy    = %DEFAULT-CALLBACKS<GDestroyNotify>
   ) {
     gtk_tree_sortable_set_default_sort_func(
-      $!gtk-ts,
+      $!gtk-tsort,
       &sort_func,
       $user_data,
       &destroy
@@ -66,7 +66,7 @@ role GTK::Roles::Tree::Sortable:ver<4> {
     my gint        $s = $sort_column_id;
     my GtkSortType $o = $order;
 
-    gtk_tree_sortable_set_sort_column_id($!gtk-ts, $s, $o);
+    gtk_tree_sortable_set_sort_column_id($!gtk-tsort, $s, $o);
   }
 
   method set_sort_func (
@@ -78,7 +78,7 @@ role GTK::Roles::Tree::Sortable:ver<4> {
     my gint $s = $sort_column_id;
 
     gtk_tree_sortable_set_sort_func(
-      $!gtk-ts,
+      $!gtk-tsort,
       $s,
       &sort_func,
       $user_data,
@@ -87,7 +87,7 @@ role GTK::Roles::Tree::Sortable:ver<4> {
   }
 
   method sort_column_changed {
-    gtk_tree_sortable_sort_column_changed($!gtk-ts);
+    gtk_tree_sortable_sort_column_changed($!gtk-tsort);
   }
 
 }
@@ -106,7 +106,7 @@ class GTK::Tree::Sortable {
   method setGtkTreeSortable (GtkTreeSortableAncestry $_) {
     my $to-parent;
 
-    $!gtk-ts = do {
+    $!gtk-tsort = do {
       when GtkTreeSortable {
         $to-parent = cast(GObject, $_);
         $_;
