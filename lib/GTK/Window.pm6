@@ -82,19 +82,20 @@ class GTK::Window:ver<4> is GTK::Widget:ver<4> {
     $o;
   }
   multi method new (
-    :$title  = 'GtkApplicationWindow',
     :$width  = 100,
     :$height = $width,
-    :$size   = ($width, $height)
+    *%a
   ) {
     my $gtk-window = gtk_window_new();
 
     say "New-win: { $gtk-window // 'NO WINDOW!' }";
     return unless $gtk-window;
 
+    %a<title> //= 'GtkWindow';
+
     my $o = self.bless( :$gtk-window );
-    $o.set_size_request( |$size );
-    $o.title = $title if $title;
+    $o.set_size_request($width, $height);
+    $o.setAttributes(%a) if $o && +%a;
     $o
   }
 
