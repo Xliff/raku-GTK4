@@ -8,6 +8,7 @@ use GTK::Cell::Renderer::Pixbuf:ver<4>;
 use GTK::Cell::Renderer::Text:ver<4>;
 use GTK::Cell::View:ver<4>;
 use GTK::ComboBox:ver<4>;
+use GTK::ComboBox::Text:ver<4>;
 use GTK::Frame:ver<4>;
 use GTK::List::Store:ver<4>;
 use GTK::Main:ver<4>;
@@ -20,14 +21,15 @@ use GLib::Roles::Object;
 
 sub create-tree-blaat {
   my $ts = GTK::Tree::Store.new(Str, Str, Bool);
+  my $i  = GtkTreeIter.new;
 
   $*ERR.say: "{ &?ROUTINE.name.uc } start";
-  $ts.set( :append, ['dialog-warning', 'dialog-warning', False ], :!double );
-  $ts.set( :append, ['process-stop',   'process-stop',   False ], :!double );
-  $ts.set( :append, ['document-new',   'document-new',   False ], :!double );
-  $ts.set( :append, ['edit-clear',     'edit-clear',     False ], :!double );
-  $ts.set( :append, [Str,              'separator',      False ], :!double );
-  $ts.set( :append, ['document-open',  'document-open',  False ], :!double );
+  $ts.set( a => $i, [ 'dialog-warning', 'dialog-warning', False ], :v, :!d );
+  $ts.set( a => $i, [ 'process-stop',   'process-stop',   False ], :v, :!d );
+  $ts.set( a => $i, [ 'document-new',   'document-new',   False ], :v, :!d );
+  $ts.set( a => $i, [ 'edit-clear',     'edit-clear',     False ], :v, :!d );
+  # $ts.set( a => $i, [ '',               'separator',      False ], :v, :!d );
+  $ts.set( a => $i, [ 'document-open',  'document-open',  False ], :v, :!d );
   $*ERR.say: "{ &?ROUTINE.name.uc } end";
 
   $ts;
@@ -51,7 +53,7 @@ sub populate-list-blaat ($cb) {
   $ls.set( append => $i, [ 'process-stop',   'process-stop', ], :!double );
   $ls.set( append => $i, [ 'document-new',   'document-new', ], :!double );
   $ls.set( append => $i, [ 'edit-clear',     'edit-clear',   ], :!double );
-  $ls.set( append => $i, [ Str,              'separator',    ], :!double );
+  #$ls.set( append => $i, [ '',               'separator',    ], :!double );
   $ls.set( append => $i, [ 'document-open',  'document-open' ], :!double );
   $*ERR.say: "{ &?ROUTINE.name.uc } end";
 
@@ -67,29 +69,28 @@ sub create-list-blaat {
   $ls.set( append => $i, [ 'process-stop',   'process-stop',   False ], :!double );
   $ls.set( append => $i, [ 'document-new',   'document-new',   False ], :!double );
   $ls.set( append => $i, [ 'edit-clear',     'edit-clear',     False ], :!double );
-  $ls.set( append => $i, [ Str,              'separator',      False ], :!double );
+  #$ls.set( append => $i, [ '',              'separator',      False ], :!double );
   $ls.set( append => $i, [ 'document-open',  'document-open',  False ], :!double );
   $*ERR.say: "{ &?ROUTINE.name.uc } end";
-
-  $ls.get_column_types.gist.say;
 
   $ls;
 }
 
 sub create-list-long {
-  my $ls = GTK::List::Store.new(Str);
+  my $ls = GTK::List::Store.new([Str]);
+  my $i  = GtkTreeIter.new;
 
   $*ERR.say: "{ &?ROUTINE.name.uc } start";
   $ls.set(
-    :append,
+    append => $i,
     [ q<here is some long long text that grows out of the combo's allocation> ]
   );
 
-  $ls.set( :append, [ 'with at least a few of these rows' ]);
-  $ls.set( :append, [ 'so that we can get some ellipsized text here' ]);
+  $ls.set( a => $i, [ 'with at least a few of these rows' ]);
+  $ls.set( a => $i, [ 'so that we can get some ellipsized text here' ]);
 
   $ls.set(
-    :append,
+    append => $i,
     [ 'and see the combo box menu being allocated without any constraints' ]
   );
   $*ERR.say: "{ &?ROUTINE.name.uc } end";
@@ -99,119 +100,123 @@ sub create-list-long {
 
 sub create-food-list {
   my $ls = GTK::List::Store.new(Str, Str);
+  my $i  = GtkTreeIter.new;
 
   $*ERR.say: "{ &?ROUTINE.name.uc } start";
-  $ls.set( :append, <Pepperoni Pizza>     );
-  $ls.set( :append, <Cheese Burger>       );
-  $ls.set( :append, <Pineapple Milkshake> );
-  $ls.set( :append, <Orange Soda>         );
-  $ls.set( :append, <Club Sandwich>       );
+  $ls.set( append => $i, <Pepperoni Pizza>     );
+  $ls.set( append => $i, <Cheese Burger>       );
+  $ls.set( append => $i, <Pineapple Milkshake> );
+  $ls.set( append => $i, <Orange Soda>         );
+  $ls.set( append => $i, <Club Sandwich>       );
   $*ERR.say: "{ &?ROUTINE.name.uc } end";
 
   $ls
 }
 
 sub create_phylogenetic_tree {
-  my $ls = GTK::Tree::Store.new(Str);
+  my $ts = GTK::Tree::Store.new([Str]);
 
-  my ($i1, $i2, $i3) = GTK::Tree::Iter.new;
+  my ($i1, $i2);
 
-  my @i  = $ls.set( append => $i1, [ 'Eubacteria' ]);
+  $*ERR.say: "{ &?ROUTINE.name.uc } start";
+  $i1 = $ts.set( :append,                [ 'Eubacteria'  ], :v);
+  $i2 = $ts.set( :append, parent => $i1, [ 'Aquifecales' ], :v);
 
-  $ls.set( append => $i2, parent => $i1, [ 'Aquifecales'                     ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Thermotogales'                   ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Thermus-Deinococcus group'       ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Chloroflecales'                  ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Cyanobacteria'                   ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Firmicutes'                      ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Leptospirillium Group'           ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Chlorobium-Flavobacteria group'  ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Chlamydia-Verrucomicrobia group' ]);
+  $ts.set( append => $i2, parent => $i1, [ 'Thermotogales'                   ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Thermus-Deinococcus group'       ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Chloroflecales'                  ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Cyanobacteria'                   ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Firmicutes'                      ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Leptospirillium Group'           ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Chlorobium-Flavobacteria group'  ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Chlamydia-Verrucomicrobia group' ], :v);
 
-  $ls.set( append => $i3, parent => $i2, [ 'Verrucomicrobia' ]);
-  $ls.set( append => $i3, parent => $i2, [ 'Chlamydia'       ]);
+  my $i3 = $ts.set( append => True, parent => $i2, [ 'Verrucomicrobia' ], :v);
 
-  $ls.set( append => $i2, parent => $i1, [ 'Flexistipes'       ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Fibrobacter group' ]);
-  $ls.set( append => $i2, parent => $i1, [ 'spirocheteus'      ]);
-  $ls.set( append => $i2, parent => $i1, [ 'Proteobacteria'    ]);
+  $ts.set( append => $i3, parent => $i2, [ 'Chlamydia'       ], :v);
 
-  $ls.set( append => $i3, parent => $i2, [ 'alpha'   ]);
-  $ls.set( append => $i3, parent => $i2, [ 'beta'    ]);
-  $ls.set( append => $i3, parent => $i2, [ 'delta'   ]);
-  $ls.set( append => $i3, parent => $i2, [ 'epsilon' ]);
-  $ls.set( append => $i3, parent => $i2, [ 'gamma'   ]);
+  $ts.set( append => $i2, parent => $i1, [ 'Flexistipes'       ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Fibrobacter group' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'spirocheteus'      ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Proteobacteria'    ], :v);
 
-  $ls.set( append => $i1, [ 'Eukaryotes' ]);
+  $ts.set( append => $i3, parent => $i2, [ 'alpha'   ], :v);
+  $ts.set( append => $i3, parent => $i2, [ 'beta'    ], :v);
+  $ts.set( append => $i3, parent => $i2, [ 'delta'   ], :v);
+  $ts.set( append => $i3, parent => $i2, [ 'epsilon' ], :v);
+  $ts.set( append => $i3, parent => $i2, [ 'gamma'   ], :v);
 
-  $ls.set( append => $i2, parent => $i1, [ $_ ]) for <
+  $ts.set( append => $i1, [ 'Eukaryotes' ], :v);
+
+  $ts.set( append => $i2, parent => $i1, [ $_ ], :v) for <
     Bilateria        Myxozoa         Cnidari             Ctenophora
     Placozoa         Porifera        choanoflagellates   Fungi
     Aleveolates      Stramenopiles   Rhodophyta
     Viridaeplantae   Microsporidia
   >;
 
-  $ls.set( append => $i2, parent => $i1, [ 'crytomonads et al' ]);
+  $ts.set( append => $i2, parent => $i1, [ 'crytomonads et al' ], :v);
 
-  $ls.set( append => $i2, parent => $i1, [ $_ ]) for <
+  $ts.set( append => $i2, parent => $i1, [ $_ ], :v) for <
     Archaea   Korarchaeota   Crenarchaeota   Buryarchaeota
   >;
+  $*ERR.say: "{ &?ROUTINE.name.uc } end";
 
-  $ls;
+  $ts;
 }
 
 sub create-capital-tree {
-  my $ts = GTK::Tree::Store.new(Str);
+  my $ts = GTK::Tree::Store.new([Str]);
 
-  my ($i1, $i2) = GTK::Tree::Iter.new xx 2;
+  my ($i1, $i2) = GtkTreeIter.new xx 2;
 
-  $ts.set( append => $i1, [ 'A - B' ]);
-  $ts.set( append => $i2, parent => $i1, [ $_ ]) for <
+  $ts.set( append => $i1, [ 'A - B' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ $_ ], :v) for <
     Albany    Annapolis   Atlanta   Augusta    Austin
   >;
-  $ts.set( append => $i2, parent => $i1, [ 'Baton Rogue' ]);
-  $ts.set( append => $i2, parent => $i1, [ $_ ]) for <
+  $ts.set( append => $i2, parent => $i1, [ 'Baton Rogue' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ $_ ], :v) for <
     Bismarck  Boise  Boston
   >;
 
-  $ts.set( append => $i1, [ 'C - D' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'Carson City' ]);
-  $ts.set( append => $i2, parent => $i1, [ $_ ]) for <
+  $ts.set( append => $i1, [ 'C - D' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Carson City' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ $_ ], :v) for <
     Charleston   Cheyenne   Columbia   Columbus   Concord   Denver
   >;
-  $ts.set( append => $i2, parent => $i1, [ 'Des Moines' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'Dover' ]);
+  $ts.set( append => $i2, parent => $i1, [ 'Des Moines' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Dover' ], :v);
 
-  $ts.set( append => $i1, [ 'E - J' ]);
-  $ts.set( append => $i2, parent => $i1, [ $_ ]) for <
+  $ts.set( append => $i1, [ 'E - J' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ $_ ], :v) for <
     Frankfort   Harrisburg     Hartford   Helena
     Honolulu    Indianapolis   Jackson
   >;
-  $ts.set( append => $i2, parent => $i1, [ 'Jefferson City' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'Juneau' ]);
+  $ts.set( append => $i2, parent => $i1, [ 'Jefferson City' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Juneau' ], :v);
 
-  $ts.set( append => $i1, [ 'K - O' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'Lansing' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'Lincoln' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'Little Rock' ]);
-  $ts.set( append => $i2, parent => $i1, [ $_ ]) for <
+  $ts.set( append => $i1, [ 'K - O' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Lansing' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Lincoln' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Little Rock' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ $_ ], :v) for <
     Madison   Montgomery   Montpelier   Nashville
   >;
-  $ts.set( append => $i2, parent => $i1, [ 'Oklahoma City' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'Olympia' ]);
+  $ts.set( append => $i2, parent => $i1, [ 'Oklahoma City' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Olympia' ], :v);
 
-  $ts.set( append => $i1, [ 'P - S' ]);
-  $ts.set( append => $i2, parent => $i1, [ $_ ]) for <
+  $ts.set( append => $i1, [ 'P - S' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ $_ ], :v) for <
     Pierre     Providence   Raleigh
     Richmond   Sacramento   Salem
   >;
-  $ts.set( append => $i2, parent => $i1, [ 'Salt Lake City' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'Santa Fe' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'Springfield' ]);
-  $ts.set( append => $i2, parent => $i1, [ 'St. Paul' ]);
+  $ts.set( append => $i2, parent => $i1, [ 'Salt Lake City' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Santa Fe' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'Springfield' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ 'St. Paul' ], :v);
 
-  $ts.set( append => $i1, [ 'T - Z' ]);
-  $ts.set( append => $i2, parent => $i1, [ $_ ]) for <
+  $ts.set( append => $i1, [ 'T - Z' ], :v);
+  $ts.set( append => $i2, parent => $i1, [ $_ ], :v) for <
     Tallahassee  Topeka  Trenton
   >;
 
@@ -323,10 +328,10 @@ sub MAIN {
   }
 
   sub setup-combo-and-cells ($cb, $crp, $crt) {
-    $cb.set-attributes($crp, 'icon-name', Str);
+    $cb.set-attributes($crp, 'icon-name', 0);
     $cb.set-cell-data-func(
       $crp,
-      SUB { set-sensitive( |@*A ) }
+      SUB { say "sen"; set-sensitive( |@*A ) }
     );
     $cb.active = 0;
     $cb.set-attributes($crt, 'text', 1);
