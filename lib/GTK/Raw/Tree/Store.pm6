@@ -76,8 +76,8 @@ sub gtk_tree_store_insert_with_valuesv (
   GtkTreeIter  $iter,
   GtkTreeIter  $parent,
   gint         $position,
-  gint         $columns is rw,
-  GValue       $values,
+  CArray[gint] $columns,
+  gpointer     $values,
   gint         $n_values
 )
   is      native(gtk4)
@@ -200,11 +200,11 @@ sub gtk_tree_store_set_value (
 { * }
 
 sub gtk_tree_store_set_valuesv (
-  GtkTreeStore            $tree_store,
-  GtkTreeIter             $iter,
-  gint                    $columns is rw,
-  CArray[Pointer[GValue]] $values,
-  gint                    $n_values
+  GtkTreeStore $tree_store,
+  GtkTreeIter  $iter,
+  CArray[gint] $columns,
+  gpointer     $values,
+  gint         $n_values
 )
   is      native(gtk4)
   is      export
