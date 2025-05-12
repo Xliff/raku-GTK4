@@ -64,6 +64,11 @@ role GTK::Roles::Cell::Layout {
     unstable_get_type( self.^name, &gtk_cell_layout_get_type, $n, $t );
   }
 
+  method push (GtkCellRenderer() $cell, :$expand = False, :$end = False) {
+    $end ?? $.pack_end(  $cell, $expand)
+         !! $.pack_start($cell, $expand)
+  }
+
   method pack_end (GtkCellRenderer() $cell, Int() $expand) {
     my gboolean $e = $expand.so.Int;
 
@@ -82,15 +87,38 @@ role GTK::Roles::Cell::Layout {
     gtk_cell_layout_reorder($!gcl, $cell, $p);
   }
 
-  method set_attributes (GtkCellRenderer() $cell) {
-    gtk_cell_layout_set_attributes($!gcl, $cell);
+  method set-attributes (GtkCellRenderer() $cell, *@attributes) {
+    $.set_attributes($cell, @attributes);
+  }
+  method set_attributes (GtkCellRenderer() $cell, @attributes) {
+    @attributes = @attributes.map( -> $h, $t {
+      my ($head, $tail) = ($h, $t);
+
+      $head .= Str if $head !~~ Str && $head.^can('Str');
+      $tail .= Int if $tail !~~ Int && $tail.^can('Int');
+
+      X::GLib::InvalidValue.new(
+        message => "The call to set_attributes must contain a list of {
+          ''}Str, Int pairs! Found a ({ .head.^name }, { .value.^name }) {
+          ''}pair, which is invalid!"
+      ).throw unless $head ~~ Str && $tail ~~ Int;
+
+      |($head, $tail);
+    });
+
+    for @attributes -> $h, $t {
+      $.add_attribute($cell, $h, $t);
+    }
   }
 
+  method set-cell-data-func (|c) {
+    $.set_cell_data_func(|c);
+  }
   method set_cell_data_func (
     GtkCellRenderer()  $cell,
                        &func,
-    gpointer           $func_data,
-                       &destroy,
+    gpointer           $func_data   = gpointer,
+                       &destroy     = %DEFAULT-CALLBACKS<GDestroyNotify>,
                       :$raw         = False
 
   ) {
