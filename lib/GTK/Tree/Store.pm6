@@ -7,15 +7,25 @@ use GTK::Raw::Types;
 use GTK::Raw::Tree::Store;
 
 use GLib::Value;
+use GTK::Tree::Iter:ver<4>;
+use GTK::Roles::Tree::DnD:ver<4>;
+use GTK::Roles::Tree::Model:ver<4>;
+use GTK::Roles::Tree::Sortable:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GLib::Roles::TypedBuffer;
 
 our subset GtkTreeStoreAncestry is export of Mu
-  where GtkTreeStore | GObject;
+  where GtkTreeStore | GtkTreeDragDest | GtkTreeDragSource |
+       GtkTreeModel  | GtkTreeSortable | GObject;
 
 class GTK::Tree::Store:ver<4> {
   also does GLib::Roles::Object;
+  also does GTK::Roles::Tree::Drag::Dest;
+  also does GTK::Roles::Tree::Drag::Source;
+  also does GTK::Roles::Tree::Model;
+  also does GTK::Roles::Tree::Sortable;
 
   has GtkTreeStore $!gtk-ts is implementor;
 
@@ -32,17 +42,48 @@ class GTK::Tree::Store:ver<4> {
         $_;
       }
 
+      when GtkTreeDragDest {
+        $!gtk-td = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GtkListStore, $_);
+      }
+
+      when GtkTreeDragSource {
+        $!gtk-tsrc = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GtkListStore, $_);
+      }
+
+      when GtkTreeModel {
+        $!gtk-tm = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GtkListStore, $_);
+      }
+
+      when GtkTreeSortable {
+        $!gtk-tsort = $_;
+        $to-parent  = cast(GObject, $_);
+        cast(GtkListStore, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkTreeStore, $_);
       }
     }
     self!setObject($to-parent);
+    self.roleInit-GtkTreeDragDest;
+    self.roleInit-GtkTreeDragSource;
+    self.roleInit-GtkTreeModel;
+    self.roleInit-GtkTreeSortable;
   }
 
   method GTK::Raw::Definitions::GtkTreeStore
     is also<GtkTreeStore>
   { $!gtk-ts }
+
+  proto method new (|)
+  { * }
 
   multi method new (
     $gtk-tree-store where * ~~ GtkTreeStoreAncestry,
@@ -55,24 +96,31 @@ class GTK::Tree::Store:ver<4> {
     $o.ref if $ref;
     $o;
   }
+  multi method new (*@types where *.elems > 1) {
+    samewith(@types);
+  }
   multi method new (@types) {
     self.newv(@types);
   }
-  multi method new (CArray[GType] $types) {
-    self.newv($types);
+  multi method new ($n, CArray[GType] $types) {
+    self.newv($n, $types);
   }
 
   multi method newv (@types is copy) {
     @types .= map({
       when    .defined   { $_ }
       when    $_ === Nil { G_TYPE_NONE }
-      default            { GLib::Value.gTypeFromType($_) }
+      default            { GLib::Value.gtypeFromType($_) }
     });
 
     samewith( @types.elems, ArrayToCArray(GType, @types) );
   }
-  multi method newv (CArray[GType] $types) {
-    gtk_tree_store_newv($!gtk-ts, $types);
+  multi method newv (Int() $n_columns, CArray[GType] $types) {
+    my gint $n = $n_columns;
+
+    my $gtk-tree-store = gtk_tree_store_newv($n, $types);
+
+    $gtk-tree-store ?? self.bless( :$gtk-tree-store ) !! Nil;
   }
 
   multi method append ($parent, :$raw = False) {
@@ -188,17 +236,19 @@ class GTK::Tree::Store:ver<4> {
       $parent,
       $position,
       ArrayToCArray(gint, @columns),
-      ArrayToCArray( GValue, valueToGValue(@values, :$signed, :$double) ),
+      GLib::Roles::TypedBuffer[GValue].new(
+        @values.map( valueToGValue($_, :$signed, :$double) )
+      ).p,
       @values.elems
     );
   }
   multi method insert_with_valuesv (
-    GtkTreeIter()           $iter,
-    GtkTreeIter()           $parent,
-    Int()                   $position,
-    CArray[gint]            $columns,
-    CArray[Pointer[GValue]] $values,
-    Int()                   $n_values
+    GtkTreeIter() $iter,
+    GtkTreeIter() $parent,
+    Int()         $position,
+    CArray[gint]  $columns,
+    gpointer      $values,
+    Int()         $n_values
   ) {
     my gint $p = $position;
 
@@ -279,11 +329,14 @@ class GTK::Tree::Store:ver<4> {
   }
 
   method !preSet (@col-vals --> Nil) {
-    X::GLib::InvalidValues.new(
-      message => "You must specify column number anc column value in {
-       '' }the argument list. The list received does not have an even {
-       '' }number of elements!"
-    ).throw unless @col-vals %% 2;
+    unless @col-vals %% 2 {
+      my $lv = @col-vals.map({ .defined ?? $_ !! .^name }).join(', ');
+      X::GLib::InvalidValue.new(
+        message => "You must specify column number and column value in {
+         '' }the argument list. The list received does not have an even {
+         '' }number of elements! List elements were: ({ $lv })"
+      ).throw unless @col-vals %% 2;
+    }
 
     my @cv = @col-vals.rotor(2);
     @*c    = @cv.map( *.head );
@@ -296,44 +349,51 @@ class GTK::Tree::Store:ver<4> {
 
   multi method set (
      @values,
-    :$prepend is required,
-    :$parent               = GtkTreeIter,
-    :$signed               = False,
-    :$double               = True
+    :p(:$prepend) is required is copy where *.so,
+    :v(:$values)  is required         where *.so,
+    :$parent                                      = GtkTreeIter,
+    :$signed                                      = False,
+    :$double                                      = True
   ) {
     samewith( |@values.kv, :$prepend, :$signed, :$double, :$parent );
   }
   multi method set (
      @values,
-    :$append is required,
-    :$parent               = GtkTreeIter,
-    :$signed               = False,
-    :$double               = True
+    :a(:$append) is required is copy where *.so,
+    :v(:$values) is required         where *.so,
+    :$parent                                     = GtkTreeIter,
+    :$signed                                     = False,
+    :$double                                     = True
   ) {
     samewith( |@values.kv, :$append, :$signed, :$double, :$parent);
   }
   multi method set (
-     *@col-vals,
-    :a(:$append) is required,
-    :$signed                  = False,
-    :$double                  = True,
-    :$parent                  = GtkTreeIter
+     *@col-vals where *.elems > 1,
+    :a(:$append) is required is copy where *.so,
+    :$signed                                     = False,
+    :$double                                     = True,
+    :$parent                                     = GtkTreeIter
   ) {
     my (@*c, @*v);
 
-    $append = GtkTreeIter.new if $append !~~ GtkTreeIter;
+    $append = $append.GtkTreeIter if $append.^can('GtkTreeIter');
+    $append = GtkTreeIter.new     if $append === True;
+
+    X::GLib::InvalidValue.new(
+      message => '<append> must be GtkTreeIter-compatible or True'
+    ).throw unless $append ~~ GtkTreeIter;
 
     self!preSet(@col-vals);
     my $*i = $.append($append, $parent);
-    $*i.gist.say;
     self!postSet(:$signed, :$double);
+    $*i;
   }
   multi method set (
      *@col-vals,
-    :p(:$prepend) is required,
-    :$signed                   = False,
-    :$double                   = True,
-    :$parent                   = GtkTreeIter
+    :p(:$prepend) is required is copy where *.so,
+    :$signed                                      = False,
+    :$double                                      = True,
+    :$parent                                      = GtkTreeIter
   ) {
     my (@*c, @*v);
 
@@ -345,10 +405,10 @@ class GTK::Tree::Store:ver<4> {
   }
   multi method set (
      *@col-vals,
-    :$signed                   = False,
-    :i(:$insert) is required,
-    :$double                   = True,
-    :$parent                   = GtkTreeIter
+    :i(:$insert) is required is copy where *.so,
+    :$signed                                     = False,
+    :$double                                     = True,
+    :$parent                                     = GtkTreeIter
   ) {
     my (@*c, @*v);
 
@@ -360,11 +420,11 @@ class GTK::Tree::Store:ver<4> {
   }
   multi method set (
      *@col-vals,
-    :$signed                   = False,
-    :aft(:$after) is required,
-    :$double                   = True,
-    :$parent                   = GtkTreeIter,
-    :sib(:$sibling)            = GtkTreeIter
+    :aft(:$after) is required is copy where *.so,
+    :$signed                                      = False,
+    :$double                                      = True,
+    :$parent                                      = GtkTreeIter,
+    :sib(:$sibling)                               = GtkTreeIter
   ) {
     my (@*c, @*v);
 
@@ -376,11 +436,11 @@ class GTK::Tree::Store:ver<4> {
   }
   multi method set (
      *@col-vals,
-    :$signed                   = False,
-    :b(:$before) is required,
-    :$double                   = True,
-    :$parent                   = GtkTreeIter,
-    :sib(:$sibling)            = GtkTreeIter
+    :b(:$before) is required is copy where *.so,
+    :$signed                                     = False,
+    :$double                                     = True,
+    :$parent                                     = GtkTreeIter,
+    :sib(:$sibling)                              = GtkTreeIter
   ) {
     my (@*c, @*v);
 
@@ -425,25 +485,29 @@ class GTK::Tree::Store:ver<4> {
   multi method set_valuesv (
      $iter,
      @columns,
-     @values,
-    :$signed   = False,
-    :$double   = True
+     @values   is copy,
+    :$signed            = False,
+    :$double            = True
   ) {
+    @values = @values.map({
+      valueToGValue($_, :$signed, :$double)
+    });
+
+    say "Setting the following: { @values.map({ "{ .value // '»NIL«' } ({
+         .type( :fundamental ) })" }) }" if checkDEBUG(3);
+
     samewith(
       $iter,
       ArrayToCArray(gint, @columns),
-      ArrayToCArray(
-        GValue,
-        @values.map( valueToGValue($_, :$signed, :$double) )
-      ),
+      GLib::Roles::TypedBuffer[GValue].new(@values).p,
       @values.elems
     );
   }
   multi method set_valuesv (
-    GtkTreeIter()           $iter,
-    CArray[gint]            $columns,
-    CArray[Pointer[GValue]] $values,
-    Int()                   $n_values
+    GtkTreeIter() $iter,
+    CArray[gint]  $columns,
+    gpointer      $values,
+    Int()         $n_values
   ) {
     my gint $n = $n_values;
 
