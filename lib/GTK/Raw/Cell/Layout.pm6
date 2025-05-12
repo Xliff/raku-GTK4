@@ -89,16 +89,16 @@ sub gtk_cell_layout_set_attributes (
 { * }
 
 sub gtk_cell_layout_set_cell_data_func (
-  GtkCellLayout         $cell_layout,
-                        &func (
-                          GtkCellLayout,
-                          GtkCellRenderer,
-                          GtkTreeModel,
-                          GtkTreeIter,
-                          gpointer
-                        ),
-  gpointer              $func_data,
-                        &destroy (gpointer)
+  GtkCellLayout $cell_layout,
+                &func (
+                  GtkCellLayout,
+                  GtkCellRenderer,
+                  GtkTreeModel,
+                  GtkTreeIter,
+                  gpointer
+                ),
+  gpointer      $func_data,
+                &destroy (gpointer)
 )
   is      native(gtk4)
   is      export
