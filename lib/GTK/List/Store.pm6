@@ -64,8 +64,8 @@ class GTK::List::Store:ver<4> {
       }
 
       when GtkTreeSortable {
-        $!gtk-ts = $_;
-        $to-parent = cast(GObject, $_);
+        $!gtk-tsort = $_;
+        $to-parent  = cast(GObject, $_);
         cast(GtkListStore, $_);
       }
 
