@@ -41,6 +41,9 @@ class GTK::Cell::Renderer::Text:ver<4> is GTK::Cell::Renderer {
     is also<GtkCellRendererText>
   { $!gtk-crt }
 
+  proto method new (|)
+  { * }
+
   multi method new (
     $gtk-renderer-text where * ~~ GtkCellRendererTextAncestry,
 
@@ -52,11 +55,12 @@ class GTK::Cell::Renderer::Text:ver<4> is GTK::Cell::Renderer {
     $o.ref if $ref;
     $o;
   }
-
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-renderer-text = gtk_cell_renderer_text_new();
 
-    $gtk-renderer-text ?? self.bless( :$gtk-renderer-text ) !! Nil;
+    my $o = $gtk-renderer-text ?? self.bless( :$gtk-renderer-text ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: PangoAlignment
