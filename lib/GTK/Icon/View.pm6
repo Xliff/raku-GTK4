@@ -9,6 +9,7 @@ use GTK::Raw::Icon::View:ver<4>;
 
 use GLib::GList;
 use GTK::Cell::Area:ver<4>;
+use GTK::Cell::Area::Box:ver<4>;
 use GTK::Cell::Renderer:ver<4>;
 use GTK::Tree::Path:ver<4>;
 use GTK::Widget:ver<4>;
@@ -16,6 +17,7 @@ use GTK::Widget:ver<4>;
 use GLib::Roles::Implementor;
 use GTK::Roles::Cell::Layout:ver<4>;
 use GTK::Roles::Signals::Generic:ver<4>;
+use GTK::Roles::Tree::Model:ver<4>;
 
 our subset GtkIconViewAncestry is export of Mu
   where GtkIconView | GtkCellLayout | GtkWidgetAncestry;
@@ -69,22 +71,30 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-icon-view = gtk_icon_view_new();
 
-    $gtk-icon-view ?? self.bless( :$gtk-icon-view ) !! Nil;
+    my $o = $gtk-icon-view ?? self.bless( :$gtk-icon-view ) !! Nil;
+    $o.setAttributes(%a) if $o && %a;
+    $o;
   }
 
-  method new_with_area (GtkCellArea() $area) is also<new-with-area> {
+  method new_with_area (GtkCellArea() $area, *%a) is also<new-with-area> {
     my $gtk-icon-view = gtk_icon_view_new_with_area($area);
 
-    $gtk-icon-view ?? self.bless( :$gtk-icon-view ) !! Nil;
+    my $o = $gtk-icon-view ?? self.bless( :$gtk-icon-view ) !! Nil;
+    $o.setAttributes(%a) if $o && %a;
+    $o;
   }
 
-  method new_with_model (GtkTreeModel() $model) is also<new-with-model> {
+  method new_with_model (GtkTreeModel() $model, *%a) is also<new-with-model> {
     my $gtk-icon-view = gtk_icon_view_new_with_model($model);
 
-    $gtk-icon-view ?? self.bless( :$gtk-icon-view ) !! Nil;
+    %a<model>:delete;
+
+    my $o = $gtk-icon-view ?? self.bless( :$gtk-icon-view ) !! Nil;
+    $o.setAttributes(%a) if $o && %a;
+    $o;
   }
 
   # Type: boolean
@@ -436,7 +446,7 @@ class GTK::Icon::View:ver<4> is GTK::Widget {
     >
   {
     propReturnObject(
-      self.::GTK::Roles::Cell::Layout::get_area,
+      self.::GTK::Roles::Cell::Layout::get_area( :raw ),
       $raw,
       |GTK::Cell::Area::Box.getTypePair
     );
