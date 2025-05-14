@@ -57,21 +57,22 @@ sub gtk_list_store_insert_before (
   is      export
 { * }
 
-sub gtk_list_store_insert_with_values (
-  GtkListStore $list_store,
-  GtkTreeIter  $iter,
-  gint         $position
-)
-  is      native(gtk4)
-  is      export
-{ * }
+# cw: '...' parameter not shown and not supported.
+# sub gtk_list_store_insert_with_values (
+#   GtkListStore $list_store,
+#   GtkTreeIter  $iter,
+#   gint         $position
+# )
+#   is      native(gtk4)
+#   is      export
+# { * }
 
 sub gtk_list_store_insert_with_valuesv (
   GtkListStore $list_store,
   GtkTreeIter  $iter,
   gint         $position,
-  gint         $columns      is rw,
-  GValue       $values,
+  CArray[gint] $columns,
+  gpointer     $values,
   gint         $n_values
 )
   is      native(gtk4)
@@ -155,9 +156,9 @@ sub gtk_list_store_set (
 { * }
 
 sub gtk_list_store_set_column_types (
-  GtkListStore $list_store,
-  gint         $n_columns,
-  GType        $types
+  GtkListStore  $list_store,
+  gint          $n_columns,
+  CArray[GType] $types
 )
   is      native(gtk4)
   is      export

@@ -109,12 +109,13 @@ class GTK::List::Store:ver<4> {
 
     $gtk-list-store ?? self.bless( :$gtk-list-store ) !! Nil;
   }
-  multi method new (@types) {
-    self.newv(@types);
-  }
   multi method new (*@types where *.elems > 1) {
     samewith(@types);
   }
+  multi method new (@types) {
+    self.newv(@types);
+  }
+
 
   multi method newv (@types is copy) {
     @types .= map({
@@ -123,11 +124,14 @@ class GTK::List::Store:ver<4> {
       default            { GLib::Value.gtypeFromType($_) }
     });
 
+    say "Types: { @types.gist }";
+
     samewith( @types.elems, ArrayToCArray(GType, @types) );
   }
   multi method newv (Int() $n_columns, CArray[GType] $types) {
     my gint $n = $n_columns;
 
+    $types[^$n].gist.say;
     my $gtk-list-store = gtk_list_store_newv($n, $types);
 
     $gtk-list-store ?? self.bless( :$gtk-list-store ) !! Nil;
@@ -276,11 +280,25 @@ class GTK::List::Store:ver<4> {
     @*v    = @cv.map( *.tail );
   }
 
-  method !postSet {
-    $.set_valuesv($*i, @*c, @*v);
+  method !postSet( :$signed, :$double ) {
+    $.set_valuesv($*i, @*c, @*v, :$signed, :$double);
   }
 
-  multi method set (*@col-vals, :a(:$append) is required is copy where *.so) {
+  multi method set (
+    @vals,
+    :a(:$append) is required is copy where *.so,
+    :v(:$values) is required         where *.so,
+    :$signed                                     = False,
+    :$double                                     = True
+  ) {
+    samewith( |@vals.kv, :$append, :$signed, :$double );
+  }
+  multi method set (
+    *@col-vals,
+    :a(:$append) is required is copy where *.so,
+    :$signed                                     = False,
+    :$double                                     = True
+  ) {
     my (@*c, @*v);
 
     $append = $append.GtkTreeIter if $append.^can('GtkTreeIter');
@@ -290,60 +308,130 @@ class GTK::List::Store:ver<4> {
       message => '<append> must be GtkTreeIter-compatible or True'
     ).throw unless $append ~~ GtkTreeIter;
 
-    self!preSet(@col-vals.kv);
+    self!preSet(@col-vals);
     my $*i = $.append($append);
-    self!postSet;
+    self!postSet( :$signed, :$double );
     $*i;
   }
-  multi method set (*@col-vals, :p(:$prepend) is required is copy where *.so) {
+  multi method set (
+    @vals,
+    :p(:$prepend) is required is copy where *.so,
+    :v(:$values)  is required         where *.so,
+    :$signed                                      = False,
+    :$double                                      = True
+  ) {
+    samewith(|@vals.kv, :$prepend, :$signed, :$double);
+  }
+  multi method set (
+    *@col-vals,
+    :p(:$prepend) is required is copy where *.so,
+    :$signed                                      = False,
+    :$double                                      = True
+  ) {
     my (@*c, @*v);
 
-    $prepend = GtkTreeIter.new if $prepend !~~ GtkTreeIter;
+    $prepend = $prepend.GtkTreeIter if $prepend.^can('GtkTreeIter');
+    $prepend = GtkTreeIter.new      if $prepend === True;
 
     self!preSet(@col-vals.kv);
     my $*i = $.prepend($prepend);
-    self!postSet;
+    self!postSet( :$signed, :$double );
     $*i;
   }
-  multi method set (*@col-vals, :i(:$insert) is required is copy where *.so) {
+  multi method set (
+    @vals,
+    :i(:$insert) is required is copy where *.so,
+    :v(:$values)  is required        where *.so,
+    :$signed                                      = False,
+    :$double                                      = True
+  ) {
+    samewith(|@vals.kv, :$insert, :$signed, :$double);
+  }
+  multi method set (
+    *@col-vals,
+    :i(:$insert) is required is copy where *.so,
+    :$signed                                      = False,
+    :$double                                      = True
+  ) {
     my (@*c, @*v);
 
-    $insert = GtkTreeIter.new if $insert !~~ GtkTreeIter;
+    $insert = $insert.GtkTreeIter if $insert.^can('GtkTreeIter');
+    $insert = GtkTreeIter.new     if $insert === True;
 
     self!preSet(@col-vals.kv);
     my $*i = $.insert($insert);
-    self!postSet;
+    self!postSet( :$signed, :$double );
     $*i;
   }
-  multi method set (*@col-vals, :b(:$before) is required is copy where *.so) {
+  multi method set (
+    @vals,
+    :b(:$before) is required is copy where *.so,
+    :v(:$values) is required         where *.so,
+    :$signed                                      = False,
+    :$double                                      = True
+  ) {
+    samewith(|@vals.kv, :$before, :$signed, :$double);
+  }
+  multi method set (
+    *@col-vals,
+    :b(:$before) is required is copy where *.so,
+    :$signed                                      = False,
+    :$double                                      = True
+  ) {
     my (@*c, @*v);
 
-    $before = GtkTreeIter.new if $before !~~ GtkTreeIter;
+    $before = $before.GtkTreeIter if $before.^can('GtkTreeIter');
+    $before = GtkTreeIter.new     if $before === True;
 
-    self!preSet(@col-vals.kv);
+    self!preSet(@col-vals);
     my $*i = $.insert_before($before);
-    self!postSet;
+    self!postSet( :$signed, :$double );
     $*i;
   }
-  multi method set (*@col-vals, :aft(:$after) is required is copy where *.so) {
+  multi method set (
+    @vals,
+    :aft(:$after) is required is copy where *.so,
+    :v(:$values) is required          where *.so,
+    :$signed                                      = False,
+    :$double                                      = True
+  ) {
+    samewith(|@vals.kv, :$after, :$signed, :$double);
+  }
+  multi method set (
+    *@col-vals,
+    :aft(:$after) is required is copy where *.so,
+    :$signed                                      = False,
+    :$double                                      = True
+  ) {
     my (@*c, @*v);
 
-    $after = GtkTreeIter.new if $after !~~ GtkTreeIter;
+    $after = $after.GtkTreeIter if $after.^can('GtkTreeIter');
+    $after = GtkTreeIter.new    if $after === True;
 
-    self!preSet(@col-vals.kv);
+    self!preSet(@col-vals);
     my $*i = $.insert_after($after);
-    self!postSet;
+    self!postSet( :$signed, :$double );
     $*i;
   }
 
   method set_value (
-    GtkTreeIter()  $iter,
-    Int()          $column,
-    GValue()       $value
+    GtkTreeIter()   $iter,
+    Int()           $column,
+                    $value   is copy,
+                   :$signed           = False,
+                   :$double           = True
   )
     is also<set-value>
   {
     my gint $c = $column;
+
+    if $value !~~ GValue {
+      $value = valueToGValue($value, :$signed, :$double, :raw);
+    }
+
+    X::GLib::InvalidValue.new(
+      message => '<value> must be GValue-compatible in call to .set_value!'
+    ).throw unless $value ~~ GValue;
 
     gtk_list_store_set_value($!gls, $iter, $c, $value);
   }
