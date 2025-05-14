@@ -4,11 +4,9 @@ use GTK::Raw::Types:ver<4>;
 use GTK::Raw::Cell::Layout:ver<4>;
 
 use GLib::GList;
-
-# use GTK::Cell::Area:ver<4>;
+use GTK::Cell::Renderer:ver<4>;
 
 use GLib::Roles::Implementor;
-# use GTK::Roles::Cell::Renderer:ver<4>;
 
 role GTK::Roles::Cell::Layout {
   has GtkCellLayout $!gcl is implementor;
@@ -45,7 +43,7 @@ role GTK::Roles::Cell::Layout {
     propReturnObject(
       gtk_cell_layout_get_area($!gcl),
       $raw,
-      |GTK::Cell::Area.getTypePair
+      |::('GTK::Cell::Area').getTypePair
     );
   }
 
