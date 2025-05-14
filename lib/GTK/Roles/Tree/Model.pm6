@@ -38,33 +38,44 @@ role GTK::Roles::Tree::Model {
     gtk_tree_model_foreach($!gtk-tm, &func, $user_data);
   }
 
-  method get (GtkTreeIter() $iter, Int() $type) {
-    my GType $t = $type;
+  method get (GtkTreeIter() $iter, Int() $column) {
+    my gint $c  = $column;
+    my      $ct = $.get_column_type($c);
 
     my $v = (
-      do given $t {
-        when G_TYPE_UINT   { CArray[uint32] }
-        when G_TYPE_INT    { CArray[int32]  }
-        when G_TYPE_FLOAT  { CArray[num32]  }
-        when G_TYPE_DOUBLE { CArray[num64]  }
-        when G_TYPE_UINT64 { CArray[uint64] }
-        when G_TYPE_INT64  { CArray[int64]  }
+      do given $ct.Int {
+        when G_TYPE_UINT    { CArray[uint32] }
+        when G_TYPE_BOOLEAN { CArray[uint32] }
+        when G_TYPE_INT     { CArray[int32]  }
+        when G_TYPE_FLOAT   { CArray[num32]  }
+        when G_TYPE_DOUBLE  { CArray[num64]  }
+        when G_TYPE_UINT64  { CArray[uint64] }
+        when G_TYPE_INT64   { CArray[int64]  }
+        when G_TYPE_STRING  { CArray[Str]    }
+
+        default {
+          X::GLib::InvalidValue.new(
+            message => "Invalid value { $_ } in .get"
+          ).throw
+        }
       }
     ).allocate(1);
 
-    $v[0] = $t == (G_TYPE_FLOAT, G_TYPE_DOUBLE).any
-      ?? 0e0
-      !! 0;
+    $v[0] = do given $ct {
+      when    G_TYPE_FLOAT   | G_TYPE_DOUBLE { 0e0 }
+      when    G_TYPE_STRING                  { Str }
+      default                                { 0   }
+    }
 
     gtk_tree_model_get(
       $!gtk-tm,
       $iter,
-      $type,
+      $c,
       cast(gpointer, $v),
       -1
     );
 
-    $v[0]
+    ppr($v);
   }
 
   method get_column_types {
@@ -80,7 +91,7 @@ role GTK::Roles::Tree::Model {
     return $e unless $enum;
     my $ap = GTypeEnum.enums.antipairs.Hash;
     if $ap{$e}:exists {
-      return $ap{$e};
+      return GTypeEnum($e)
     }
     $e;
   }
@@ -123,6 +134,10 @@ role GTK::Roles::Tree::Model {
 
   proto method get_iter_from_string (|)
   { * }
+
+  method get-iter-from-string (|c) {
+    self.get_iter_from_string(|c);
+  }
 
   multi method get_iter_from_string (Str() $path_string, :$raw = False) {
     return-with-all( samewith(GtkTreeIter.new, $path_string, :$raw) );
@@ -184,24 +199,33 @@ role GTK::Roles::Tree::Model {
   proto method get_value (|)
   { * }
 
+  method get-value (|c) {
+    self.get_value( |c );
+  }
+
   multi method get_value (GtkTreeIter() $iter, Int() $column) {
     samewith(
       $iter,
       $column,
-      GLib::Value.new( self.get_column_type($column) )
+      GValue.new
     );
   }
   multi method get_value (
     GtkTreeIter()  $iter,
     Int()          $column,
-    GValue()       $val,
-                  :$gvalue  = False
+    GValue()       $val     is copy,
+                  :$raw              = False
   ) {
     my gint $c = $column;
 
     gtk_tree_model_get_value($!gtk-tm, $iter, $column, $val);
-    return $val if $gvalue;
-    $val.value
+    return Nil  unless $val;
+    return $val if     $raw;
+    GLib::Value.new($val).value;
+  }
+
+  method get-values (|c) {
+    self.get_values( |c );
   }
 
   method get_values (GtkTreeIter() $iter) {
