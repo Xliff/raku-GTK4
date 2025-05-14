@@ -95,19 +95,21 @@ class GTK::Button::Spin:ver<4> is GTK::Widget:ver<4> {
             :d(:$digits)                  = 0,
             :h(:$horizontal)              = True,
             :v(:$vertical)                = $horizontal.not;
+            *%a
   ) {
     my $a = GTK::Adjustment.new($range, :$step, :$page);
-    my $o = samewith($a, $climb_rate, $digits);
+    my $o = samewith($a, $climb_rate, $digits, |%a);
     $o.orientation = $vertical ?? GTK_ORIENTATION_VERTICAL
                                !! GTK_ORIENTATION_HORIZONTAL;
     $o;
   }
   multi method new (
-    GtkAdjustment() $adjustment,
-    Num()           $climb_rate,
-    Int()           $digits,
+    GtkAdjustment()  $adjustment,
+    Num()            $climb_rate,
+    Int()            $digits,
                     :h(:$horizontal) = True,
-                    :v(:$vertical)   = $horizontal.not
+                    :v(:$vertical)   = $horizontal.not,
+                    *%a
   ) {
     my gdouble $c = $climb_rate;
     my gint    $d = $digits;
@@ -118,9 +120,14 @@ class GTK::Button::Spin:ver<4> is GTK::Widget:ver<4> {
 
     my $o = $gtk-spin-button ?? self.bless( :$gtk-spin-button, :$adjustment )
                              !! Nil;
-    $o.configure($adjustment, $climb_rate, $digits);
-    $o.orientation = $vertical ?? GTK_ORIENTATION_VERTICAL
-                               !! GTK_ORIENTATION_HORIZONTAL;
+    if $o {
+      $o.configure($adjustment, $climb_rate, $digits);
+      $o.orientation = $vertical ?? GTK_ORIENTATION_VERTICAL
+                                 !! GTK_ORIENTATION_HORIZONTAL;
+      %a<orientation>:delete;
+      $o.setAttributes(%a) if +%a;
+    }
+
     $o;
   }
   multi method new (*%a) {
@@ -135,6 +142,7 @@ class GTK::Button::Spin:ver<4> is GTK::Widget:ver<4> {
   }
 
   proto method new_with_range (|)
+    is also<new-with-range>
   { * }
 
   multi method new_with_range (
@@ -158,9 +166,7 @@ class GTK::Button::Spin:ver<4> is GTK::Widget:ver<4> {
     Num()  $step,
           :h(:$horizontal) = True,
           :v(:$vertical)   = $horizontal.not
-  )
-    is also<new-with-range>
-  {
+  ) {
     my ($n, $x, $s) = ($min, $max, $step);
 
     my $gtk-spin-button = gtk_spin_button_new_with_range($n, $x, $s);
