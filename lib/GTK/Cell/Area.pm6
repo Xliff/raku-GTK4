@@ -12,12 +12,14 @@ use GTK::Cell::Area::Context:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GTK::Roles::Cell::Layout:ver<4>;
 
 our subset GtkCellAreaAncestry is export of Mu
-  where GtkCellArea | GObject;
+  where GtkCellArea | GtkCellLayout | GObject;
 
 class GTK::Cell::Area {
   also does GLib::Roles::Object;
+  also does GTK::Roles::Cell::Layout;
 
   has GtkCellArea $!gtk-ca is implementor;
 
@@ -34,12 +36,19 @@ class GTK::Cell::Area {
         $_;
       }
 
+      when GtkCellLayout {
+        $!gcl      = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GtkCellArea, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GtkCellArea, $_);
       }
     }
     self!setObject($to-parent);
+    self.roleInit-GtkCellLayout;
   }
 
   method GTK::Raw::Definitions::GtkCellArea
@@ -101,7 +110,7 @@ class GTK::Cell::Area {
                       :$signed    = True,
                       :$double    = True,
                       *%a
-  ) 
+  )
     is also<add-with-properties>
   {
     $.add($renderer);
@@ -201,6 +210,7 @@ class GTK::Cell::Area {
     is also<cell-set-property>
   {
     my $v = valueToGValue($value);
+    $v .= GValue if $v.^can('GValue');
 
     gtk_cell_area_cell_set_property($!gtk-ca, $renderer, $property_name, $v);
   }
