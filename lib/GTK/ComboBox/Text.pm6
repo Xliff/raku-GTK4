@@ -58,15 +58,17 @@ class GTK::ComboBox::Text:ver<4> is GTK::ComboBox {
     my $o = $gtk-combo-text ?? self.bless( :$gtk-combo-text ) !! Nil;
     if $o {
       $o.setAttributes(%a) if +%a;
-      $o.append_text($_) if +@items;
+      $o.append_text($_) for @items;
     }
     $o
   }
 
-  method new_with_entry is also<new-with-entry> {
+  method new_with_entry ( *%a ) is also<new-with-entry> {
     my $gtk-combo-text = gtk_combo_box_text_new_with_entry();
 
-    $gtk-combo-text ?? self.bless( :$gtk-combo-text ) !! Nil;
+    my $o = $gtk-combo-text ?? self.bless( :$gtk-combo-text ) !! Nil;
+    $o.setAttributes(%a) if +%a;
+    $o
   }
 
   method append (Str() $id, Str() $text) {
