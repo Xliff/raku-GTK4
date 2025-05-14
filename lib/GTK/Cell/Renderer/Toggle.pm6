@@ -118,7 +118,7 @@ class GTK::Cell::Renderer::Toggle is GTK::Cell::Renderer {
   }
 
   method Toggled {
-    self.connect-str($!gtk-crt, 'toggled');
+    self.connect-string($!gtk-crt, 'toggled');
   }
 
   method get_activatable is also<get-activatable> {
