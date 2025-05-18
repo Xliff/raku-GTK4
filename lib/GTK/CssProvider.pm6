@@ -84,6 +84,10 @@ class GTK::CssProvider:ver<4> {
     unstable_get_type( self.^name, &gtk_css_provider_get_type, $n, $t );
   }
 
+  multi method load_from_bytes (GBytes() $bytes) {
+    gtk_css_provider_load_from_bytes($bytes);
+  }
+
   proto method load_from_data (|)
     is also<load-from-data>
   { * }
@@ -112,6 +116,12 @@ class GTK::CssProvider:ver<4> {
     is also<load-from-resource>
   {
     gtk_css_provider_load_from_resource($!gtk-css, $resource_path);
+  }
+
+  method load_from_string (Str() $css)
+    is also<load-from-string>
+  {
+    gtk_css_provider_load_from_string($!gtk-css, $css);
   }
 
   method load_named (Str() $name, Str() $variant) is also<load-named> {
