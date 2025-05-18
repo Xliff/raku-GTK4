@@ -51,10 +51,12 @@ class GTK::Revealer:ver<4> is GTK::Widget:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-revealer = gtk_revealer_new();
 
-    $gtk-revealer ?? self.bless( :$gtk-revealer ) !! Nil;
+    my $o = $gtk-revealer ?? self.bless( :$gtk-revealer ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: GtkWidget
