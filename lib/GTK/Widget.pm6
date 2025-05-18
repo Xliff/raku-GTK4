@@ -32,8 +32,7 @@ our subset GtkWidgetAncestry is export of Mu
   where GtkWidget | GtkAccessible | GtkBuildable | GtkConstraintTarget |
         GObject;
 
-class GTK::Widget:ver<4> {
-  also does GLib::Roles::Object;
+class GTK::Widget:ver<4> is GLib::Object {
   also does GTK::Roles::Accessible;
   also does GTK::Roles::Buildable;
   also does GTK::Roles::Constraint::Target;
@@ -76,7 +75,7 @@ class GTK::Widget:ver<4> {
         cast(GtkWidget, $_);
       }
     }
-    self!setObject($to-parent);
+    self.setGObject($to-parent);
     self.roleInit-GtkAccessible;
     self.roleInit-GtkBuildable;
     self.roleInit-GtkConstraintTarget;
@@ -1594,6 +1593,27 @@ class GTK::Widget:ver<4> {
     gtk_widget_remove_tick_callback($!gtk-w, $id);
   }
 
+  my @widget-attributes = <
+    css_name  css-name
+    css-class css_class
+  >;
+
+  method setAttributes ( %a ) {
+    for %a.keys.grep( * eq @widget-attributes.any ) {
+      when 'css_name' | 'css-name' | 'css-class' | 'css_class' {
+        self.add_css_class( %a{$_} );
+        proceed
+      }
+
+      default {
+        %a{$_}:delete
+      }
+    }
+
+    callwith(%a) if +%a;
+  }
+
+
   method set_can_focus (Int()  $can_focus) is also<set-can-focus> {
     my gboolean $c = $can_focus.so.Int;
 
@@ -1925,16 +1945,6 @@ class GTK::Widget:ver<4> {
 
 }
 
-INIT {
-  my \O = GTK::Widget;
-  %widget-types{O.get_type} = {
-    name        => 'Widget',
-    object      => O,
-    pair        => O.getTypePair
-  }
-}
-
-
 our subset GtkRequisitionAncestry is export of Mu
   where GtkRequisition | GObject;
 
@@ -1998,14 +2008,5 @@ class GTK::Requisition {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gtk_requisition_get_type, $n, $t );
-  }
-}
-
-INIT {
-  my \O = GTK::Widget;
-  %widget-types{O.get_type} = {
-    name        => O.^name,
-    object      => O,
-    pair        => O.getTypePair
   }
 }
