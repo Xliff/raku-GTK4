@@ -223,7 +223,7 @@ class GTK::ComboBox:ver<4>
 
   # Type: GtkTreeModel
   method model ( :$raw = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( GtkTreeModel );
+    my $gv = GLib::Value.new( GTK::Tree::Model.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('model', $gv);
@@ -314,7 +314,10 @@ class GTK::ComboBox:ver<4>
   }
 
   method get_active_iter (GtkTreeIter() $iter, :$raw = False)
-    is also<get-active-iter>
+    is also<
+      get-active-iter
+      iter
+    >
   {
     propReturnObject(
       gtk_combo_box_get_active_iter($!gcb, $iter),
