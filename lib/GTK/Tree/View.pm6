@@ -22,7 +22,7 @@ our subset GtkTreeViewAncestry is export of Mu
 
 class GTK::Tree::View is GTK::Widget {
   also does GTK::Roles::Signals::Tree::View;
-  
+
   has GtkTreeView $!gtk-tv is implementor;
 
   submethod BUILD ( :$gtk-tree-view ) {
@@ -61,16 +61,22 @@ class GTK::Tree::View is GTK::Widget {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new ( *%a ) {
     my $gtk-tree-view = gtk_tree_view_new();
 
-    $gtk-tree-view ?? self.bless( :$gtk-tree-view ) !! Nil;
+    my $o = $gtk-tree-view ?? self.bless( :$gtk-tree-view ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_with_model (GtkTreeModel() $model) is also<new-with-model> {
+  method new_with_model (GtkTreeModel() $model, *%a)
+    is also<new-with-model>
+  {
     my $gtk-tree-view = gtk_tree_view_new_with_model($!gtk-tv, $model);
 
-    $gtk-tree-view ?? self.bless( :$gtk-tree-view ) !! Nil;
+    my $o = $gtk-tree-view ?? self.bless( :$gtk-tree-view ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: boolean
@@ -292,7 +298,7 @@ class GTK::Tree::View is GTK::Widget {
 
   # Type: GtkTreeModel
   method model ( :$raw = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( GTK::Tree::Model.get_types );
+    my $gv = GLib::Value.new( GTK::Tree::Model.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('model', $gv);
