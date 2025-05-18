@@ -102,6 +102,10 @@ role GTK::Roles::Tree::Model {
     getFlags(GtkTreeModelFlagsEnum, $f);
   }
 
+  method get-iter (|c) {
+    self.get_iter( |c )
+  }
+
   proto method get_iter (|)
   { * }
 
@@ -122,6 +126,10 @@ role GTK::Roles::Tree::Model {
   proto method get_iter_first (|)
   { * }
 
+  method first ( |c ) {
+    $.get_iter_first( |c );
+  }
+
   multi method get_iter_first ( :$raw = False ) {
     return-with-all( samewith(GtkTreeIter.new, :$raw) );
   }
@@ -129,14 +137,16 @@ role GTK::Roles::Tree::Model {
     my $rv = gtk_tree_model_get_iter_first($!gtk-tm, $iter);
     return Nil unless $rv;
 
+    say "I: { $iter }";
+
     propReturnObject($iter, $raw, |GTK::Tree::Iter.getTypePair);
   }
 
   proto method get_iter_from_string (|)
   { * }
 
-  method get-iter-from-string (|c) {
-    self.get_iter_from_string(|c);
+  method get-iter-from-string ( |c ) {
+    self.get_iter_from_string( |c );
   }
 
   multi method get_iter_from_string (Str() $path_string, :$raw = False) {
@@ -171,11 +181,11 @@ role GTK::Roles::Tree::Model {
     $!gtk-tmi;
   }
 
-  method path ( :$raw = False ) {
-    $.get_path( :$raw );
+  method path ( $iter = GtkTreeIter, :$raw = False ) {
+    $.get_path( $iter, :$raw );
   }
-  multi method get_path ( :$raw = False ) {
-    samewith(GtkTreeIter.new, :$raw);
+  multi method get_path ( $iter = GtkTreeIter, :$raw = False ) {
+    samewith($iter, :$raw);
   }
   multi method get_path (GtkTreeIter() $iter, :$raw = False) {
     propReturnObject(
