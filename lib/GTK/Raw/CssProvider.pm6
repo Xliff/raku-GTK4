@@ -26,6 +26,14 @@ sub gtk_css_provider_load_from_data (
   is      export
 { * }
 
+sub gtk_css_provider_load_from_bytes (
+  GtkCssProvider $css_provider,
+  GBytes         $bytes
+)
+  is      native(gtk4)
+  is      export
+{ * }
+
 sub gtk_css_provider_load_from_file (
   GtkCssProvider $css_provider,
   GFile          $file
@@ -45,6 +53,14 @@ sub gtk_css_provider_load_from_path (
 sub gtk_css_provider_load_from_resource (
   GtkCssProvider $css_provider,
   Str            $resource_path
+)
+  is      native(gtk4)
+  is      export
+{ * }
+
+sub gtk_css_provider_load_from_string (
+  GtkCssProvider $css_provider,
+  Str            $css
 )
   is      native(gtk4)
   is      export
