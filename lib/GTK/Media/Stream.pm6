@@ -12,7 +12,7 @@ use GDK::Roles::Paintable:ver<4>;
 our subset GtkMediaStreamAncestry is export of Mu
   where GtkMediaStream | GdkPaintable | GObject;
 
-class GTK::MediaStream:ver<4> {
+class GTK::Media::Stream:ver<4> {
   also does GLib::Roles::Object;
   also does GDK::Roles::Paintable;
 
@@ -47,7 +47,7 @@ class GTK::MediaStream:ver<4> {
   }
 
   method GTK::Raw::Definitions::GtkMediaStream
-    is also<GdkMediaStream>
+    is also<GtkMediaStream>
   { $!gtk-ms }
 
   multi method new (
@@ -229,12 +229,14 @@ class GTK::MediaStream:ver<4> {
   }
 
   # Type: int64
-  method timestamp is rw  is g-property {
+  method timestamp ( :$raw = False ) is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_INT64 );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('timestamp', $gv);
-        $gv.int64;
+        my $t = $gv.int64;
+        return $t if $raw;
+        DateTime.new($t / 1e6);
       },
       STORE => -> $, Int() $val is copy {
         warn 'timestamp does not allow writing'
@@ -276,12 +278,16 @@ class GTK::MediaStream:ver<4> {
     gtk_media_stream_get_duration($!gtk-ms);
   }
 
-  method get_ended is also<get-ended> {
+  method get_ended is also<get-ended=> {
     so gtk_media_stream_get_ended($!gtk-ms);
   }
 
-  method get_error is also<get-error> {
-    gtk_media_stream_get_error($!gtk-ms);
+  method get_error ( :$raw = False ) is also<get-error> {
+    propReturnObject(
+      gtk_media_stream_get_error($!gtk-ms),
+      $raw,
+      |GLib::Error.getTypePair
+    );
   }
 
   method get_loop is also<get-loop> {
@@ -296,8 +302,10 @@ class GTK::MediaStream:ver<4> {
     so gtk_media_stream_get_playing($!gtk-ms);
   }
 
-  method get_timestamp is also<get-timestamp> {
-    gtk_media_stream_get_timestamp($!gtk-ms);
+  method get_timestamp ( :$raw = False ) is also<get-timestamp> {
+    my $t = gtk_media_stream_get_timestamp($!gtk-ms);
+    return $t if $raw;
+    DateTime.new( $t / 1e6 );
   }
 
   method get_type is also<get-type> {

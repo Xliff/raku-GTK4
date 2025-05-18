@@ -6,7 +6,7 @@ use GLib::Raw::Traits;
 use GTK::Raw::Types:ver<4>;
 use GTK::Raw::MediaFile:ver<4>;
 
-use GTK::MediaStream:ver<4>;
+use GTK::Media::Stream:ver<4>;
 
 use GLib::Roles::Implementor;
 use GIO::Roles::GFile;
@@ -14,7 +14,7 @@ use GIO::Roles::GFile;
 our subset GtkMediaFileAncestry is export of Mu
   where GtkMediaFile | GtkMediaStreamAncestry;
 
-class GTK::MediaFile:ver<4> is GTK::MediaStream:ver<4> {
+class GTK::Media::File:ver<4> is GTK::Media::Stream:ver<4> {
   has GtkMediaFile $!gtk-mf is implementor;
 
   submethod BUILD ( :$gtk-media-file ) {
@@ -42,6 +42,9 @@ class GTK::MediaFile:ver<4> is GTK::MediaStream:ver<4> {
     is also<GtkMediaFile>
   { $!gtk-mf }
 
+  my subset IOPathCompatible of Mu
+    where { $_ ~~ IO::Path || .^can('IO') };
+
   multi method new (
      $gtk-media-file where * ~~ GtkMediaFileAncestry,
 
@@ -53,36 +56,52 @@ class GTK::MediaFile:ver<4> is GTK::MediaStream:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
+  multi method new (IOPathCompatible $p is copy, *%a) {
+    $p .= DateTime if $p.^can('IO') && $p !~~ IO::Path;
+    self.new_for_filename($p.absolute, |%a);
+  }
+  multi method new ( *@a where *.elems.not, *%a ) {
     my $gtk-media-file = gtk_media_file_new();
 
-    $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    my $o = $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_for_file (GFile() $file) is also<new-for-file> {
+  method new_for_file (GFile() $file, *%a) is also<new-for-file> {
     my $gtk-media-file = gtk_media_file_new_for_file($file);
 
-    $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    my $o = $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_for_filename (Str() $filename) is also<new-for-filename> {
+  method new_for_filename (Str() $filename, *%a) is also<new-for-filename> {
     my $gtk-media-file = gtk_media_file_new_for_filename($filename);
 
-    $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    my $o = $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_for_input_stream (GInputStream() $stream)
+  method new_for_input_stream (GInputStream() $stream, *%a)
     is also<new-for-input-stream>
   {
     my $gtk-media-file = gtk_media_file_new_for_input_stream($stream);
 
-    $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    my $o = $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
-  method new_for_resource (Str() $resource_path) is also<new-for-resource> {
+  method new_for_resource (Str() $resource_path, *%a)
+    is also<new-for-resource>
+  {
     my $gtk-media-file = gtk_media_file_new_for_resource($resource_path);
 
-    $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    my $o = $gtk-media-file ?? self.bless( :$gtk-media-file ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
   # Type: GFile
@@ -127,6 +146,12 @@ class GTK::MediaFile:ver<4> is GTK::MediaStream:ver<4> {
     );
   }
 
+  method filename is rw {
+    Proxy.new:
+      FETCH => sub ($)     { $.file.get_path   },
+      STORE => sub ($, \v) { $.set_filename(v) }
+  }
+
   method clear {
     gtk_media_file_clear($!gtk-mf);
   }
@@ -155,7 +180,9 @@ class GTK::MediaFile:ver<4> is GTK::MediaStream:ver<4> {
     gtk_media_file_set_filename($!gtk-mf, $filename);
   }
 
-  method set_input_stream (GInputStream() $stream) is also<set-input-stream> {
+  method set_input_stream (GInputStream() $stream)
+    is also<set-input-stream>
+  {
     gtk_media_file_set_input_stream($!gtk-mf, $stream);
   }
 
