@@ -436,9 +436,17 @@ class GTK::ScrolledWindow:ver<4> is GTK::Window:ver<4> {
     gtk_scrolled_window_set_placement($!gtk-sw, $w);
   }
 
-  method set_policy (Int() $hscrollbar_policy, Int() $vscrollbar_policy)
+  proto method set_policy (|)
     is also<set-policy>
-  {
+  { * }
+
+  multi method set_policy (@p) {
+    samewith( |@p );
+  }
+  multi method set_policy ($p) {
+    samewith($p, $p);
+  }
+  method set_policy (Int() $hscrollbar_policy, Int() $vscrollbar_policy) {
     my GtkPolicyType ($h, $v) = ($hscrollbar_policy, $vscrollbar_policy);
 
     gtk_scrolled_window_set_policy($!gtk-sw, $h, $v);
