@@ -116,7 +116,6 @@ class GTK::List::Store:ver<4> {
     self.newv(@types);
   }
 
-
   multi method newv (@types is copy) {
     @types .= map({
       when    .defined   { $_ }
@@ -124,14 +123,13 @@ class GTK::List::Store:ver<4> {
       default            { GLib::Value.gtypeFromType($_) }
     });
 
-    say "Types: { @types.gist }";
+    say "Types: { @types.gist }" if checkDEBUG(2);
 
     samewith( @types.elems, ArrayToCArray(GType, @types) );
   }
   multi method newv (Int() $n_columns, CArray[GType] $types) {
     my gint $n = $n_columns;
 
-    $types[^$n].gist.say;
     my $gtk-list-store = gtk_list_store_newv($n, $types);
 
     $gtk-list-store ?? self.bless( :$gtk-list-store ) !! Nil;
@@ -296,8 +294,8 @@ class GTK::List::Store:ver<4> {
   multi method set (
     *@col-vals,
     :a(:$append) is required is copy where *.so,
-    :$signed                                     = False,
-    :$double                                     = True
+    :$signed                                              = False,
+    :$double                                              = True
   ) {
     my (@*c, @*v);
 
@@ -391,7 +389,7 @@ class GTK::List::Store:ver<4> {
   multi method set (
     @vals,
     :aft(:$after) is required is copy where *.so,
-    :v(:$values) is required          where *.so,
+    :v(:$values)  is required         where *.so,
     :$signed                                      = False,
     :$double                                      = True
   ) {
@@ -451,7 +449,9 @@ class GTK::List::Store:ver<4> {
       $iter,
       ArrayToCArray(guint, @columns),
       GLib::Roles::TypedBuffer[GValue].new(
-        @values.Array.map({ valueToGValue($_, :$signed, :$double) })
+        @values.Array.map({
+          valueToGValue($_, :$signed, :$double)
+        })
       ).p,
       @columns.elems
     );
