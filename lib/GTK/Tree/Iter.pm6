@@ -90,8 +90,8 @@ class GTK::Tree::Iter {
 
   method next {
     $*ERR.say: 'Model not set!';
-    return Nil unless $!gtk-tm;
     gtk_tree_model_iter_next($!gtk-tm, $!gtk-ti);
+    self;
   }
 
   method nth_child (GtkTreeIter()  $parent, Int() $n)
@@ -115,14 +115,14 @@ class GTK::Tree::Iter {
     >
   {
     $*ERR.say: 'Model not set!';
-    return Nil unless $!gtk-tm;
     gtk_tree_model_iter_parent($!gtk-tm, $!gtk-ti, $child);
+    self;
   }
 
   method previous {
     $*ERR.say: 'Model not set!';
-    return Nil unless $!gtk-tm;
     gtk_tree_model_iter_previous($!gtk-tm, $!gtk-ti);
+    self;
   }
 
   method get_type {
