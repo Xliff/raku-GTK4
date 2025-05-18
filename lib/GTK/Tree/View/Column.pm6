@@ -52,7 +52,7 @@ class GTK::Tree::View::Column:ver<4> {
     $o.ref if $ref;
     $o;
   }
-  multi method new (*%a) {
+  multi method new ( *%a ) {
     my $gtk-view-column = gtk_tree_view_column_new();
 
     my $o = $gtk-view-column ?? self.bless( :$gtk-view-column ) !! Nil;
@@ -597,10 +597,15 @@ class GTK::Tree::View::Column:ver<4> {
     gtk_tree_view_column_set_alignment($!gtk-tc, $x);
   }
 
-  method set_attributes (GtkCellRenderer() $cell_renderer)
+  proto method set_attributes (|)
     is also<set-attributes>
-  {
-    gtk_tree_view_column_set_attributes($!gtk-tc, $cell_renderer);
+  { * }
+
+  multi method set_attributes ($cell_renderer, *%a) {
+    samewith( $cell_renderer, |%a.kv );
+  }
+  multi method set_attributes (GtkCellRenderer() $cell_renderer, *@a ) {
+    $.add-attribute($cell_renderer, |$_ ) for @a.rotor(2);
   }
 
   method set_cell_data_func (
