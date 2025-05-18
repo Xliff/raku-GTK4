@@ -378,15 +378,15 @@ sub gtk_tree_path_new_first
   is      export
 { * }
 
-sub gtk_tree_path_new_from_indices (gint $first_index)
+sub gtk_tree_path_new_from_indices (CArray[gint] $first_index)
   returns GtkTreePath
   is      native(gtk4)
   is      export
 { * }
 
 sub gtk_tree_path_new_from_indicesv (
-  gint  $indices is rw,
-  gsize $length
+  CArray[gint] $indices,
+  gsize        $length
 )
   returns GtkTreePath
   is      native(gtk4)
