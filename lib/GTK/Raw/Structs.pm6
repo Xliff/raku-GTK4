@@ -1511,7 +1511,10 @@ class GtkTreeIter is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gpointer $!user_data2;
 	has gpointer $!user_data3;
 
-	method raku {
+	multi method raku ( ::?CLASS:U: ) {
+		'(GtkTreeIter)'
+  }
+	multi method raku ( ::?CLASS:D: ) {
 		qq:to/GIST/;
 			GtkTreeIter.new(
 				stamp      => { $!stamp },
