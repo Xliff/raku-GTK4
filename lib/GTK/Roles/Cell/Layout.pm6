@@ -39,6 +39,13 @@ role GTK::Roles::Cell::Layout {
     gtk_cell_layout_clear_attributes($!gcl, $cell);
   }
 
+  method area ( |c ) {
+    self.get_area;
+  }
+  method get-area ( |c ) {
+    self.get_area( |c );
+  }
+
   method get_area ( :$raw = False ) {
     propReturnObject(
       gtk_cell_layout_get_area($!gcl),
