@@ -63,11 +63,14 @@ class GTK::Viewport:ver<4> is GTK::Widget:ver<4> {
   }
   multi method new (
     GtkAdjustment() :h(:$hadjustment) = GtkAdjustment,
-    GtkAdjustment() :v(:$vadjustment) = GtkAdjustment
+    GtkAdjustment() :v(:$vadjustment) = GtkAdjustment,
+                    *%a
   ) {
     my $gtk-viewport = gtk_viewport_new($hadjustment, $vadjustment);
 
-    $gtk-viewport ?? self.bless( :$gtk-viewport ) !! Nil;
+    my $o = $gtk-viewport ?? self.bless( :$gtk-viewport ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
 
 
