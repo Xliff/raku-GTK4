@@ -687,7 +687,10 @@ class GTK::Widget:ver<4> is GLib::Object {
       }
   }
 
-  method margins is rw {
+  method margins
+    is rw
+    is g-accessor
+  {
     Proxy.new:
       FETCH => -> $ {
         ( $.get-margin-left, $.get-margin-right,
@@ -698,6 +701,16 @@ class GTK::Widget:ver<4> is GLib::Object {
         ( $.margin-left, $.margin-right, $.margin-top, $.margin-bottom ) =
           takeIntOrArray($val, &?ROUTINE.name, size => 4);
       }
+  }
+
+  method state-flags ( :set(:$flags) )
+    is rw
+    is also<state_flags>
+    is g-accessor
+  {
+    Proxy.new:
+      FETCH => $     { $.get_state_flags(:$flags) }
+      STORE => $, \v { $.set_state_flags(v)       }
   }
 
   method Destroy {
@@ -1323,7 +1336,13 @@ class GTK::Widget:ver<4> is GLib::Object {
     getFlags(GtkStateFlags, $s);
   }
 
-  method get_style_context ( :$raw = False ) is also<get-style-context> {
+  method get_style_context ( :$raw = False )
+    is also<
+      get-style-context
+      style_context
+      style-context
+    >
+  {
     propReturnObject(
       gtk_widget_get_style_context($!gtk-w),
       $raw,
