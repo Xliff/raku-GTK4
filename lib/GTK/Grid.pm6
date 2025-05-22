@@ -143,7 +143,7 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
     );
   }
 
-  method spacing is rw {
+  method spacing is rw is g-accessor {
     Proxy.new:
       FETCH => sub ($)  { min(self.row-spacing, self.column-spacing) },
 
@@ -167,8 +167,6 @@ class GTK::Grid:ver<4> is GTK::Widget:ver<4> {
         }
       }
   }
-
-
 
   multi method attach (
     GtkWidget()     $child,
