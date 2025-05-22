@@ -2,6 +2,7 @@ use v6.c;
 
 use GLib::Raw::Exports;
 use ATK::Raw::Exports;
+use ATSPI::Raw::Exports;
 use Pango::Raw::Exports;
 use GIO::Raw::Exports;
 use Graphene::Raw::Exports;
@@ -9,8 +10,6 @@ use GDK::Pixbuf::Raw::Exports;
 use GDK::Raw::Exports:ver<4>;
 use GSK::Raw::Exports:ver<4>;
 use GTK::Raw::Exports:ver<4>;
-
-my constant forced = 0;
 
 unit package GTK::Raw::Types:ver<4>;
 
@@ -28,6 +27,9 @@ need GLib::Roles::Implementor;
 need ATK::Raw::Definitions;
 need ATK::Raw::Enums;
 need ATK::Raw::Structs;
+need ATSPI::Raw::Definitions;
+need ATSPI::Raw::Enums;
+need ATSPI::Raw::Structs;
 need Pango::Raw::Definitions;
 need Pango::Raw::Enums;
 need Pango::Raw::Structs;
@@ -59,6 +61,7 @@ need GTK::Raw::Subs:ver<4>;
 BEGIN {
   glib-re-export($_) for |@glib-exports,
                          |@atk-exports,
+                         |@atspi-exports,
                          |@pango-exports,
                          |@gio-exports,
                          |@graphene-exports,
