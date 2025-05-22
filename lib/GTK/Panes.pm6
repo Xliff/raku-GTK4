@@ -57,29 +57,33 @@ class GTK::Panes:ver<4> is GTK::Widget:ver<4> {
     $o;
   }
 
-  multi method new (Int() $orientation) {
+  multi method new (Int() $orientation, *%a) {
     my GtkOrientation $o = $orientation;
 
     my $gtk-panes = gtk_paned_new($o);
 
-    $gtk-panes ?? self.bless( :$gtk-panes ) !! Nil;
+    my $o = $gtk-panes ?? self.bless( :$gtk-panes ) !! Nil;
+    $o.setAttributes(%a) if $o && +%a;
+    $o;
   }
   multi method new (
     :h(:$horizontal) = True,
-    :v(:$vertical)   = $horizontal.not
+    :v(:$vertical)   = $horizontal.not,
+    *%a
   ) {
     ::?CLASS.new(
       $vertical ?? GTK_ORIENTATION_VERTICAL
                 !! GTK_ORIENTATION_HORIZONTAL
+      |%a
     )
   }
 
-  method new-hpane {
-    ::?CLASS.new(GTK_ORIENTATION_HORIZONTAL)
+  method new-hpane ( *%a ) {
+    ::?CLASS.new(GTK_ORIENTATION_HORIZONTAL, |%a)
   }
 
-  method new-vpan {
-    ::?CLASS.new(GTK_ORIENTATION_VERTICAL);
+  method new-vpane ( *%a ) {
+    ::?CLASS.new(GTK_ORIENTATION_VERTICAL, |%a);
   }
 
   # Type: GtkWidget
